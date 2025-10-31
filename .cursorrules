@@ -1,3 +1,255 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+## Project Overview
+
+`fontlift-mac-cli` is a Swift CLI tool for macOS that installs/uninstalls fonts. The tool manages system fonts, supporting both individual fonts and font collections (.ttc/.otc files).
+
+**One-sentence scope**: Install, uninstall, list, and remove fonts on macOS via CLI, supporting both file paths and internal font names.
+
+## Technology Stack
+
+- **Language**: Swift (macOS native)
+- **Platform**: macOS only
+- **Build system**: Swift Package Manager or Xcode
+- **Dependencies**: macOS Core Text framework for font operations
+
+## Core Functionality
+
+The tool provides four main operations:
+
+1. **List fonts**: Display installed fonts by path and/or internal name
+2. **Install fonts**: Register fonts with macOS from file paths
+3. **Uninstall fonts**: Deregister fonts while keeping files
+4. **Remove fonts**: Deregister fonts and delete files
+
+## Command Structure
+
+Commands follow this pattern with both long and short forms:
+
+- `list` (alias: `l`) - List fonts
+- `install` (alias: `i`) - Install fonts
+- `uninstall` (alias: `u`) - Uninstall fonts (keep files)
+- `remove` (alias: `rm`) - Remove fonts (delete files)
+
+Flags:
+- `-p` or `--path`: Work with file paths (default)
+- `-n` or `--name`: Work with internal font names
+
+## Development Commands
+
+### Building
+```bash
+swift build                    # Debug build
+swift build -c release         # Release build
+```
+
+### Testing
+```bash
+swift test                     # Run tests
+swift test --parallel          # Run tests in parallel
+```
+
+### Running
+```bash
+swift run fontlift <command>   # Run from source
+.build/release/fontlift <command>  # Run built binary
+```
+
+### Installation
+```bash
+swift build -c release
+cp .build/release/fontlift /usr/local/bin/
+```
+
+## macOS Font Management Architecture
+
+### Key APIs
+- **Core Text**: `CTFontManager` for registration/unregistration
+- **Font Collections**: Handle .ttc/.otc files containing multiple fonts
+- **Font Registration Scopes**: User vs System scope (likely user scope for CLI)
+
+### Font Locations
+- System: `/System/Library/Fonts/`, `/Library/Fonts/`
+- User: `~/Library/Fonts/`
+
+### Critical Considerations
+- **Permissions**: May require elevated privileges for system-level operations
+- **Font Collections**: .ttc/.otc files contain multiple fonts - must handle all fonts in collection
+- **Internal Names**: PostScript names vs. Full names vs. Family names - clarify which to use
+- **File Operations**: Remove command deletes files - needs confirmation or safety checks
+- **Error Handling**: Font already installed, font not found, permission denied, invalid font file
+
+## Testing Strategy
+
+1. **Unit tests**: Test font name extraction, path validation, collection parsing
+2. **Integration tests**: Test actual font registration/deregistration (may need test fonts)
+3. **Edge cases**:
+   - Empty font directories
+   - Invalid font files
+   - Fonts already registered
+   - Missing fonts during uninstall
+   - Permission issues
+   - Font collections with multiple fonts
+4. **Manual testing**: Verify fonts appear in Font Book and system font picker
+
+## Implementation Notes
+
+### Font Listing
+- Use `CTFontManager.copyAvailableFontURLs()` or similar
+- Parse font files to extract internal names using Core Text
+- Support combined output: path;name format
+
+### Font Installation
+- Use `CTFontManagerRegisterFontsForURL` for single fonts
+- For .ttc/.otc: enumerate fonts in collection and register each
+- Handle duplicate registrations gracefully
+
+### Font Uninstallation
+- Use `CTFontManagerUnregisterFontsForURL` when working with paths
+- When using `-n`: find font file path from internal name first
+- Verify font exists before attempting unregistration
+
+### Font Removal
+- Unregister font first (same as uninstall)
+- Delete file using FileManager
+- Consider adding `-f/--force` flag to skip confirmation
+- Consider `--dry-run` flag to preview what would be deleted
+
+## Code Organization
+
+Suggested structure (single-file or modular):
+
+```
+Sources/
+  fontlift/
+    main.swift              # Entry point, argument parsing
+    FontManager.swift       # Core font operations (register/unregister/list)
+    FontResolver.swift      # Resolve names to paths and vice versa
+    FileOperations.swift    # File deletion, validation
+Tests/
+  fontliftTests/
+    FontManagerTests.swift
+    FontResolverTests.swift
+```
+
+## Argument Parsing
+
+Use Swift's native argument parsing or Swift Argument Parser package:
+- Swift Argument Parser: Clean, declarative, type-safe
+- Manual parsing: Minimal dependencies but more code
+
+## Error Messages
+
+Provide clear, actionable errors:
+- "Font not found at path: /path/to/font.ttf"
+- "Font 'Helvetica' is not installed"
+- "Permission denied: Cannot install to system fonts. Try user fonts or run with sudo"
+- "Invalid font file: /path/to/file is not a valid font"
+
+## Safety Checks
+
+- Validate font files before operations (check file exists, is readable, is valid font)
+- Confirm before deleting files in `remove` command
+- Handle font collections properly (don't delete .ttc if only uninstalling one font from it)
+- Prevent deletion of system fonts
+
+## Swift-Specific Conventions
+
+- Use Swift 5.5+ features (async/await if needed, though likely not for this CLI)
+- Prefer Swift's error handling (`throws`, `Result`) over error codes
+- Use `FileManager` for file operations
+- Use `CommandLine` or ArgumentParser for CLI parsing
+- Follow Swift naming conventions (camelCase, descriptive names)
+
+## Documentation Files
+
+This project follows standard documentation practices:
+- `README.md`: User-facing documentation
+- `CHANGELOG.md`: Version history and changes (create when adding versions)
+- `PLAN.md`: Detailed implementation plan (if needed for complex features)
+- `TODO.md`: Flat task list (if using project management workflow)
+- `WORK.md`: Current work progress (if tracking development sessions)
+
+## Command Examples from README
+
+```bash
+# List paths
+fontlift list
+fontlift list -p
+fontlift l -p
+
+# List names
+fontlift list -n
+
+# List both
+fontlift list -n -p
+fontlift list -p -n
+
+# Install
+fontlift install /path/to/font.ttf
+fontlift i -p /path/to/font.ttf
+
+# Uninstall by path
+fontlift uninstall /path/to/font.ttf
+fontlift u -p /path/to/font.ttf
+
+# Uninstall by name
+fontlift uninstall -n "Helvetica Neue"
+fontlift u -n "Helvetica Neue"
+
+# Remove by path
+fontlift remove /path/to/font.ttf
+fontlift rm -p /path/to/font.ttf
+
+# Remove by name
+fontlift remove -n "Helvetica Neue"
+fontlift rm -n "Helvetica Neue"
+```
+
+## Core Principles for fontlift-mac-cli
+
+### Scope adherence
+- One sentence scope: Install, uninstall, list, and remove fonts on macOS via CLI, supporting both file paths and internal font names.
+- No feature creep beyond core font operations.
+- No enterprise bloat (analytics, monitoring, complex logging).
+
+### Simplicity first
+- Minimal dependencies: Use macOS native frameworks (Core Text, FileManager).
+- Single-purpose functions: Each function does one thing well.
+- Clear error messages: Tell users exactly what went wrong and how to fix it.
+
+### Safety by default
+- Confirm before destructive operations (remove command).
+- Validate inputs before acting on them.
+- Handle font collections (.ttc/.otc) correctly.
+- Prevent deletion of system fonts.
+
+### Build and release
+- **Required**: Repository must have `./build.sh` for building the project.
+- **Required**: Repository must have `./publish.sh` for releasing/publishing.
+- Build scripts should be simple, documented, and work out of the box.
+
+### Testing rigor
+- Every function must have tests.
+- Test edge cases: invalid files, permissions, missing fonts.
+- Integration tests with real font operations.
+- Manual verification in Font Book.
+
+### Code quality
+- Swift naming conventions (camelCase, descriptive).
+- Prefer Swift error handling (`throws`, `Result`) over error codes.
+- Keep functions under 20 lines.
+- Keep files under 200 lines.
+- Maintain `this_file` path comments in all source files.
+
+### macOS native approach
+- Use Core Text APIs correctly.
+- Respect user vs system font scope.
+- Follow macOS conventions for CLI tools.
+- Handle permissions gracefully.
+
 # Development guidelines
 
 ## Foundation: Challenge your first instinct with chain-of-thought
@@ -352,3 +604,53 @@ When you write prose (like documentation or marketing or even your own commentar
 
 ---
 
+
+## Version Management
+
+The project uses semantic versioning (MAJOR.MINOR.PATCH).
+
+### Updating the Version
+
+When releasing a new version, follow this checklist:
+
+1. **Update version in code**:
+   - Edit `Sources/fontlift/fontlift.swift`
+   - Change the `version` constant (line ~12)
+
+2. **Update CHANGELOG.md**:
+   - Add new version section at top
+   - Move items from [Unreleased] to the new version
+   - Include release date
+
+3. **Create git tag**:
+   ```bash
+   git tag v0.2.0
+   git push origin v0.2.0
+   ```
+
+4. **Build and test**:
+   ```bash
+   ./build.sh
+   ./test.sh
+   fontlift --version  # Verify shows new version
+   ```
+
+5. **Publish** (if releasing):
+   ```bash
+   ./publish.sh
+   ```
+
+### Version Number Guidelines
+
+- **MAJOR** (X.0.0): Breaking changes, incompatible API changes
+- **MINOR** (0.X.0): New features, backwards-compatible
+- **PATCH** (0.0.X): Bug fixes, backwards-compatible
+
+Examples:
+- `0.1.0` → `0.1.1`: Bug fix
+- `0.1.0` → `0.2.0`: Added font installation feature
+- `0.9.0` → `1.0.0`: First stable release with all features
+
+---
+
+Now @./issues/999.md

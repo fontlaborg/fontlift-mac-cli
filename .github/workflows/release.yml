@@ -1,0 +1,95 @@
+# this_file: .github/workflows/release.yml
+# Continuous Deployment workflow for fontlift
+# Runs when version tags (vX.Y.Z) are pushed
+# Creates GitHub Release with binary artifacts
+
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+permissions:
+  contents: write  # Required to create releases
+
+jobs:
+  validate:
+    name: Validate Version
+    runs-on: macos-14
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Extract tag version
+        id: tag
+        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+
+      - name: Validate version matches code
+        run: ./scripts/validate-version.sh ${{ steps.tag.outputs.VERSION }}
+
+  build:
+    name: Build Release Binary
+    needs: validate
+    runs-on: macos-14
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Display Swift version
+        run: swift --version
+
+      - name: Build release binary
+        run: ./build.sh --ci
+
+      - name: Run tests
+        run: ./test.sh --ci
+
+      - name: Prepare release artifacts
+        run: ./scripts/prepare-release.sh
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: fontlift-macos
+          path: dist/*
+          retention-days: 90
+
+  release:
+    name: Create GitHub Release
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: fontlift-macos
+          path: dist/
+
+      - name: Extract version from tag
+        id: version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+
+      - name: Extract release notes
+        id: notes
+        run: |
+          VERSION=${GITHUB_REF#refs/tags/v}
+          # Extract version section from CHANGELOG.md
+          sed -n "/## \[${VERSION}\]/,/## \[/p" CHANGELOG.md | sed '$d' > release_notes.md
+          # If release notes are empty, use a default message
+          if [ ! -s release_notes.md ]; then
+            echo "Release ${VERSION}" > release_notes.md
+          fi
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/*
+          body_path: release_notes.md
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

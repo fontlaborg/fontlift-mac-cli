@@ -52,6 +52,27 @@ struct Fontlift: ParsableCommand {
 
 // MARK: - List Command
 extension Fontlift {
+    /// List all installed fonts on the system
+    ///
+    /// This command enumerates fonts using `CTFontManagerCopyAvailableFontURLs()`,
+    /// which returns fonts from system, user, and library directories.
+    ///
+    /// Output modes:
+    /// - Default (`-p`): Font file paths only
+    /// - Names (`-n`): Internal font names (PostScript or display names)
+    /// - Both (`-p -n`): Combined format as `path;name`
+    /// - Sorted (`-s`): Alphabetically sorted with duplicates removed
+    ///
+    /// The output is pure data (no headers/footers) for pipe-friendly usage.
+    ///
+    /// Example usage:
+    /// ```bash
+    /// fontlift list              # List all font paths
+    /// fontlift list -n           # List all font names
+    /// fontlift list -p -n        # List path;name pairs
+    /// fontlift list -n -s        # List unique font names, sorted
+    /// fontlift list | wc -l      # Count total fonts
+    /// ```
     struct List: ParsableCommand {
         static let configuration = CommandConfiguration(
             commandName: "list",

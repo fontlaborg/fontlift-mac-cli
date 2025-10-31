@@ -1,0 +1,35 @@
+# this_file: .github/workflows/ci.yml
+# Continuous Integration workflow for fontlift
+# Runs on every push to main and on all pull requests
+
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: Build and Test
+    runs-on: macos-14
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Display Swift version
+        run: swift --version
+
+      - name: Build
+        run: ./build.sh --ci
+
+      - name: Run tests
+        run: ./test.sh --ci
+
+      - name: Verify binary
+        run: |
+          .build/release/fontlift --version
+          .build/release/fontlift --help

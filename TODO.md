@@ -1,9 +1,11 @@
 # TODO.md
 <!-- this_file: TODO.md -->
 
-## IMPORTANT: 
+## IMPORTANT
 
-Note: `fontlift list` must not print any "prolog" like "Listing font paths..." or any "epilog" like "Total fonts: 5393" —— we want the pure list of outputs
+- [ ] @issues/101.md
+- [ ] @issues/103.md
+- [ ] Note: `fontlift list` must not print any "prolog" like "Listing font paths..." or any "epilog" like "Total fonts: 5393" —— we want the pure list of outputs
 
 ## Phase 2: Quality & Reliability Improvements - COMPLETED ✅
 
@@ -305,16 +307,16 @@ Note: `fontlift list` must not print any "prolog" like "Listing font paths..." o
 
 ---
 
-## Future Tasks (Later Iterations)
+## Font Feature Implementation - COMPLETED ✅ (v1.1.0)
 
-### Font Feature Implementation
-- [ ] Research Core Text APIs for font operations
-- [ ] Implement `list` command with real font enumeration
-- [ ] Implement `install` command with font registration
-- [ ] Implement `uninstall` command with deregistration
-- [ ] Implement `remove` command with file deletion
-- [ ] Handle font collections (.ttc/.otc)
-- [ ] Add confirmation prompts for destructive operations
+- [x] Research Core Text APIs for font operations
+- [x] Implement `list` command with real font enumeration (5,387 fonts)
+- [x] Add sorted mode (`-s`) to list command
+- [x] Implement `install` command with font registration
+- [x] Implement `uninstall` command with deregistration
+- [x] Implement `remove` command with file deletion
+- [x] Handle font collections (.ttc/.otc)
+- [ ] Add confirmation prompts for destructive operations (future enhancement)
 
 ### Testing & Quality
 - [ ] Create test font files for integration tests
