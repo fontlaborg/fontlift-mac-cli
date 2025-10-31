@@ -17,6 +17,9 @@ This release implements all core font management functionality using macOS Core 
   - Pure output (no headers/footers) for pipe-friendly usage
   - Three output modes: paths only (default), names only (`-n`), or both (`-p -n`)
   - Format: `path;name` when using both flags
+  - **Sorted mode** (`-s` / `--sorted`): Sort output alphabetically and remove duplicates
+    - Reduces 5387 font names to 1114 unique names
+    - Works with all output modes (paths, names, combined)
 
 - ✅ **Install Command**: Register fonts with macOS font system
   - Uses `CTFontManagerRegisterFontsForURL` with `.user` scope

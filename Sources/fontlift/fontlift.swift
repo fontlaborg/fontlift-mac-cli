@@ -65,6 +65,9 @@ extension Fontlift {
         @Flag(name: .shortAndLong, help: "Show internal font names")
         var name = false
 
+        @Flag(name: .shortAndLong, help: "Sort output and remove duplicates")
+        var sorted = false
+
         func run() throws {
             // Default to path if neither flag specified
             let showPath = path || !name
@@ -75,18 +78,31 @@ extension Fontlift {
                 throw ExitCode.failure
             }
 
-            // Output pure data only - no headers or footers
+            // Collect output lines
+            var lines: [String] = []
+
             for fontURL in fontURLs {
                 if showPath && showName {
                     let fontName = getFontName(from: fontURL) ?? getFullFontName(from: fontURL) ?? "Unknown"
-                    print("\(fontURL.path);\(fontName)")
+                    lines.append("\(fontURL.path);\(fontName)")
                 } else if showPath {
-                    print(fontURL.path)
+                    lines.append(fontURL.path)
                 } else {
                     if let fontName = getFontName(from: fontURL) ?? getFullFontName(from: fontURL) {
-                        print(fontName)
+                        lines.append(fontName)
                     }
                 }
+            }
+
+            // Sort and deduplicate if requested
+            if sorted {
+                let uniqueLines = Set(lines)
+                lines = uniqueLines.sorted()
+            }
+
+            // Output pure data only - no headers or footers
+            for line in lines {
+                print(line)
             }
         }
     }
