@@ -1,6 +1,10 @@
 # TODO.md
 <!-- this_file: TODO.md -->
 
+## IMPORTANT: 
+
+Note: `fontlift list` must not print any "prolog" like "Listing font paths..." or any "epilog" like "Total fonts: 5393" —— we want the pure list of outputs
+
 ## Phase 2: Quality & Reliability Improvements - COMPLETED ✅
 
 ### Task 1: Implement Command Aliases ✅
