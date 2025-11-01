@@ -14,11 +14,16 @@
 - **Binary Size**: 1.6M (native), 3.2M (universal)
 - **Compiler Warnings**: 0
 - **Platform**: macOS 12.0+ (Intel + Apple Silicon)
-- **Source Lines**: 733 lines (main file)
+- **Source Lines**: 741 lines (main file)
 
 ### Recent Changes
 
 **v1.1.29** (2025-11-01 - IN DEVELOPMENT):
+- **Round 5: Consistency & Polish**
+  - Standardized error messages for font list retrieval
+  - Enhanced shell-escaped command suggestions in ambiguous name errors
+  - Source lines: 733 → 741 lines (+8 lines)
+
 - **Round 4: Polish & User Experience**
   - Version synchronization: 1.1.28 → 1.1.29
   - Shell-safe path escaping for suggested commands

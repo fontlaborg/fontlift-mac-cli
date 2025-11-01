@@ -1,6 +1,22 @@
 # TODO.md
 <!-- this_file: TODO.md -->
 
+## Quality & Robustness Improvements - Round 5 (Completed)
+
+### Round 5 Tasks (Consistency & Polish) ✅
+1. **Standardized font list retrieval error messages**
+   - Unified error handling across uninstall and remove commands
+   - Both now show same comprehensive troubleshooting steps
+   - Consistent with list command's error messaging
+
+2. **Enhanced shell-escaped command suggestions**
+   - Applied `shellEscape()` to actual font paths in ambiguous name errors
+   - Provides ready-to-run commands when multiple fonts match name
+   - Users can copy-paste commands directly, even with spaces in paths
+   - Format: shows both path and escaped command for each match
+
+---
+
 ## Quality & Robustness Improvements - Round 4 (Completed)
 
 ### Round 4 Tasks (Polish & User Experience) ✅

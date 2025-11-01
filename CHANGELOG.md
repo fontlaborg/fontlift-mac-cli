@@ -47,6 +47,12 @@ All notable changes to fontlift-mac-cli will be documented in this file.
   - Provides clear next steps: "Use 'fontlift uninstall' to remove before reinstalling"
   - More helpful than generic "Font already installed" message
 
+- **Consistency Improvements**: Unified error messaging and command suggestions
+  - Standardized font list retrieval errors across uninstall and remove commands
+  - All commands now show identical comprehensive troubleshooting steps
+  - Enhanced ambiguous name error messages with ready-to-run shell-escaped commands
+  - Users can copy-paste suggested commands directly, even with special characters in paths
+
 ### Fixed
 - **Critical Bug**: Font name extraction in remove command
   - Was attempting to read font metadata AFTER file deletion (impossible!)
@@ -71,7 +77,7 @@ All notable changes to fontlift-mac-cli will be documented in this file.
 - Synchronized version constant from 1.1.28 to 1.1.29 to match documentation
 - Test count: 61 → 65 tests (added 4 new validation and protection tests)
 - Swift test count: 23 → 27 tests
-- Source file size: 564 → 733 lines (+169 lines total: +105 safety/validation, +29 bug fixes, +35 UX improvements)
+- Source file size: 564 → 741 lines (+177 lines total: +105 safety/validation, +29 bug fixes, +35 UX, +8 consistency)
 
 ### Improved
 - **Safety**: Major improvement - tool can no longer accidentally break macOS
