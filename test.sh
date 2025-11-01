@@ -8,8 +8,8 @@
 #   --ci     CI mode (minimal output, strict error codes)
 #   --help   Show this help message
 #
-# Test Suite Breakdown (Total: 81 tests):
-#   • Swift Unit Tests: 43 tests (CLIErrorTests, HelperFunctionTests, ProjectValidationTests)
+# Test Suite Breakdown (Total: 90 tests):
+#   • Swift Unit Tests: 52 tests (CLIErrorTests, HelperFunctionTests, ProjectValidationTests)
 #   • Scripts Tests: 23 tests (build.sh, test.sh, publish.sh, validate-version.sh, get-version.sh, binary)
 #   • Integration Tests: 15 tests (binary metadata, list command, help texts, error handling)
 #
@@ -80,7 +80,7 @@ if [ "$CI_MODE" = false ]; then
     echo "🧪 Running fontlift test suite"
     echo ""
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-    echo "Suite 1/3: Swift Unit Tests (43 tests)"
+    echo "Suite 1/3: Swift Unit Tests (52 tests)"
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
     echo ""
 fi
@@ -143,11 +143,11 @@ TOTAL_DURATION=$((TOTAL_END - TOTAL_START))
 if [ "$CI_MODE" = false ]; then
     echo ""
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-    echo "✅ All Tests Passed! (81 total)"
+    echo "✅ All Tests Passed! (90 total)"
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
     echo ""
     echo "Test Execution Times:"
-    echo "  • Swift unit tests:       ${SWIFT_DURATION}s (43 tests)"
+    echo "  • Swift unit tests:       ${SWIFT_DURATION}s (52 tests)"
     if [ "$SCRIPTS_DURATION" -gt 0 ]; then
         echo "  • Scripts tests:          ${SCRIPTS_DURATION}s (23 tests)"
     fi

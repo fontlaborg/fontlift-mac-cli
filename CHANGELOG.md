@@ -5,6 +5,17 @@ All notable changes to fontlift-mac-cli will be documented in this file.
 
 ## [Unreleased]
 
+### Added
+- **System-Level Font Operations**: New `--admin` / `-a` flag for system-wide font management
+  - Install fonts for all users in the current login session: `sudo fontlift install --admin font.ttf`
+  - Uninstall fonts at system level: `sudo fontlift uninstall -a font.ttf`
+  - Remove fonts at system level: `sudo fontlift remove --admin font.ttf`
+  - Uses `.session` scope instead of `.user` scope when flag is set
+  - Requires sudo privileges for system-level operations
+  - Added 9 new tests for admin flag functionality (52 → 61 Swift tests)
+  - Comprehensive help text and error messages for admin flag usage
+  - Clear scope indication in output: "Scope: system-level (all users)" vs "Scope: user-level"
+
 ## [1.1.29] - 2025-11-01
 
 ### Fixed

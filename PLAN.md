@@ -21,15 +21,21 @@
 
 - **`install`** (`i`) - Install fonts
   - By path: `fontlift install /path/to/font.ttf`
-  - Registers fonts with macOS Core Text
+  - System-wide: `sudo fontlift install --admin /path/to/font.ttf`
+  - Registers fonts with macOS Core Text at user or session scope
 
 - **`uninstall`** (`u`) - Uninstall fonts (keep files)
   - By path: `fontlift uninstall /path/to/font.ttf`
   - By name: `fontlift uninstall -n "Font Name"`
+  - System-wide: `sudo fontlift uninstall --admin /path/to/font.ttf`
 
 - **`remove`** (`rm`) - Remove fonts (delete files)
   - By path: `fontlift remove /path/to/font.ttf`
   - By name: `fontlift remove -n "Font Name"`
+  - System-wide: `sudo fontlift remove --admin /path/to/font.ttf`
+
+### Command Flags
+- `-a` or `--admin` - System-level operations (all users, requires sudo)
 
 ### Global Flags
 - `--version` - Show version
@@ -76,7 +82,7 @@ fontlift-mac-cli/
 
 **Code Quality**:
 - ✅ Zero compiler warnings
-- ✅ All tests passing (81 total)
+- ✅ All tests passing (90 total: 52 Swift + 23 Scripts + 15 Integration)
 - ✅ Functions <20 lines (1 exception: validateFilePath at 40 lines - justified by comprehensive error messages)
 - ✅ Clean, readable code
 

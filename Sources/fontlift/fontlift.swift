@@ -318,8 +318,18 @@ extension Fontlift {
 extension Fontlift {
     /// Install a font file to the system.
     ///
-    /// Registers the font with macOS using `CTFontManagerRegisterFontsForURL()` at user scope.
-    /// This makes the font available to all applications without requiring administrator privileges.
+    /// Registers the font with macOS using `CTFontManagerRegisterFontsForURL()` at user scope
+    /// (default) or system scope (with `--admin` flag).
+    ///
+    /// **User-level installation (default):**
+    /// - Font available only to the current user
+    /// - No administrator privileges required
+    /// - Font registered at `.user` scope
+    ///
+    /// **System-level installation (--admin flag):**
+    /// - Font available to all users in the current login session
+    /// - Requires administrator privileges (run with `sudo`)
+    /// - Font registered at `.session` scope
     ///
     /// The font file remains in its original location - this command only registers it with
     /// the system font manager. Use the remove command to both unregister and delete the file.
@@ -328,8 +338,10 @@ extension Fontlift {
     ///
     /// Example usage:
     /// ```bash
-    /// fontlift install ~/Downloads/CustomFont.ttf
-    /// fontlift i /path/to/font.otf
+    /// fontlift install ~/Downloads/CustomFont.ttf        # User-level
+    /// fontlift i /path/to/font.otf                       # User-level
+    /// sudo fontlift install --admin /path/to/font.ttf    # System-level (all users)
+    /// sudo fontlift i -a /path/to/font.ttf               # System-level (shorthand)
     /// ```
     struct Install: ParsableCommand {
         static let configuration = CommandConfiguration(
@@ -341,6 +353,9 @@ extension Fontlift {
         @Argument(help: "Font file path to install")
         var fontPath: String
 
+        @Flag(name: .shortAndLong, help: "Install at system level (all users, requires sudo)")
+        var admin = false
+
         func run() throws {
             // Validate file path before attempting installation
             guard validateFilePath(fontPath) else {
@@ -348,12 +363,16 @@ extension Fontlift {
             }
 
             let url = URL(fileURLWithPath: fontPath)
+            let scope: CTFontManagerScope = admin ? .session : .user
+            let scopeDesc = admin ? "system-level (all users)" : "user-level"
+
             print("Installing font from: \(fontPath)")
+            print("Scope: \(scopeDesc)")
 
             var error: Unmanaged<CFError>?
             // Register font at .user scope (doesn't require sudo, available to current user only)
-            // Alternative: .system scope (requires sudo, available to all users)
-            let success = CTFontManagerRegisterFontsForURL(url as CFURL, .user, &error)
+            // Or .session scope (requires sudo, available to all users in current login session)
+            let success = CTFontManagerRegisterFontsForURL(url as CFURL, scope, &error)
 
             if success {
                 if let fontName = getFontName(from: url) ?? getFullFontName(from: url) {
@@ -387,7 +406,13 @@ extension Fontlift {
                     print("   Common causes:")
                     print("   - Invalid or corrupted font file")
                     print("   - Font format not supported (.ttf, .otf, .ttc, .otc)")
-                    print("   - Permission issues (try with sudo for system-level install)")
+
+                    if admin {
+                        print("   - Permission denied (ensure you're running with sudo)")
+                        print("   - System-level installation requires administrator privileges")
+                    } else {
+                        print("   - Permission issues (try with --admin flag and sudo for system-level install)")
+                    }
                     throw ExitCode.failure
                 } else {
                     print("❌ Error: Failed to install font")
@@ -406,6 +431,16 @@ extension Fontlift {
     /// Deregisters the font using `CTFontManagerUnregisterFontsForURL()` but leaves the
     /// font file in place. The font will no longer appear in applications' font pickers.
     ///
+    /// **User-level uninstallation (default):**
+    /// - Removes font registration for the current user only
+    /// - No administrator privileges required
+    /// - Font deregistered at `.user` scope
+    ///
+    /// **System-level uninstallation (--admin flag):**
+    /// - Removes font registration for all users in the current login session
+    /// - Requires administrator privileges (run with `sudo`)
+    /// - Font deregistered at `.session` scope
+    ///
     /// You can specify the font either by:
     /// - File path: `fontlift uninstall /path/to/font.ttf`
     /// - Font name: `fontlift uninstall -n "Arial"`
@@ -418,8 +453,10 @@ extension Fontlift {
     ///
     /// Example usage:
     /// ```bash
-    /// fontlift uninstall ~/Downloads/CustomFont.ttf
-    /// fontlift u -n "Helvetica Neue"
+    /// fontlift uninstall ~/Downloads/CustomFont.ttf        # User-level
+    /// fontlift u -n "Helvetica Neue"                       # User-level
+    /// sudo fontlift uninstall --admin /path/to/font.ttf    # System-level (all users)
+    /// sudo fontlift u -a -n "Arial"                        # System-level (shorthand)
     /// ```
     struct Uninstall: ParsableCommand {
         static let configuration = CommandConfiguration(
@@ -433,6 +470,9 @@ extension Fontlift {
 
         @Argument(help: "Font file path to uninstall")
         var fontPath: String?
+
+        @Flag(name: .shortAndLong, help: "Uninstall at system level (all users, requires sudo)")
+        var admin = false
 
         func validate() throws {
             if name == nil && fontPath == nil {
@@ -521,8 +561,12 @@ extension Fontlift {
                 throw ExitCode.failure
             }
 
+            let scope: CTFontManagerScope = admin ? .session : .user
+            let scopeDesc = admin ? "system-level (all users)" : "user-level"
+            print("Scope: \(scopeDesc)")
+
             var error: Unmanaged<CFError>?
-            let success = CTFontManagerUnregisterFontsForURL(url as CFURL, .user, &error)
+            let success = CTFontManagerUnregisterFontsForURL(url as CFURL, scope, &error)
 
             if success {
                 if let fontName = getFontName(from: url) ?? getFullFontName(from: url) {
@@ -538,8 +582,14 @@ extension Fontlift {
                     print("")
                     print("   Common causes:")
                     print("   - Font not currently installed")
-                    print("   - Font installed at system level (try with sudo)")
-                    print("   - Permission issues")
+
+                    if admin {
+                        print("   - Permission denied (ensure you're running with sudo)")
+                        print("   - System-level uninstallation requires administrator privileges")
+                    } else {
+                        print("   - Font may be installed at system level (try with --admin flag and sudo)")
+                        print("   - Permission issues")
+                    }
                     throw ExitCode.failure
                 } else {
                     print("❌ Error: Failed to uninstall font")
@@ -561,6 +611,18 @@ extension Fontlift {
     ///
     /// ⚠️ Warning: This is a destructive operation. The font file will be permanently deleted.
     ///
+    /// **User-level removal (default):**
+    /// - Removes font registration for the current user only
+    /// - Deletes the font file (requires write permission to file)
+    /// - No administrator privileges required for deregistration
+    /// - Font deregistered at `.user` scope
+    ///
+    /// **System-level removal (--admin flag):**
+    /// - Removes font registration for all users in the current login session
+    /// - Deletes the font file (requires write permission to file)
+    /// - Requires administrator privileges (run with `sudo`)
+    /// - Font deregistered at `.session` scope
+    ///
     /// You can specify the font either by:
     /// - File path: `fontlift remove /path/to/font.ttf`
     /// - Font name: `fontlift remove -n "Arial"`
@@ -573,8 +635,10 @@ extension Fontlift {
     ///
     /// Example usage:
     /// ```bash
-    /// fontlift remove ~/Downloads/CustomFont.ttf
-    /// fontlift rm -n "Helvetica Neue"
+    /// fontlift remove ~/Downloads/CustomFont.ttf        # User-level
+    /// fontlift rm -n "Helvetica Neue"                   # User-level
+    /// sudo fontlift remove --admin /path/to/font.ttf    # System-level (all users)
+    /// sudo fontlift rm -a -n "Arial"                    # System-level (shorthand)
     /// ```
     struct Remove: ParsableCommand {
         static let configuration = CommandConfiguration(
@@ -588,6 +652,9 @@ extension Fontlift {
 
         @Argument(help: "Font file path to remove")
         var fontPath: String?
+
+        @Flag(name: .shortAndLong, help: "Remove at system level (all users, requires sudo)")
+        var admin = false
 
         func validate() throws {
             if name == nil && fontPath == nil {
@@ -676,12 +743,16 @@ extension Fontlift {
                 throw ExitCode.failure
             }
 
+            let scope: CTFontManagerScope = admin ? .session : .user
+            let scopeDesc = admin ? "system-level (all users)" : "user-level"
+            print("Scope: \(scopeDesc)")
+
             // Get font name before deletion (file must exist to read metadata)
             let fontName = getFontName(from: url) ?? getFullFontName(from: url)
 
             // First unregister the font
             var error: Unmanaged<CFError>?
-            let unregistered = CTFontManagerUnregisterFontsForURL(url as CFURL, .user, &error)
+            let unregistered = CTFontManagerUnregisterFontsForURL(url as CFURL, scope, &error)
 
             if !unregistered {
                 if let error = error?.takeRetainedValue() {
@@ -727,7 +798,13 @@ extension Fontlift {
                     default:
                         print("   Common causes:")
                         print("   - File is read-only or protected")
-                        print("   - Permission denied (try with sudo)")
+
+                        if admin {
+                            print("   - Ensure you're running with sudo for system-level operations")
+                        } else {
+                            print("   - Permission denied (try with sudo)")
+                        }
+
                         print("   - File is in use by another process")
                         print("   - File is in a protected system directory")
                     }

@@ -235,4 +235,87 @@ final class CLIErrorTests: XCTestCase {
                      result.output.contains("File not found"),
                      "Should show format or file not found error")
     }
+
+    // MARK: - Admin Flag Tests
+
+    func testInstallHelpShowsAdminFlag() throws {
+        let result = runFontlift(args: ["install", "--help"])
+        XCTAssertEqual(result.exitCode, 0, "Install help should succeed")
+        XCTAssertTrue(result.output.contains("--admin") || result.output.contains("-a"),
+                     "Help should mention admin flag")
+        XCTAssertTrue(result.output.contains("system level") || result.output.contains("all users"),
+                     "Help should explain admin flag purpose")
+    }
+
+    func testUninstallHelpShowsAdminFlag() throws {
+        let result = runFontlift(args: ["uninstall", "--help"])
+        XCTAssertEqual(result.exitCode, 0, "Uninstall help should succeed")
+        XCTAssertTrue(result.output.contains("--admin") || result.output.contains("-a"),
+                     "Help should mention admin flag")
+        XCTAssertTrue(result.output.contains("system level") || result.output.contains("all users"),
+                     "Help should explain admin flag purpose")
+    }
+
+    func testRemoveHelpShowsAdminFlag() throws {
+        let result = runFontlift(args: ["remove", "--help"])
+        XCTAssertEqual(result.exitCode, 0, "Remove help should succeed")
+        XCTAssertTrue(result.output.contains("--admin") || result.output.contains("-a"),
+                     "Help should mention admin flag")
+        XCTAssertTrue(result.output.contains("system level") || result.output.contains("all users"),
+                     "Help should explain admin flag purpose")
+    }
+
+    func testInstallAdminFlagShortForm() throws {
+        // Test that -a flag is accepted (will fail on file not found, not on flag)
+        let result = runFontlift(args: ["install", "-a", "/tmp/nonexistent.ttf"])
+        XCTAssertNotEqual(result.exitCode, 0, "Should fail on missing file")
+        XCTAssertTrue(result.output.contains("File not found") ||
+                     result.output.contains("Scope: system-level"),
+                     "Should accept -a flag and show system-level scope or file not found")
+    }
+
+    func testInstallAdminFlagLongForm() throws {
+        // Test that --admin flag is accepted (will fail on file not found, not on flag)
+        let result = runFontlift(args: ["install", "--admin", "/tmp/nonexistent.ttf"])
+        XCTAssertNotEqual(result.exitCode, 0, "Should fail on missing file")
+        XCTAssertTrue(result.output.contains("File not found") ||
+                     result.output.contains("Scope: system-level"),
+                     "Should accept --admin flag and show system-level scope or file not found")
+    }
+
+    func testUninstallAdminFlagShortForm() throws {
+        // Test that -a flag is accepted with uninstall
+        let result = runFontlift(args: ["uninstall", "-a", "/tmp/nonexistent.ttf"])
+        XCTAssertNotEqual(result.exitCode, 0, "Should fail on missing font")
+        // The command should accept the flag without error about unknown flag
+        XCTAssertFalse(result.error.contains("Unknown option") || result.error.contains("unexpected argument"),
+                      "Should accept -a flag")
+    }
+
+    func testUninstallAdminFlagLongForm() throws {
+        // Test that --admin flag is accepted with uninstall
+        let result = runFontlift(args: ["uninstall", "--admin", "/tmp/nonexistent.ttf"])
+        XCTAssertNotEqual(result.exitCode, 0, "Should fail on missing font")
+        // The command should accept the flag without error about unknown flag
+        XCTAssertFalse(result.error.contains("Unknown option") || result.error.contains("unexpected argument"),
+                      "Should accept --admin flag")
+    }
+
+    func testRemoveAdminFlagShortForm() throws {
+        // Test that -a flag is accepted with remove
+        let result = runFontlift(args: ["remove", "-a", "/tmp/nonexistent.ttf"])
+        XCTAssertNotEqual(result.exitCode, 0, "Should fail on missing file")
+        XCTAssertTrue(result.output.contains("Font file not found") ||
+                     result.output.contains("Scope: system-level"),
+                     "Should accept -a flag")
+    }
+
+    func testRemoveAdminFlagLongForm() throws {
+        // Test that --admin flag is accepted with remove
+        let result = runFontlift(args: ["remove", "--admin", "/tmp/nonexistent.ttf"])
+        XCTAssertNotEqual(result.exitCode, 0, "Should fail on missing file")
+        XCTAssertTrue(result.output.contains("Font file not found") ||
+                     result.output.contains("Scope: system-level"),
+                     "Should accept --admin flag")
+    }
 }

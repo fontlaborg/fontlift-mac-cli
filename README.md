@@ -193,19 +193,26 @@ fontlift list -n -p | grep "Helvetica"
 
 ### Installing fonts
 
-- `fontlift install FILEPATH` or `fontlift install -p FILEPATH` installs on the system the font (or all fonts in case of a .ttc or .otc) from the FILEPATH 
+- `fontlift install FILEPATH` or `fontlift install -p FILEPATH` installs on the system the font (or all fonts in case of a .ttc or .otc) from the FILEPATH for the current user
+- `sudo fontlift install --admin FILEPATH` or `sudo fontlift install -a FILEPATH` installs the font at system level (all users in current login session)
 - `i` should be a synonym for `install`
+
+**User-level vs System-level:**
+- User-level (default): Font available only to the current user, no sudo required
+- System-level (`--admin` flag): Font available to all users in the current login session, requires sudo
 
 ### Uninstalling fonts while keeping the font files
 
-- `fontlift uninstall FILEPATH` or `fontlift uninstall -p FILEPATH` uninstalls from the system the font (or all fonts in case of a .ttc or .otc) with the FILEPATH (keeps the file)
-- `fontlift uninstall -n FONTNAME` uninstalls the font with the given internal font name from the system (keeps the file)
+- `fontlift uninstall FILEPATH` or `fontlift uninstall -p FILEPATH` uninstalls from the system the font (or all fonts in case of a .ttc or .otc) with the FILEPATH (keeps the file, user-level)
+- `fontlift uninstall -n FONTNAME` uninstalls the font with the given internal font name from the system (keeps the file, user-level)
+- `sudo fontlift uninstall --admin FILEPATH` or `sudo fontlift uninstall -a -n FONTNAME` uninstalls at system level (all users, requires sudo)
 - `u` should be the synonym for `uninstall`
 
 ### Uninstalling fonts and removing the font files
 
-- `fontlift remove FILEPATH` or `fontlift remove -p FILEPATH` uninstalls from the system the font (or all fonts in case of a .ttc or .otc) with the FILEPATH (and removes the file)
-- `fontlift remove -n FONTNAME` uninstalls the font with the given internal font name from the system (and removes the file)
+- `fontlift remove FILEPATH` or `fontlift remove -p FILEPATH` uninstalls from the system the font (or all fonts in case of a .ttc or .otc) with the FILEPATH (and removes the file, user-level)
+- `fontlift remove -n FONTNAME` uninstalls the font with the given internal font name from the system (and removes the file, user-level)
+- `sudo fontlift remove --admin FILEPATH` or `sudo fontlift remove -a -n FONTNAME` removes at system level (all users, requires sudo)
 - `rm` should be the synonym for `remove`
 
 ### Exit Codes

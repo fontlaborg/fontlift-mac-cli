@@ -3,22 +3,35 @@
 
 ## Project Status
 
-**Current Version**: v1.1.29 (IN DEVELOPMENT)
+**Current Version**: v1.1.30 (IN DEVELOPMENT)
 **Last Updated**: 2025-11-01
 
 ### Core Metrics
 
-- **Test Suite**: 81 tests passing (43 Swift + 23 Scripts + 15 Integration)
+- **Test Suite**: 90 tests passing (52 Swift + 23 Scripts + 15 Integration)
 - **Test Execution**: ~22s
 - **Build Time**: ~7s (release mode)
 - **Binary Size**: 1.6M (native), 3.2M (universal)
 - **Compiler Warnings**: 0
 - **Platform**: macOS 12.0+ (Intel + Apple Silicon)
-- **Source Lines**: 741 lines (main file)
+- **Source Lines**: 819 lines (main file)
 
 ### Recent Changes
 
-**v1.1.29** (2025-11-01 - IN DEVELOPMENT):
+**v1.1.30** (2025-11-01 - IN DEVELOPMENT):
+- **Admin Flag for System-Level Operations**
+  - Added `--admin` / `-a` flag to install, uninstall, and remove commands
+  - System-level operations use `.session` scope (all users in current login session)
+  - User-level operations use `.user` scope (current user only)
+  - Requires sudo for system-level operations
+  - Added comprehensive documentation and help text
+  - Added 9 new tests for admin flag functionality
+  - Test count: 81 → 90 tests (+9, +11% increase)
+  - Swift tests: 43 → 52 tests (+21% increase)
+  - Source lines: 741 → 819 lines (+78 lines)
+  - Clear scope indication in output
+
+**v1.1.29** (2025-11-01):
 - **Round 9: Test Count Consistency**
   - Fixed test count mismatches in test.sh output banners (25→23, 17→15)
   - Updated line number references in maintainability docs (75,138,142 → 83,146,150)
