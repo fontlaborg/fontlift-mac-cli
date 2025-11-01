@@ -605,40 +605,58 @@ When you write prose (like documentation or marketing or even your own commentar
 ---
 
 
-## Version Management
+## Version Management (Automated CI/CD)
 
-The project uses semantic versioning (MAJOR.MINOR.PATCH).
+The project uses semantic versioning (MAJOR.MINOR.PATCH) with automated releases via GitHub Actions.
 
-### Updating the Version
+### Releasing a New Version
 
-When releasing a new version, follow this checklist:
+Follow this checklist for releasing a new version:
 
 1. **Update version in code**:
    - Edit `Sources/fontlift/fontlift.swift`
-   - Change the `version` constant (line ~12)
+   - Change the `version` constant (line ~13)
+   - Example: `private let version = "1.2.0"`
 
 2. **Update CHANGELOG.md**:
-   - Add new version section at top
-   - Move items from [Unreleased] to the new version
-   - Include release date
+   - Add new version section at top: `## [X.Y.Z] - YYYY-MM-DD`
+   - Move items from `[Unreleased]` to the new version section
+   - Write clear release notes describing user-facing changes
+   - Include release date in ISO format (YYYY-MM-DD)
 
-3. **Create git tag**:
+3. **Commit changes**:
    ```bash
-   git tag v0.2.0
-   git push origin v0.2.0
+   git add Sources/fontlift/fontlift.swift CHANGELOG.md
+   git commit -m "chore: bump version to X.Y.Z"
    ```
 
-4. **Build and test**:
+4. **Test locally** (optional but recommended):
    ```bash
-   ./build.sh
    ./test.sh
-   fontlift --version  # Verify shows new version
+   ./build.sh
+   .build/release/fontlift --version  # Verify shows new version
+   ./scripts/validate-version.sh X.Y.Z  # Verify version matches
    ```
 
-5. **Publish** (if releasing):
+5. **Create annotated git tag**:
    ```bash
-   ./publish.sh
+   git tag -a vX.Y.Z -m "Release vX.Y.Z"
    ```
+   **IMPORTANT**: Tag format must be `vX.Y.Z` (v-prefix required)
+
+6. **Push changes and tags**:
+   ```bash
+   git push origin main
+   git push origin vX.Y.Z
+   ```
+
+7. **Automated release process** (GitHub Actions handles this automatically):
+   - ✅ Validates version matches tag (fails if mismatch)
+   - ✅ Runs all tests
+   - ✅ Builds release binary
+   - ✅ Creates GitHub Release
+   - ✅ Uploads binary artifacts (.tar.gz + SHA256)
+   - ✅ Extracts release notes from CHANGELOG.md
 
 ### Version Number Guidelines
 
@@ -647,9 +665,59 @@ When releasing a new version, follow this checklist:
 - **PATCH** (0.0.X): Bug fixes, backwards-compatible
 
 Examples:
-- `0.1.0` → `0.1.1`: Bug fix
-- `0.1.0` → `0.2.0`: Added font installation feature
-- `0.9.0` → `1.0.0`: First stable release with all features
+- `1.1.0` → `1.1.1`: Bug fix (patch)
+- `1.1.0` → `1.2.0`: New feature (minor)
+- `1.9.0` → `2.0.0`: Breaking changes (major)
+
+### Checking Build Status
+
+- **CI Status**: Check [GitHub Actions](https://github.com/fontlaborg/fontlift-mac-cli/actions) tab after pushing
+- **Latest Release**: https://github.com/fontlaborg/fontlift-mac-cli/releases/latest
+- **All Releases**: https://github.com/fontlaborg/fontlift-mac-cli/releases
+
+### Troubleshooting
+
+**Version mismatch error**:
+```
+❌ Version mismatch detected!
+The git tag version (X.Y.Z) does not match the code version (A.B.C)
+```
+Solution:
+1. Update version in `Sources/fontlift/fontlift.swift` to match tag
+2. Commit the change: `git commit -am "fix: update version to X.Y.Z"`
+3. Delete old tag: `git tag -d vX.Y.Z && git push origin :refs/tags/vX.Y.Z`
+4. Re-create tag: `git tag -a vX.Y.Z -m "Release vX.Y.Z"`
+5. Push: `git push origin main && git push origin vX.Y.Z`
+
+**Build failure**:
+- Check GitHub Actions logs for details
+- Run `./test.sh` locally to reproduce
+- Fix issues, commit, and re-tag
+
+**Release not created**:
+- Verify tag format is `vX.Y.Z` (with v-prefix)
+- Check repository has Actions write permissions enabled
+- Ensure tag was pushed: `git push origin vX.Y.Z`
+
+### Manual Testing (Optional)
+
+Test the release process locally before pushing:
+
+```bash
+# Validate version
+./scripts/validate-version.sh X.Y.Z
+
+# Build and test
+./build.sh --ci
+./test.sh --ci
+
+# Prepare release artifacts
+./scripts/prepare-release.sh
+
+# Verify artifacts
+cd dist && shasum -a 256 -c fontlift-vX.Y.Z-macos.tar.gz.sha256
+tar -xzf fontlift-vX.Y.Z-macos.tar.gz && ./fontlift --version
+```
 
 ---
 

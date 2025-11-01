@@ -7,6 +7,7 @@
 #   --help      Show this help message
 
 set -euo pipefail  # Exit on error, undefined vars, pipe failures
+cd "$(dirname "$0")"
 
 # Function to display help
 show_help() {
