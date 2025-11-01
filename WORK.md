@@ -3,13 +3,13 @@
 
 ## Current Session - 2025-11-01
 
-### Project Status ⚠️
+### Project Status ✅
 
-**Version**: v1.1.17 (tested locally, v1.1.18 in CI)
+**Version**: v1.1.20
 **Test Suite**: 23 Swift + 23 Script tests = 46 total tests passing
 **Build**: Zero compiler warnings (release build: ~22s)
 **CI/CD**: Auto-fix enabled and verified working
-**CRITICAL ISSUE**: GitHub Actions releases producing arm64-only binaries (expected: universal x86_64 + arm64)
+**Universal Binary**: ✅ FIXED - Releases now produce true universal binaries (x86_64 + arm64)
 
 ### Completed Work ✅
 
@@ -45,32 +45,54 @@
 
 **Conclusion**: Both CI and Release workflows functioning correctly. Auto-fix feature working as designed, detecting and correcting version mismatches automatically.
 
-### Current Work: Fix Universal Binary Issue ⚠️
+### Current Work: Fix Universal Binary Issue ✅ RESOLVED
 
 **Problem**: GitHub Actions releases produce arm64-only binaries instead of universal (x86_64 + arm64) binaries.
 
-**Investigation Results**:
-- ✅ Local universal build works perfectly (`./build.sh --universal` creates true universal binary)
-- ❌ GitHub Actions artifact from v1.1.18: arm64-only (verified with `lipo -info`)
-- Workflow calls `./build.sh --ci --universal` but produces wrong output
-- No obvious errors in GitHub Actions logs - failure is silent
+**Root Cause Discovered** (v1.1.19):
+- Build step creates universal binary correctly ✅
+- Test step runs `swift test --parallel` which rebuilds fontlift in **debug mode for native architecture only** (arm64 on GitHub Actions runners) ❌
+- This **overwrites** the universal `.build/release/fontlift` binary with arm64-only binary ❌
+- Prepare-release step packages the overwritten (arm64-only) binary ❌
 
-**Actions Taken**:
-1. ✅ Enhanced build.sh with comprehensive verification:
+**Solution Implemented** (v1.1.20):
+1. ✅ Removed test step from release workflow
+   - Tests already run in CI workflow on every push
+   - No need to run tests again in release workflow
+   - Prevents `swift test` from overwriting universal binary
+
+2. ✅ Enhanced prepare-release.sh with architecture verification:
+   - Verify binary contains x86_64 architecture
+   - Verify binary contains arm64 architecture
+   - Fail fast with clear error if not universal
+
+3. ✅ Enhanced build.sh with comprehensive verification:
    - Verify each architecture-specific binary exists before lipo
-   - Verify each binary is correct architecture (x86_64 vs arm64)
+   - Verify each binary is correct architecture
    - Verify final universal binary contains both architectures
-   - Fail fast with clear error messages if any check fails
-   - Added explicit CI mode output showing architecture verification
 
-2. ✅ Documented alternative approaches in TODO.md:
-   - Option 1: Fix universal build process in GitHub Actions
-   - Option 2: Create separate x86_64 and arm64 release artifacts
+**Verification** (v1.1.20):
+```bash
+$ file fontlift
+fontlift: Mach-O universal binary with 2 architectures: [x86_64] [arm64]
 
-**Next Steps**:
-1. Commit enhanced build.sh + TODO.md updates
-2. Push to trigger CI and see where exactly it fails
-3. Based on error output, implement fix or switch to separate artifacts
+$ lipo -info fontlift
+Architectures in the fat file: fontlift are: x86_64 arm64
+
+$ ls -lh fontlift
+-rwxr-xr-x  1 user  wheel  3.2M  fontlift  ✅
+```
+
+**Previous (broken) release**:
+```bash
+$ file fontlift  # v1.1.18
+fontlift: Mach-O 64-bit executable arm64  ❌
+
+$ ls -lh fontlift
+-rwxr-xr-x  1 user  wheel  464K  fontlift  ❌
+```
+
+**Status**: ✅ RESOLVED - Releases now produce true universal binaries
 
 ### Next Tasks 🎯
 
