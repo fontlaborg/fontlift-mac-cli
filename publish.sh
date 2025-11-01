@@ -1,10 +1,32 @@
 #!/bin/bash
 # this_file: publish.sh
 # Install fontlift to /usr/local/bin (local mode) or verify binary (CI mode)
+#
 # Usage: ./publish.sh [OPTIONS]
+#
 # Options:
 #   --ci        CI mode (skip installation, just verify binary)
 #   --help      Show this help message
+#
+# Exit Codes:
+#   0  Installation/verification successful
+#   1  Installation/verification failed
+#
+# Dependencies:
+#   (none - uses only bash built-ins and standard Unix tools)
+#
+# Common Errors:
+#   "Binary not found at .build/release/fontlift"
+#     - Build must be run before publish
+#     - Try: Run ./build.sh to build the binary first
+#
+#   "Permission denied" when copying to /usr/local/bin
+#     - Need sudo permissions to install system-wide
+#     - Script will automatically prompt for sudo if needed
+#
+#   "fontlift not in PATH" after installation
+#     - /usr/local/bin not in PATH environment variable
+#     - Try: Add 'export PATH="/usr/local/bin:$PATH"' to ~/.zshrc or ~/.bashrc
 
 set -euo pipefail  # Exit on error, undefined vars, pipe failures
 cd "$(dirname "$0")"
@@ -77,11 +99,13 @@ if [ "$CI_MODE" = true ]; then
 
     if [ ! -f "${SOURCE_BINARY}" ]; then
         echo "❌ Error: Binary not found at ${SOURCE_BINARY}"
+        echo "   Try: Run ./build.sh to build the binary first"
         exit 1
     fi
 
     if [ ! -x "${SOURCE_BINARY}" ]; then
         echo "❌ Error: Binary is not executable"
+        echo "   Try: chmod +x ${SOURCE_BINARY}"
         exit 1
     fi
 

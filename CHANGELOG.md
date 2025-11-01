@@ -5,6 +5,33 @@ All notable changes to fontlift-mac-cli will be documented in this file.
 
 ## [Unreleased]
 
+### Added
+- **Phase 41 (Code Quality & Developer Experience Refinements)**:
+  - **Task 41.1**: Shellcheck cleanup
+    - Removed unused YELLOW variable from scripts/verify-version-consistency.sh
+    - All 12 bash scripts now pass shellcheck with zero warnings
+    - Improved overall code quality and maintainability
+
+  - **Task 41.2**: Comprehensive quality check command
+    - Added `./test.sh --check-all` flag for single-command quality verification
+    - Runs 6 comprehensive checks: CI/CD config, shellcheck, version consistency, binary size, full test suite, code coverage
+    - Fixed critical bug: Added `|| true` to prevent `set -e` exit during shellcheck
+    - Improved false positive filtering for SC1073/SC1072 in test.sh
+    - Provides clear pass/fail summary with actionable guidance
+    - Execution time: ~50s for all checks
+
+  - **Task 41.3**: Untracked files warning
+    - Enhanced scripts/commit-helper.sh with untracked files detection
+    - Displays warning when untracked files exist
+    - Provides actionable guidance: "Review with: git status" and "To include: git add <file>"
+    - Prevents accidental omission of important files from commits
+
+### Improved
+- Developer experience: Single command to verify entire project quality before committing
+- Git workflow: commit-helper.sh now warns about untracked files
+- Code quality: All bash scripts shellcheck-clean with zero warnings
+- Quality assurance: Comprehensive automated quality checks with clear reporting
+
 ## [1.1.27] - 2025-11-01
 
 ### Added

@@ -1,9 +1,28 @@
 #!/bin/bash
 # this_file: scripts/validate-version.sh
 # Validate that the version in code matches the git tag
+#
 # Usage: ./scripts/validate-version.sh [TAG_VERSION] [--fix]
 #   TAG_VERSION: Version from git tag (e.g., "1.1.0" from tag "v1.1.0")
 #   --fix: Automatically update code version to match tag (optional)
+#
+# Exit Codes:
+#   0  Version matches tag (or was successfully fixed)
+#   1  Version mismatch or CHANGELOG missing
+#
+# Dependencies:
+#   grep  Pattern matching (required)
+#   sed   Stream editing (required)
+#
+# Common Errors:
+#   "Version mismatch detected!"
+#     - Git tag version doesn't match code version
+#     - Try: Use --fix flag to auto-update code version
+#     - Or: Update version manually in Sources/fontlift/fontlift.swift
+#
+#   "CHANGELOG.md missing entry for version X.Y.Z"
+#     - Release requires CHANGELOG documentation
+#     - Try: Add "## [X.Y.Z] - YYYY-MM-DD" section to CHANGELOG.md
 
 set -euo pipefail
 

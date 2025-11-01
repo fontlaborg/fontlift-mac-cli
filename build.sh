@@ -1,13 +1,40 @@
 #!/bin/bash
 # this_file: build.sh
 # Build fontlift in release mode
+#
 # Usage: ./build.sh [OPTIONS]
+#
 # Options:
 #   --ci                   CI mode (minimal output, strict error codes)
 #   --universal            Build universal binary (Intel + Apple Silicon)
 #   --verify-reproducible  Verify builds are reproducible (same checksum)
 #   --clean                Force clean rebuild (remove .build directory)
 #   --help                 Show this help message
+#
+# Exit Codes:
+#   0  Build successful
+#   1  Build failed or verification checks failed
+#
+# Dependencies:
+#   swift  Swift compiler and Package Manager (required)
+#   lipo   Binary architecture manipulation (required for --universal)
+#
+# Common Errors:
+#   "Swift version X.Y is older than required version 5.9"
+#     - Swift version too old for this project
+#     - Try: xcode-select --switch to newer Xcode, or download Swift from swift.org
+#
+#   "xcrun: error: unable to find utility 'xctest'"
+#     - Xcode Command Line Tools not installed
+#     - Try: xcode-select --install
+#
+#   "error: disk I/O error"
+#     - Not enough disk space (requires >100MB)
+#     - Try: Remove .build/ directory or clean Xcode caches
+#
+#   "Permission denied" when writing to .build/
+#     - Build directory not writable
+#     - Try: chmod -R u+w .build/ or rm -rf .build/ and rebuild
 
 set -euo pipefail  # Exit on error, undefined vars, pipe failures
 cd "$(dirname "$0")"

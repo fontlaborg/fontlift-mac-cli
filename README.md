@@ -278,6 +278,56 @@ chmod +x .git/hooks/pre-commit
 
 To bypass the hook when needed: `git commit --no-verify`
 
+### Developer Scripts Reference
+
+**build.sh** - Build the binary
+
+```bash
+./build.sh              # Normal release build
+./build.sh --ci         # CI mode (quiet output)
+./build.sh --clean      # Clean rebuild (removes .build/)
+./build.sh --universal  # Build universal binary (x86_64 + arm64)
+./build.sh --verify-reproducible  # Check build reproducibility
+```
+
+**test.sh** - Run all tests
+
+```bash
+./test.sh                    # Run all 65 tests (23 Swift + 25 Script + 17 Integration)
+./test.sh --ci               # CI mode (quiet output, no colors)
+./test.sh --verify-ci        # Verify CI/CD workflows configured correctly (18 checks)
+./test.sh --shellcheck       # Run shellcheck on all bash scripts
+./test.sh --check-size       # Check binary size for regressions
+./test.sh --coverage         # Generate code coverage report
+./test.sh --help             # Show all available options
+```
+
+**scripts/prepare-release.sh** - Prepare release artifacts
+
+```bash
+./scripts/prepare-release.sh
+# Creates dist/fontlift-vX.Y.Z-macos.tar.gz and SHA256 checksum
+# Requires universal binary (x86_64 + arm64)
+```
+
+**scripts/commit-helper.sh** - Guided commit workflow
+
+```bash
+./scripts/commit-helper.sh
+# Validates: version consistency, CHANGELOG updates, tests, CI config
+# Provides commit message template
+# Safer than manual git commit
+```
+
+**scripts/verify-release-artifact.sh** - Verify published releases
+
+```bash
+./scripts/verify-release-artifact.sh 1.1.27
+# Downloads release from GitHub
+# Verifies checksum integrity
+# Tests binary functionality
+```
+
 ### CI/CD
 
 This project uses GitHub Actions for automated testing and releases:

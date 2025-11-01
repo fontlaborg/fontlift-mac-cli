@@ -1,8 +1,31 @@
 #!/bin/bash
 # this_file: scripts/prepare-release.sh
 # Package fontlift binary for GitHub Release
+#
 # Usage: ./scripts/prepare-release.sh
+#
 # Creates: dist/fontlift-vX.Y.Z-macos.tar.gz and checksum file
+#
+# Exit Codes:
+#   0  Release artifacts created successfully
+#   1  Failed to create release artifacts
+#
+# Dependencies:
+#   lipo    Verify universal binary architecture (required)
+#   tar     Create tarball (required)
+#   shasum  Generate SHA256 checksum (required)
+#   stat    Get file size (required)
+#   awk     Text processing (required)
+#
+# Common Errors:
+#   "Binary is not universal (missing x86_64 or arm64)"
+#     - Build must create universal binary
+#     - Try: ./build.sh --universal
+#
+#   "Binary size check failed: <1MB"
+#     - Universal binary should be ~3.2MB, single-arch ~1.6MB
+#     - A binary <1MB likely indicates build failure
+#     - Try: Rebuild with ./build.sh --universal --clean
 
 set -euo pipefail
 

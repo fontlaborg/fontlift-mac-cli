@@ -29,6 +29,14 @@ STAGED=$(git diff --cached --name-only | wc -l | tr -d ' ')
 UNTRACKED=$(git ls-files --others --exclude-standard | wc -l | tr -d ' ')
 
 echo -e "${BLUE}Summary:${NC} ${MODIFIED} modified, ${STAGED} staged, ${UNTRACKED} untracked"
+
+# Warn if there are untracked files
+if [ "$UNTRACKED" -gt 0 ]; then
+    echo -e "${YELLOW}⚠️  Warning:${NC} ${UNTRACKED} untracked file(s) found"
+    echo "   These files will NOT be included in this commit."
+    echo "   Review with: ${BLUE}git status${NC}"
+    echo "   To include: ${BLUE}git add <file>${NC}"
+fi
 echo ""
 
 # Check 2: Version Consistency
