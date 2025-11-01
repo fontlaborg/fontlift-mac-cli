@@ -17,10 +17,16 @@ All notable changes to fontlift-mac-cli will be documented in this file.
   - Solution: Removed test step from release workflow (tests already run in CI workflow)
   - Added architecture verification to prepare-release.sh
   - Verified universal binary contains both architectures before packaging
+- Updated scripts test suite to match current version (1.1.20)
 
 ### Changed
 - Updated release workflow: Build universal → Package (tests run separately in CI)
 - Enhanced prepare-release.sh with universal binary validation
+
+### Verified
+- All 46 tests passing (23 Swift + 23 Script tests)
+- Release v1.1.20 produces true universal binary (x86_64 + arm64, 3.2M)
+- Both Intel and Apple Silicon Macs now supported
 
 ## [1.1.19] - 2025-11-01
 
