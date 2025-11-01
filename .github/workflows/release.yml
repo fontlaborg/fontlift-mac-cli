@@ -45,8 +45,8 @@ jobs:
       - name: Display Swift version
         run: swift --version
 
-      - name: Build release binary
-        run: ./build.sh --ci
+      - name: Build release binary (universal)
+        run: ./build.sh --ci --universal
 
       - name: Run tests
         run: ./test.sh --ci
