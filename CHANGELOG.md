@@ -3,6 +3,29 @@
 
 All notable changes to fontlift-mac-cli will be documented in this file.
 
+## [1.1.8] - 2025-11-01
+
+### Added
+- Comprehensive documentation comments for Install, Uninstall, and Remove commands
+  - Added detailed doc comments explaining what each command does
+  - Included usage examples for each command
+  - Documented safety warnings for destructive operations (Remove)
+  - Explained the difference between uninstall (keeps file) and remove (deletes file)
+
+### Changed
+- Improved inline code documentation for better developer and user understanding
+
+## [1.1.7] - 2025-11-01
+
+### Changed
+- Enhanced repository hygiene and organization
+  - Added comprehensive .gitignore file for Swift/macOS projects
+  - Cleaned up old GitHub Actions log artifacts from issues/logs/ directory
+  - Removed obsolete test run logs from previous builds
+
+### Fixed
+- Repository cleanup to prevent committing build artifacts and temporary files
+
 ## [1.1.6] - 2025-11-01
 
 ### Fixed
