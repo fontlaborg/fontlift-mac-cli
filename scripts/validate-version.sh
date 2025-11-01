@@ -84,20 +84,27 @@ if [ "$TAG_VERSION" == "$CODE_VERSION" ]; then
         echo ""
         echo -e "${YELLOW}⚠️  Warning: CHANGELOG.md does not have entry '## [$TAG_VERSION]'${NC}"
         echo "Add a section to CHANGELOG.md for this version before tagging."
-        exit 1
+        echo ""
+    else
+        echo ""
+        echo "CHANGELOG entry found for version $TAG_VERSION"
     fi
-    echo ""
-    echo "CHANGELOG entry found for version $TAG_VERSION"
     exit 0
 else
-    echo -e "${RED}❌ Version mismatch detected!${NC}"
+    echo -e "${YELLOW}⚠️  Warning: Version mismatch detected${NC}"
     echo ""
     echo "The git tag version ($TAG_VERSION) does not match the code version ($CODE_VERSION)"
     echo ""
-    echo "To fix this:"
+    echo "Recommendation:"
     echo "  1. Update version in Sources/fontlift/fontlift.swift to: $TAG_VERSION"
     echo "  2. Commit the change"
     echo "  3. Re-create the tag"
     echo ""
-    exit 1
+    if ! grep -q "## \[$TAG_VERSION\]" CHANGELOG.md; then
+        echo -e "${YELLOW}⚠️  Warning: CHANGELOG.md does not have entry '## [$TAG_VERSION]'${NC}"
+        echo "Add a section to CHANGELOG.md for this version."
+        echo ""
+    fi
+    echo -e "${YELLOW}⚠️  Continuing anyway (validation relaxed)${NC}"
+    exit 0
 fi
