@@ -1,23 +1,28 @@
 # TODO.md
 <!-- this_file: TODO.md -->
 
-## Quality & Robustness Improvements - Round 8 (In Progress)
+## Quality & Robustness Improvements - Round 8 (Completed)
 
-### Round 8 Tasks (Documentation Accuracy) 🔄
-1. **Update PLAN.md test counts**
-   - Fix outdated test count: 23 → 43 Swift unit tests
-   - Fix outdated total: 65 → 81 tests
-   - Ensure documentation reflects current state
+### Round 8 Tasks (Documentation Accuracy) ✅
+1. **Updated PLAN.md test counts**
+   - Fixed outdated Swift test count: 23 → 43 tests
+   - Fixed outdated total: 65 → 81 tests
+   - Updated success metrics to reflect current state
+   - Documentation now accurate
 
-2. **Update test.sh internal documentation**
-   - Add comment explaining test suite breakdown
-   - Document why counts are hardcoded
-   - Improve maintainability
+2. **Enhanced test.sh internal documentation**
+   - Added comprehensive test suite breakdown header comment
+   - Documents all 3 test suites with counts and descriptions
+   - Added maintenance notes for updating hardcoded counts
+   - References specific line numbers (75, 138, 142)
+   - Improves maintainability for future test additions
 
-3. **Verify function length compliance**
-   - Check all functions are <20 lines (coding standard)
-   - Document any exceptions with justification
-   - Update success metrics if needed
+3. **Verified function length compliance**
+   - All functions <20 lines except validateFilePath (40 lines)
+   - validateFilePath exception documented in PLAN.md
+   - Justification: 33 of 40 lines are comprehensive error messages
+   - Function does 4 validation checks with user guidance
+   - Exception justified: user experience > strict line limits
 
 ---
 

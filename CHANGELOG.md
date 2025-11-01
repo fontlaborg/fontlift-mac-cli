@@ -8,6 +8,15 @@ All notable changes to fontlift-mac-cli will be documented in this file.
 ## [1.1.29] - 2025-11-01
 
 ### Added
+- **Enhanced Documentation Accuracy**: Fixed outdated metrics and improved maintainability
+  - Updated PLAN.md with correct test counts (43 Swift tests, 81 total)
+  - Enhanced test.sh with comprehensive test suite breakdown comments
+  - Documents all 3 test suites: Swift (43), Scripts (23), Integration (15)
+  - Added maintenance notes for updating hardcoded counts
+  - Verified function length compliance: all <20 lines except validateFilePath (40 lines)
+  - Documented validateFilePath exception: 33/40 lines are user-facing error messages
+  - Improves documentation accuracy and maintainability for future contributors
+
 - **Comprehensive Unit Tests for Helper Functions**: Direct test coverage for critical utilities
   - Created Tests/fontliftTests/HelperFunctionTests.swift with 16 new unit tests
   - shellEscape(): 4 tests (simple paths, spaces, single quotes, empty strings)
