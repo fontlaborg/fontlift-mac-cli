@@ -85,6 +85,37 @@ test the build & publish GH actions via `gh run`, analyze the logs, fix, iterate
 
 ---
 
+## ~~Phase 5: Final Polish & Code Quality~~ ✅ COMPLETED (v1.1.25)
+
+### ~~Task 5.1: Add Inline Code Documentation for Core Functions~~ ✅
+**Goal**: Improve code maintainability by documenting complex Core Text API usage.
+
+- ✅ Add detailed comments to getFontName() explaining PostScript name extraction
+- ✅ Add detailed comments to getFullFontName() explaining CTFontDescriptor usage
+- ✅ Document validateFilePath() parameters and return behavior
+- ✅ Add comments explaining CTFontManager scope (.user vs .system)
+- ✅ Verify all non-trivial functions have clear explanatory comments
+
+### ~~Task 5.2: Add Integration Smoke Test~~ ✅
+**Goal**: Verify binary works end-to-end with real filesystem operations.
+
+- ✅ Create Tests/integration_test.sh for end-to-end testing
+- ✅ Test binary --version, --help, list commands work correctly
+- ✅ 17 integration tests covering binary metadata, list command, help texts, error handling
+- ✅ Integrate into main test.sh workflow
+- ✅ Total test count: 65 tests (23 Swift + 25 Script + 17 Integration)
+
+### ~~Task 5.3: Add Binary Size Verification to CI Workflow~~ ✅
+**Goal**: Prevent regression where universal binary becomes single-arch.
+
+- ✅ Add binary size check to .github/workflows/ci.yml
+- ✅ Verify binary is >1MB (universal) not <500KB (single-arch)
+- ✅ Add lipo architecture verification in CI
+- ✅ Fail CI if binary is not universal
+- ✅ Document the verification in CI workflow comments
+
+---
+
 ## Future Enhancements (Low Priority)
 
 ### Testing & Quality

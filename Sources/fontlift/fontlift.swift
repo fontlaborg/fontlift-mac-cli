@@ -10,13 +10,29 @@ import Foundation
 /// When updating, also update:
 /// - CHANGELOG.md (add new version section)
 /// - Git tag (git tag vX.Y.Z)
-private let version = "1.1.24"
+private let version = "1.1.25"
 
 // MARK: - Font Management Helpers
 
 /// Validate that a file path exists, is readable, and is a regular file
-/// - Parameter path: The file path to validate
-/// - Returns: True if valid, false otherwise with printed error
+///
+/// Performs comprehensive validation before font operations to provide clear error messages.
+/// This defensive check prevents cryptic Core Text errors by catching common mistakes early.
+///
+/// - Parameter path: The file path to validate (absolute or relative)
+/// - Returns: `true` if the path is valid and readable; `false` if validation fails (with error printed to stdout)
+///
+/// **Validation checks performed:**
+/// 1. File exists at the specified path
+/// 2. Path points to a regular file (not a directory)
+/// 3. File is readable by the current user
+///
+/// **Example:**
+/// ```swift
+/// guard validateFilePath("/path/to/font.ttf") else {
+///     throw ExitCode.failure
+/// }
+/// ```
 func validateFilePath(_ path: String) -> Bool {
     let fileManager = FileManager.default
 
@@ -47,6 +63,23 @@ func validateFilePath(_ path: String) -> Bool {
 }
 
 /// Get the PostScript name of a font from its file URL
+///
+/// Extracts the PostScript name using Core Graphics APIs. The PostScript name is the
+/// technical identifier used internally by the font system (e.g., "Helvetica-Bold").
+/// This is preferred over display names for font identification as it's more reliable.
+///
+/// **Core Text API Flow:**
+/// 1. `CGDataProvider` - Creates a data provider from the font file URL
+/// 2. `CGFont` - Parses the font file to create a font object
+/// 3. `postScriptName` - Extracts the PostScript name property
+///
+/// - Parameter url: File URL pointing to a font file (.ttf, .otf, .ttc, .otc)
+/// - Returns: PostScript name string if successful; `nil` if the file can't be read or parsed
+///
+/// **Example PostScript names:**
+/// - "HelveticaNeue-Bold"
+/// - "TimesNewRomanPS-BoldMT"
+/// - "Arial-ItalicMT"
 func getFontName(from url: URL) -> String? {
     guard let fontDataProvider = CGDataProvider(url: url as CFURL),
           let font = CGFont(fontDataProvider),
@@ -57,6 +90,26 @@ func getFontName(from url: URL) -> String? {
 }
 
 /// Get the full font name (display name) from a URL
+///
+/// Extracts the human-readable display name using Core Text APIs. The full name is what users
+/// see in font menus (e.g., "Helvetica Neue Bold"). This is used as a fallback when PostScript
+/// names aren't available.
+///
+/// **Core Text API Flow:**
+/// 1. `CTFontManagerCreateFontDescriptorsFromURL` - Creates font descriptors from file
+/// 2. Uses first descriptor (font collections may contain multiple fonts)
+/// 3. `CTFontCreateWithFontDescriptor` - Creates font object from descriptor
+/// 4. `CTFontCopyFullName` - Extracts the full display name
+///
+/// - Parameter url: File URL pointing to a font file (.ttf, .otf, .ttc, .otc)
+/// - Returns: Display name string if successful; `nil` if the file can't be read or has no display name
+///
+/// **Example display names:**
+/// - "Helvetica Neue Bold"
+/// - "Times New Roman Bold Italic"
+/// - "Arial"
+///
+/// **Note:** For font collections (.ttc/.otc), this returns the name of the first font in the collection.
 func getFullFontName(from url: URL) -> String? {
     guard let descriptors = CTFontManagerCreateFontDescriptorsFromURL(url as CFURL) as? [CTFontDescriptor],
           let descriptor = descriptors.first else {
@@ -227,6 +280,8 @@ extension Fontlift {
             print("Installing font from: \(fontPath)")
 
             var error: Unmanaged<CFError>?
+            // Register font at .user scope (doesn't require sudo, available to current user only)
+            // Alternative: .system scope (requires sudo, available to all users)
             let success = CTFontManagerRegisterFontsForURL(url as CFURL, .user, &error)
 
             if success {

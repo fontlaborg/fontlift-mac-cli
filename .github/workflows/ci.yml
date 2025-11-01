@@ -36,3 +36,45 @@ jobs:
         run: |
           .build/release/fontlift --version
           .build/release/fontlift --help
+
+      - name: Verify universal binary (architecture)
+        run: |
+          echo "🔍 Verifying binary is universal (x86_64 + arm64)..."
+          BINARY_PATH=".build/release/fontlift"
+
+          # Check binary size (universal ~3.2M, single-arch ~464K)
+          BINARY_SIZE=$(stat -f%z "$BINARY_PATH")
+          MIN_SIZE_BYTES=$((1 * 1048576))  # 1 MB minimum
+
+          if [ "$BINARY_SIZE" -lt "$MIN_SIZE_BYTES" ]; then
+            echo "❌ Binary size is suspiciously small: $(numfmt --to=iec-i --suffix=B $BINARY_SIZE)"
+            echo "Expected: >1MB (universal binary)"
+            echo "Actual size suggests single-architecture build"
+            exit 1
+          fi
+
+          echo "✅ Binary size check passed: $(numfmt --to=iec-i --suffix=B $BINARY_SIZE)"
+
+          # Verify architectures using lipo
+          LIPO_INFO=$(lipo -info "$BINARY_PATH" 2>&1)
+          echo "$LIPO_INFO"
+
+          # Check for x86_64 architecture
+          if ! echo "$LIPO_INFO" | grep -q "x86_64"; then
+            echo "❌ Binary is missing x86_64 architecture"
+            exit 1
+          fi
+
+          # Check for arm64 architecture
+          if ! echo "$LIPO_INFO" | grep -q "arm64"; then
+            echo "❌ Binary is missing arm64 architecture"
+            exit 1
+          fi
+
+          # Ensure it's a fat file (not single-arch)
+          if echo "$LIPO_INFO" | grep -q "Non-fat file"; then
+            echo "❌ Binary is not a universal (fat) binary"
+            exit 1
+          fi
+
+          echo "✅ Binary is universal: x86_64 + arm64"

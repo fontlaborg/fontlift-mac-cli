@@ -9,6 +9,38 @@ All notable changes to fontlift-mac-cli will be documented in this file.
 
 **Initial Release** - Swift Package structure, build automation, testing infrastructure, and documentation framework.
 
+## [1.1.25] - 2025-11-01
+
+### Added
+- **Task 5.1 (Phase 5)**: Inline code documentation for core functions
+  - Added comprehensive documentation to `validateFilePath()` with validation steps and examples
+  - Added detailed documentation to `getFontName()` explaining Core Graphics API flow
+  - Added detailed documentation to `getFullFontName()` explaining Core Text API flow
+  - Added inline comments explaining `.user` vs `.system` scope for font registration
+  - Improved code maintainability for future developers
+
+- **Task 5.2 (Phase 5)**: Integration smoke test suite
+  - Created `Tests/integration_test.sh` with 17 end-to-end tests
+  - Tests binary metadata (executable, size, version, help)
+  - Tests list command functionality (paths, names, sorted mode)
+  - Tests all command help texts
+  - Tests error handling (nonexistent files, invalid font names)
+  - Tests version verification
+  - Integrated into main `test.sh` workflow
+  - **Total test count: 65 tests** (23 Swift + 25 Script + 17 Integration)
+
+- **Task 5.3 (Phase 5)**: Binary size verification in CI workflow
+  - Added universal binary verification step to `.github/workflows/ci.yml`
+  - Checks binary size is >1MB (universal) vs <500KB (single-arch)
+  - Verifies both x86_64 and arm64 architectures present using `lipo`
+  - Fails CI build if binary is not universal
+  - Prevents regression to single-architecture builds
+
+### Improved
+- Code is now better documented for maintainability
+- Test coverage increased from 48 to 65 tests
+- CI workflow now catches universal binary regressions automatically
+
 ## [1.1.24] - 2025-11-01
 
 ### Changed

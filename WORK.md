@@ -5,8 +5,8 @@
 
 ### Project Status ✅
 
-**Version**: v1.1.22
-**Test Suite**: 23 Swift + 23 Script tests = 46 total tests passing
+**Version**: v1.1.24
+**Test Suite**: 23 Swift + 25 Script tests = 48 total tests passing
 **Build**: Zero compiler warnings (release build: ~6s)
 **CI/CD**: Auto-fix enabled and verified working
 **Universal Binary**: ✅ FIXED - Releases now produce true universal binaries (x86_64 + arm64)
