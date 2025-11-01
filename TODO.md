@@ -3,9 +3,9 @@
 
 ## IMPORTANT
 
-- [ ] @issues/101.md
-- [ ] @issues/103.md
-- [ ] Note: `fontlift list` must not print any "prolog" like "Listing font paths..." or any "epilog" like "Total fonts: 5393" —— we want the pure list of outputs
+- [x] @issues/101.md - ✅ COMPLETED in v1.1.3-1.1.5 (CI/CD with GitHub Actions and semantic versioning)
+- [x] @issues/103.md - ✅ COMPLETED in v1.1.0 (Font management functionality implemented)
+- [x] Note: `fontlift list` must not print any "prolog" like "Listing font paths..." or any "epilog" like "Total fonts: 5393" —— we want the pure list of outputs ✅ FIXED in v1.1.0
 
 ## Phase 2: Quality & Reliability Improvements - COMPLETED ✅
 
