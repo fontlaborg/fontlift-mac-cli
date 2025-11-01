@@ -8,6 +8,17 @@ All notable changes to fontlift-mac-cli will be documented in this file.
 ## [1.1.29] - 2025-11-01
 
 ### Added
+- **Comprehensive Unit Tests for Helper Functions**: Direct test coverage for critical utilities
+  - Created Tests/fontliftTests/HelperFunctionTests.swift with 16 new unit tests
+  - shellEscape(): 4 tests (simple paths, spaces, single quotes, empty strings)
+  - isSystemFontPath(): 5 tests (system fonts, library, user library, home, relative paths)
+  - isValidFontExtension(): 7 tests (ttf, otf, ttc, otc, dfont, invalid extensions, no extension)
+  - Previously these functions were only tested indirectly through integration tests
+  - Test count increased: 65 → 81 tests (+16, +24.6% increase)
+  - Swift tests increased: 27 → 43 tests (+59% increase)
+  - Better test isolation, clearer failure messages, and comprehensive edge case coverage
+  - All 81 tests passing (43 Swift + 23 Scripts + 15 Integration)
+
 - **System Font Protection**: Critical safety feature to prevent modifying system fonts
   - Added `isSystemFontPath()` helper function to detect protected directories
   - Blocks uninstall/remove operations on `/System/Library/Fonts/` and `/Library/Fonts/`
@@ -82,9 +93,10 @@ All notable changes to fontlift-mac-cli will be documented in this file.
 ### Changed
 - Modified name resolution logic to collect all matches instead of using first match
 - Synchronized version constant from 1.1.28 to 1.1.29 to match documentation
-- Test count: 61 → 65 tests (added 4 new validation and protection tests)
-- Swift test count: 23 → 27 tests
+- Test count: 61 → 81 tests (added 20 new tests: 4 validation/protection + 16 helper function tests)
+- Swift test count: 23 → 43 tests
 - Source file size: 564 → 741 lines (+177 lines total: +105 safety/validation, +29 bug fixes, +35 UX, +8 consistency)
+- Test file size: +119 lines (HelperFunctionTests.swift)
 
 ### Improved
 - **Safety**: Major improvement - tool can no longer accidentally break macOS

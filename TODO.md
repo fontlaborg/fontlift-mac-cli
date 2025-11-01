@@ -1,6 +1,44 @@
 # TODO.md
 <!-- this_file: TODO.md -->
 
+## Quality & Robustness Improvements - Round 7 (Completed)
+
+### Round 7 Tasks (Test Coverage) ✅
+1. **Added comprehensive unit tests for helper functions**
+   - Created new test file: Tests/fontliftTests/HelperFunctionTests.swift (119 lines)
+   - Added 16 unit tests providing direct coverage for 3 critical helper functions
+   - Previously these were only tested indirectly through integration tests
+
+2. **shellEscape() test coverage (4 tests)**
+   - testShellEscapeSimplePath: Basic path wrapping in single quotes
+   - testShellEscapePathWithSpaces: Spaces preserved within quotes
+   - testShellEscapePathWithSingleQuote: Proper escaping with '\''
+   - testShellEscapeEmptyPath: Empty string handling
+
+3. **isSystemFontPath() test coverage (5 tests)**
+   - testIsSystemFontPathSystemLibrary: /System/Library/Fonts/ detection
+   - testIsSystemFontPathLibrary: /Library/Fonts/ detection
+   - testIsSystemFontPathUserLibrary: User fonts correctly excluded
+   - testIsSystemFontPathHomeDirectory: Home directory fonts excluded
+   - testIsSystemFontPathRelative: Relative paths excluded
+
+4. **isValidFontExtension() test coverage (7 tests)**
+   - testIsValidFontExtensionTTF: .ttf and .TTF (case-insensitive)
+   - testIsValidFontExtensionOTF: .otf and .OTF (case-insensitive)
+   - testIsValidFontExtensionTTC: .ttc font collections
+   - testIsValidFontExtensionOTC: .otc font collections
+   - testIsValidFontExtensionDFont: .dfont Mac legacy format
+   - testIsValidFontExtensionInvalidExtensions: .txt, .pdf, .zip rejected
+   - testIsValidFontExtensionNoExtension: Files without extension rejected
+
+5. **Test suite metrics**
+   - Test count: 65 → 81 tests (+16, +24.6% increase)
+   - Swift tests: 27 → 43 tests (+16, +59% increase)
+   - All 81 tests passing (43 Swift + 23 Scripts + 15 Integration)
+   - Execution time: ~22s (5s Swift + 14s Scripts + 3s Integration)
+
+---
+
 ## Quality & Robustness Improvements - Round 6 (Completed)
 
 ### Round 6 Tasks (Documentation & Correctness) ✅

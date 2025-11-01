@@ -8,8 +8,8 @@
 
 ### Core Metrics
 
-- **Test Suite**: 65 tests passing (27 Swift + 23 Scripts + 15 Integration)
-- **Test Execution**: ~26s
+- **Test Suite**: 81 tests passing (43 Swift + 23 Scripts + 15 Integration)
+- **Test Execution**: ~22s
 - **Build Time**: ~7s (release mode)
 - **Binary Size**: 1.6M (native), 3.2M (universal)
 - **Compiler Warnings**: 0
@@ -19,6 +19,13 @@
 ### Recent Changes
 
 **v1.1.29** (2025-11-01 - IN DEVELOPMENT):
+- **Round 7: Test Coverage Improvements**
+  - Added comprehensive unit tests for 3 helper functions
+  - Created HelperFunctionTests.swift with 16 new tests
+  - Test count: 65 → 81 tests (+16, +24.6% increase)
+  - Swift tests: 27 → 43 tests (+59% increase)
+  - Better test isolation and clearer edge case coverage
+
 - **Round 6: Documentation & Correctness**
   - Fixed incorrect command suggestion (removed sudo from atsutil)
   - Updated PLAN.md to v1.1.29 and 65 tests
