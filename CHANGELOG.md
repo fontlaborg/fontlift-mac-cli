@@ -3,6 +3,36 @@
 
 All notable changes to fontlift-mac-cli will be documented in this file.
 
+## [1.1.5] - 2025-11-01
+
+### Changed
+- Cleaned up old distribution artifacts (removed dist/fontlift-v1.1.0-macos.tar.gz)
+
+## [1.1.4] - 2025-11-01
+
+### Changed
+- Enhanced GitHub Actions CI workflow with additional checks
+- Enhanced GitHub Actions release workflow with improved validation steps
+- Reorganized GitHub Actions logs (moved from issues/logs_48901036049/ to issues/logs/logs_48901619922/)
+
+## [1.1.3] - 2025-11-01
+
+### Added
+- Enhanced validation script (`scripts/validate-version.sh`) to enforce SemVer format
+- Added CHANGELOG.md validation - workflow now fails if matching version section is missing
+- GitHub Actions workflows now fetch full git history for reliable tag validation
+- Improved test coverage in CLIErrorTests.swift
+
+### Changed
+- Updated GitHub Actions CI workflow with enhanced validation steps
+- Updated GitHub Actions release workflow with stricter version checks
+- Updated README.md with clarified versioning documentation
+- Updated CLAUDE.md with enhanced CI/CD workflow documentation
+
+### Fixed
+- Version validation now provides actionable guidance when version/tag mismatch occurs
+- CHANGELOG.md enforcement prevents releases without proper documentation
+
 ## [1.1.2] - 2025-11-02
 
 ### Changed
