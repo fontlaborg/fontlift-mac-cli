@@ -14,6 +14,20 @@ private let version = "1.1.28"
 
 // MARK: - Font Management Helpers
 
+/// Check if a font path is in a protected system directory
+///
+/// Prevents modification of system fonts that are critical for macOS stability.
+/// System font directories include:
+/// - `/System/Library/Fonts/` - Core macOS system fonts
+/// - `/Library/Fonts/` - System-wide fonts (requires admin privileges)
+///
+/// - Parameter url: The font file URL to check
+/// - Returns: `true` if the path is in a protected system directory; `false` otherwise
+func isSystemFontPath(_ url: URL) -> Bool {
+    let path = url.path
+    return path.hasPrefix("/System/Library/Fonts/") || path.hasPrefix("/Library/Fonts/")
+}
+
 /// Validate that a file path exists, is readable, and is a regular file
 ///
 /// Performs comprehensive validation before font operations to provide clear error messages.
@@ -367,16 +381,15 @@ extension Fontlift {
                     throw ExitCode.failure
                 }
 
-                var foundURL: URL?
+                var matchingURLs: [URL] = []
                 for url in fontURLs {
                     if let urlFontName = getFontName(from: url) ?? getFullFontName(from: url),
                        urlFontName == fontName {
-                        foundURL = url
-                        break
+                        matchingURLs.append(url)
                     }
                 }
 
-                guard let url = foundURL else {
+                guard !matchingURLs.isEmpty else {
                     print("❌ Error: Font '\(fontName)' not found in installed fonts")
                     print("   Font name: \(fontName)")
                     print("")
@@ -386,6 +399,21 @@ extension Fontlift {
                     print("   - Font may have already been uninstalled")
                     throw ExitCode.failure
                 }
+
+                guard matchingURLs.count == 1 else {
+                    print("❌ Error: Ambiguous font name '\(fontName)' matches \(matchingURLs.count) fonts")
+                    print("")
+                    print("   Matching fonts:")
+                    for (index, url) in matchingURLs.enumerated() {
+                        print("   \(index + 1). \(url.path)")
+                    }
+                    print("")
+                    print("   Please specify the font by its file path instead:")
+                    print("   fontlift uninstall /path/to/font.ttf")
+                    throw ExitCode.failure
+                }
+
+                let url = matchingURLs[0]
 
                 try unregisterFont(at: url)
 
@@ -403,6 +431,18 @@ extension Fontlift {
         }
 
         private func unregisterFont(at url: URL) throws {
+            // Protect system fonts from accidental modification
+            if isSystemFontPath(url) {
+                print("❌ Error: Cannot uninstall system font")
+                print("   Path: \(url.path)")
+                print("")
+                print("   System fonts in /System/Library/Fonts/ and /Library/Fonts/")
+                print("   are critical for macOS stability and cannot be modified.")
+                print("")
+                print("   If you need to manage a font, copy it to ~/Library/Fonts/ first.")
+                throw ExitCode.failure
+            }
+
             var error: Unmanaged<CFError>?
             let success = CTFontManagerUnregisterFontsForURL(url as CFURL, .user, &error)
 
@@ -492,16 +532,15 @@ extension Fontlift {
                     throw ExitCode.failure
                 }
 
-                var foundURL: URL?
+                var matchingURLs: [URL] = []
                 for url in fontURLs {
                     if let urlFontName = getFontName(from: url) ?? getFullFontName(from: url),
                        urlFontName == fontName {
-                        foundURL = url
-                        break
+                        matchingURLs.append(url)
                     }
                 }
 
-                guard let url = foundURL else {
+                guard !matchingURLs.isEmpty else {
                     print("❌ Error: Font '\(fontName)' not found in installed fonts")
                     print("   Font name: \(fontName)")
                     print("")
@@ -511,6 +550,21 @@ extension Fontlift {
                     print("   - Font may have already been removed")
                     throw ExitCode.failure
                 }
+
+                guard matchingURLs.count == 1 else {
+                    print("❌ Error: Ambiguous font name '\(fontName)' matches \(matchingURLs.count) fonts")
+                    print("")
+                    print("   Matching fonts:")
+                    for (index, url) in matchingURLs.enumerated() {
+                        print("   \(index + 1). \(url.path)")
+                    }
+                    print("")
+                    print("   Please specify the font by its file path instead:")
+                    print("   fontlift remove /path/to/font.ttf")
+                    throw ExitCode.failure
+                }
+
+                let url = matchingURLs[0]
 
                 try removeFont(at: url)
 
@@ -528,6 +582,18 @@ extension Fontlift {
         }
 
         private func removeFont(at url: URL) throws {
+            // Protect system fonts from accidental modification
+            if isSystemFontPath(url) {
+                print("❌ Error: Cannot remove system font")
+                print("   Path: \(url.path)")
+                print("")
+                print("   System fonts in /System/Library/Fonts/ and /Library/Fonts/")
+                print("   are critical for macOS stability and cannot be removed.")
+                print("")
+                print("   If you need to manage a font, copy it to ~/Library/Fonts/ first.")
+                throw ExitCode.failure
+            }
+
             // First unregister the font
             var error: Unmanaged<CFError>?
             let unregistered = CTFontManagerUnregisterFontsForURL(url as CFURL, .user, &error)

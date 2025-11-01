@@ -199,4 +199,22 @@ final class CLIErrorTests: XCTestCase {
                      result.error.contains("Error"),
                      "Should show validation error about mutual exclusivity")
     }
+
+    // MARK: - System Font Protection Tests
+
+    func testUninstallSystemFontProtection() throws {
+        let result = runFontlift(args: ["uninstall", "/System/Library/Fonts/Helvetica.ttc"])
+        XCTAssertNotEqual(result.exitCode, 0, "Uninstalling system font should fail")
+        XCTAssertTrue(result.output.contains("Cannot uninstall system font") ||
+                     result.output.contains("critical for macOS stability"),
+                     "Should show system font protection error")
+    }
+
+    func testRemoveSystemFontProtection() throws {
+        let result = runFontlift(args: ["remove", "/Library/Fonts/Arial Unicode.ttf"])
+        XCTAssertNotEqual(result.exitCode, 0, "Removing system font should fail")
+        XCTAssertTrue(result.output.contains("Cannot remove system font") ||
+                     result.output.contains("critical for macOS stability"),
+                     "Should show system font protection error")
+    }
 }
