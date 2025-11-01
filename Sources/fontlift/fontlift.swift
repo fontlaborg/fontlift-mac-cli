@@ -131,6 +131,21 @@ extension Fontlift {
 
 // MARK: - Install Command
 extension Fontlift {
+    /// Install a font file to the system.
+    ///
+    /// Registers the font with macOS using `CTFontManagerRegisterFontsForURL()` at user scope.
+    /// This makes the font available to all applications without requiring administrator privileges.
+    ///
+    /// The font file remains in its original location - this command only registers it with
+    /// the system font manager. Use the remove command to both unregister and delete the file.
+    ///
+    /// Supports individual font files and font collections (.ttc/.otc).
+    ///
+    /// Example usage:
+    /// ```bash
+    /// fontlift install ~/Downloads/CustomFont.ttf
+    /// fontlift i /path/to/font.otf
+    /// ```
     struct Install: ParsableCommand {
         static let configuration = CommandConfiguration(
             commandName: "install",
@@ -177,6 +192,26 @@ extension Fontlift {
 
 // MARK: - Uninstall Command
 extension Fontlift {
+    /// Uninstall a font from the system while keeping the file.
+    ///
+    /// Deregisters the font using `CTFontManagerUnregisterFontsForURL()` but leaves the
+    /// font file in place. The font will no longer appear in applications' font pickers.
+    ///
+    /// You can specify the font either by:
+    /// - File path: `fontlift uninstall /path/to/font.ttf`
+    /// - Font name: `fontlift uninstall -n "Arial"`
+    ///
+    /// When using `-n`, the command searches all installed fonts to find a matching name.
+    /// If the font file no longer exists but is still registered, uninstall will attempt
+    /// to deregister it anyway.
+    ///
+    /// Use the remove command if you want to both unregister and delete the file.
+    ///
+    /// Example usage:
+    /// ```bash
+    /// fontlift uninstall ~/Downloads/CustomFont.ttf
+    /// fontlift u -n "Helvetica Neue"
+    /// ```
     struct Uninstall: ParsableCommand {
         static let configuration = CommandConfiguration(
             commandName: "uninstall",
@@ -264,6 +299,29 @@ extension Fontlift {
 
 // MARK: - Remove Command
 extension Fontlift {
+    /// Remove a font from the system and delete the file.
+    ///
+    /// This command performs two operations:
+    /// 1. Deregisters the font from the system (like uninstall)
+    /// 2. Deletes the font file from disk
+    ///
+    /// ⚠️ Warning: This is a destructive operation. The font file will be permanently deleted.
+    ///
+    /// You can specify the font either by:
+    /// - File path: `fontlift remove /path/to/font.ttf`
+    /// - Font name: `fontlift remove -n "Arial"`
+    ///
+    /// When using `-n`, the command searches all installed fonts to find the file location,
+    /// then unregisters and deletes it.
+    ///
+    /// If unregistration fails, the command will still attempt to delete the file.
+    /// Use uninstall if you only want to deregister without deleting.
+    ///
+    /// Example usage:
+    /// ```bash
+    /// fontlift remove ~/Downloads/CustomFont.ttf
+    /// fontlift rm -n "Helvetica Neue"
+    /// ```
     struct Remove: ParsableCommand {
         static let configuration = CommandConfiguration(
             commandName: "remove",
