@@ -29,12 +29,12 @@ All notable changes to fontlift-mac-cli will be documented in this file.
   - Integrated into main `test.sh` workflow
   - **Total test count: 65 tests** (23 Swift + 25 Script + 17 Integration)
 
-- **Task 5.3 (Phase 5)**: Binary size verification in CI workflow
-  - Added universal binary verification step to `.github/workflows/ci.yml`
+- **Task 5.3 (Phase 5)**: Verified binary size verification in release workflow
+  - Confirmed prepare-release.sh (added v1.1.20) verifies universal binaries
   - Checks binary size is >1MB (universal) vs <500KB (single-arch)
   - Verifies both x86_64 and arm64 architectures present using `lipo`
-  - Fails CI build if binary is not universal
-  - Prevents regression to single-architecture builds
+  - Fails release build if binary is not universal
+  - Release workflow builds universal binaries; CI builds native for speed
 
 ### Improved
 - Code is now better documented for maintainability

@@ -105,14 +105,15 @@ test the build & publish GH actions via `gh run`, analyze the logs, fix, iterate
 - ✅ Integrate into main test.sh workflow
 - ✅ Total test count: 65 tests (23 Swift + 25 Script + 17 Integration)
 
-### ~~Task 5.3: Add Binary Size Verification to CI Workflow~~ ✅
+### ~~Task 5.3: Binary Size Verification in Release Workflow~~ ✅
 **Goal**: Prevent regression where universal binary becomes single-arch.
 
-- ✅ Add binary size check to .github/workflows/ci.yml
-- ✅ Verify binary is >1MB (universal) not <500KB (single-arch)
-- ✅ Add lipo architecture verification in CI
-- ✅ Fail CI if binary is not universal
-- ✅ Document the verification in CI workflow comments
+- ✅ Binary size verification already exists in prepare-release.sh (added v1.1.20)
+- ✅ Verifies binary is >1MB (universal) not <500KB (single-arch)
+- ✅ Uses lipo to verify both x86_64 and arm64 architectures present
+- ✅ Fails release if binary is not universal
+- ✅ Release workflow builds universal binaries with --universal flag
+- ✅ CI workflow builds native binaries for speed (testing only)
 
 ---
 
