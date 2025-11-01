@@ -5,6 +5,35 @@ All notable changes to fontlift-mac-cli will be documented in this file.
 
 ## [Unreleased]
 
+## [1.1.29] - 2025-11-01
+
+### Added
+- **System Font Protection**: Critical safety feature to prevent modifying system fonts
+  - Added `isSystemFontPath()` helper function to detect protected directories
+  - Blocks uninstall/remove operations on `/System/Library/Fonts/` and `/Library/Fonts/`
+  - Clear error messages explain why system fonts cannot be modified
+  - Protects macOS stability by preventing accidental system font deletion
+  - Added 2 new Swift unit tests: `testUninstallSystemFontProtection`, `testRemoveSystemFontProtection`
+
+- **Ambiguous Name Resolution**: Ensures deterministic behavior when using `-n` flag
+  - Detects when multiple font files match a provided font name
+  - Fails with descriptive error listing all matching font file paths
+  - Advises users to specify font by file path instead of ambiguous name
+  - Prevents accidental removal of wrong font variant (e.g., Bold vs Regular)
+  - Implemented in both `uninstall -n` and `remove -n` commands
+
+### Changed
+- Modified name resolution logic to collect all matches instead of using first match
+- Test count: 61 → 63 tests (added 2 system font protection tests)
+- Swift test count: 23 → 25 tests
+- Source file size: 564 → 630 lines (+66 lines for safety features)
+
+### Improved
+- **Safety**: Major improvement - tool can no longer accidentally break macOS
+- **Predictability**: Ambiguous operations now fail explicitly with guidance
+- **User Experience**: Clear error messages with actionable solutions
+- **Code Quality**: All 63 tests passing, zero compiler warnings
+
 ## [1.1.28] - 2025-11-01
 
 ### Removed (Streamlining)

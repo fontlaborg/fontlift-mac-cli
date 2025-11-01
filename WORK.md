@@ -3,19 +3,28 @@
 
 ## Project Status
 
-**Current Version**: v1.1.28 (RELEASED)
+**Current Version**: v1.1.29 (IN DEVELOPMENT)
 **Last Updated**: 2025-11-01
 
 ### Core Metrics
 
-- **Test Suite**: 61 tests passing (23 Swift + 23 Scripts + 15 Integration)
-- **Test Execution**: ~20s
+- **Test Suite**: 63 tests passing (25 Swift + 23 Scripts + 15 Integration)
+- **Test Execution**: ~22-25s
 - **Build Time**: ~6-8s (release mode)
 - **Binary Size**: 1.6M (native), 3.2M (universal)
 - **Compiler Warnings**: 0
 - **Platform**: macOS 12.0+ (Intel + Apple Silicon)
+- **Source Lines**: 630 lines (main file)
 
 ### Recent Changes
+
+**v1.1.29** (2025-11-01 - IN DEVELOPMENT):
+- **System Font Protection**: Prevents uninstall/remove operations on `/System/Library/Fonts/` and `/Library/Fonts/`
+- **Ambiguous Name Resolution**: Fails when multiple fonts match `-n` name, lists all matches, advises using file path
+- Added 2 new Swift unit tests for system font protection
+- Test count: 61 → 63 tests (+2 safety feature tests)
+- Source lines: 564 → 630 lines (+66 lines for safety checks)
+- **Impact**: Major safety improvement - prevents catastrophic system font deletion and ambiguous operations
 
 **v1.1.28** (2025-11-01):
 - Streamlined codebase by removing enterprise tooling
@@ -31,7 +40,7 @@
 
 ### Current Work
 
-See TODO.md for pending enhancements.
+Quality & robustness improvements complete! See TODO.md for completed tasks and future enhancements.
 
 ### Core Functionality
 
