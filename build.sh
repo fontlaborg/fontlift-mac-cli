@@ -53,11 +53,9 @@ for arg in "$@"; do
     case $arg in
         --ci)
             CI_MODE=true
-            shift
             ;;
         --universal)
             UNIVERSAL_BUILD=true
-            shift
             ;;
         --help|-h)
             show_help
