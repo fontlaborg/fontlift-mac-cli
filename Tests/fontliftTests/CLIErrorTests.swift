@@ -26,6 +26,24 @@ final class CLIErrorTests: XCTestCase {
             .path
     }
 
+    /// Extract the declared version from the Swift source
+    func getDeclaredVersion() throws -> String {
+        let projectRoot = getProjectRoot()
+        let mainFile = projectRoot
+            .appendingPathComponent("Sources")
+            .appendingPathComponent("fontlift")
+            .appendingPathComponent("fontlift.swift")
+        let contents = try String(contentsOf: mainFile, encoding: .utf8)
+        let pattern = #"private let version = "([0-9]+\.[0-9]+\.[0-9]+)""#
+        let regex = try NSRegularExpression(pattern: pattern)
+        let range = NSRange(contents.startIndex..<contents.endIndex, in: contents)
+        guard let match = regex.firstMatch(in: contents, range: range),
+              let versionRange = Range(match.range(at: 1), in: contents) else {
+            throw XCTSkip("Unable to parse version from fontlift.swift")
+        }
+        return String(contents[versionRange])
+    }
+
     /// Run fontlift binary and capture output
     func runFontlift(args: [String]) -> (exitCode: Int32, output: String, error: String) {
         let process = Process()
@@ -57,9 +75,13 @@ final class CLIErrorTests: XCTestCase {
     // MARK: - Version Tests
 
     func testVersionFlag() throws {
+        let expectedVersion = try getDeclaredVersion()
         let result = runFontlift(args: ["--version"])
         XCTAssertEqual(result.exitCode, 0, "Version flag should succeed")
-        XCTAssertTrue(result.output.contains("0.1.0"), "Should show version 0.1.0")
+        XCTAssertTrue(
+            result.output.contains(expectedVersion),
+            "Should show declared version \(expectedVersion)"
+        )
     }
 
     // MARK: - Help Tests

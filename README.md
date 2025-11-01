@@ -12,7 +12,7 @@ Download the latest pre-built binary:
 
 ```bash
 # Download latest release
-curl -L https://github.com/fontlaborg/fontlift-mac-cli/releases/latest/download/fontlift-v1.1.0-macos.tar.gz -o fontlift.tar.gz
+curl -L https://github.com/fontlaborg/fontlift-mac-cli/releases/latest/download/fontlift-v1.1.2-macos.tar.gz -o fontlift.tar.gz
 
 # Extract
 tar -xzf fontlift.tar.gz

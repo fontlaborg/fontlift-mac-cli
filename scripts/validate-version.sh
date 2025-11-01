@@ -51,6 +51,14 @@ fi
 
 TAG_VERSION="$1"
 
+# Ensure tag uses semantic versioning (X.Y.Z)
+if [[ ! "$TAG_VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+    echo -e "${RED}❌ Error: Tag version must follow semantic versioning (X.Y.Z)${NC}"
+    echo "Received: $TAG_VERSION"
+    echo "Example: v1.2.3 → pass 1.2.3 to this script"
+    exit 1
+fi
+
 # Change to project root (where this script's parent is located)
 cd "$(dirname "$0")/.."
 
@@ -72,6 +80,14 @@ echo ""
 if [ "$TAG_VERSION" == "$CODE_VERSION" ]; then
     echo -e "${GREEN}✅ Version validation passed!${NC}"
     echo "Tag and code versions match: $TAG_VERSION"
+    if ! grep -q "## \[$TAG_VERSION\]" CHANGELOG.md; then
+        echo ""
+        echo -e "${YELLOW}⚠️  Warning: CHANGELOG.md does not have entry '## [$TAG_VERSION]'${NC}"
+        echo "Add a section to CHANGELOG.md for this version before tagging."
+        exit 1
+    fi
+    echo ""
+    echo "CHANGELOG entry found for version $TAG_VERSION"
     exit 0
 else
     echo -e "${RED}❌ Version mismatch detected!${NC}"

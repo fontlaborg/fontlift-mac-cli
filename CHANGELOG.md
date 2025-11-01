@@ -3,6 +3,15 @@
 
 All notable changes to fontlift-mac-cli will be documented in this file.
 
+## [1.1.2] - 2025-11-02
+
+### Changed
+- Enhanced `scripts/validate-version.sh` to enforce SemVer format (`X.Y.Z`) and require matching `CHANGELOG.md` entries before a release tag can proceed.
+- Updated GitHub Actions release workflow to fetch full git history so tag validation works reliably.
+
+### Fixed
+- Prevented mismatched tag/code versions from progressing by surfacing actionable guidance earlier in the release job.
+
 ## [1.1.0] - 2025-11-01
 
 ### 🎉 Major Release - Full Font Management Implementation

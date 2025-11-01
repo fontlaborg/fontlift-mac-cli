@@ -1,0 +1,17 @@
+﻿2025-11-01T00:07:14.1056630Z ##[group]Run ./scripts/validate-version.sh 1.1.2
+2025-11-01T00:07:14.1057420Z [36;1m./scripts/validate-version.sh 1.1.2[0m
+2025-11-01T00:07:14.1120680Z shell: /bin/bash -e {0}
+2025-11-01T00:07:14.1121260Z ##[endgroup]
+2025-11-01T00:07:14.1503560Z Tag version:  1.1.2
+2025-11-01T00:07:14.1506120Z Code version: 1.1.0
+2025-11-01T00:07:14.1523840Z 
+2025-11-01T00:07:14.1625450Z [0;31m❌ Version mismatch detected![0m
+2025-11-01T00:07:14.1726630Z 
+2025-11-01T00:07:14.1736500Z The git tag version (1.1.2) does not match the code version (1.1.0)
+2025-11-01T00:07:14.1775190Z 
+2025-11-01T00:07:14.1876500Z To fix this:
+2025-11-01T00:07:14.1892780Z   1. Update version in Sources/fontlift/fontlift.swift to: 1.1.2
+2025-11-01T00:07:14.1994490Z   2. Commit the change
+2025-11-01T00:07:14.2083330Z   3. Re-create the tag
+2025-11-01T00:07:14.2083970Z 
+2025-11-01T00:07:14.2094970Z ##[error]Process completed with exit code 1.

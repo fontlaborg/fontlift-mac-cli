@@ -623,6 +623,7 @@ Follow this checklist for releasing a new version:
    - Move items from `[Unreleased]` to the new version section
    - Write clear release notes describing user-facing changes
    - Include release date in ISO format (YYYY-MM-DD)
+   - The release workflow now fails if this section is missing
 
 3. **Commit changes**:
    ```bash
@@ -652,6 +653,7 @@ Follow this checklist for releasing a new version:
 
 7. **Automated release process** (GitHub Actions handles this automatically):
    - ✅ Validates version matches tag (fails if mismatch)
+   - ✅ Confirms matching CHANGELOG entry is present
    - ✅ Runs all tests
    - ✅ Builds release binary
    - ✅ Creates GitHub Release

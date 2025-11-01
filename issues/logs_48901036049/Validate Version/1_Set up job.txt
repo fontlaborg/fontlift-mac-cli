@@ -1,0 +1,28 @@
+﻿2025-11-01T00:07:11.6740920Z Current runner version: '2.329.0'
+2025-11-01T00:07:11.6757470Z ##[group]Runner Image Provisioner
+2025-11-01T00:07:11.6757990Z Hosted Compute Agent
+2025-11-01T00:07:11.6758330Z Version: 20251016.436
+2025-11-01T00:07:11.6758710Z Commit: 8ab8ac8bfd662a3739dab9fe09456aba92132568
+2025-11-01T00:07:11.6759140Z Build Date: 2025-10-15T20:44:12Z
+2025-11-01T00:07:11.6759510Z ##[endgroup]
+2025-11-01T00:07:11.6759880Z ##[group]Operating System
+2025-11-01T00:07:11.6760240Z macOS
+2025-11-01T00:07:11.6760530Z 14.8.1
+2025-11-01T00:07:11.6760860Z 23J30
+2025-11-01T00:07:11.6761140Z ##[endgroup]
+2025-11-01T00:07:11.6761440Z ##[group]Runner Image
+2025-11-01T00:07:11.6761760Z Image: macos-14-arm64
+2025-11-01T00:07:11.6762080Z Version: 20251020.0056
+2025-11-01T00:07:11.6762770Z Included Software: https://github.com/actions/runner-images/blob/macos-14-arm64/20251020.0056/images/macos/macos-14-arm64-Readme.md
+2025-11-01T00:07:11.6763730Z Image Release: https://github.com/actions/runner-images/releases/tag/macos-14-arm64%2F20251020.0056
+2025-11-01T00:07:11.6764460Z ##[endgroup]
+2025-11-01T00:07:11.6765110Z ##[group]GITHUB_TOKEN Permissions
+2025-11-01T00:07:11.6766410Z Contents: write
+2025-11-01T00:07:11.6766720Z Metadata: read
+2025-11-01T00:07:11.6767020Z ##[endgroup]
+2025-11-01T00:07:11.6768540Z Secret source: Actions
+2025-11-01T00:07:11.6768940Z Prepare workflow directory
+2025-11-01T00:07:11.6996160Z Prepare all required actions
+2025-11-01T00:07:11.7023850Z Getting action download info
+2025-11-01T00:07:12.0533370Z Download action repository 'actions/checkout@v4' (SHA:08eba0b27e820071cde6df949e0beb9ba4906955)
+2025-11-01T00:07:12.5490150Z Complete job name: Validate Version

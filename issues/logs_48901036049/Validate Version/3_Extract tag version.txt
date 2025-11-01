@@ -1,0 +1,4 @@
+﻿2025-11-01T00:07:14.0245560Z ##[group]Run echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+2025-11-01T00:07:14.0246740Z [36;1mecho "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT[0m
+2025-11-01T00:07:14.0507970Z shell: /bin/bash -e {0}
+2025-11-01T00:07:14.0508490Z ##[endgroup]
