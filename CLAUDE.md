@@ -652,13 +652,15 @@ Follow this checklist for releasing a new version:
    ```
 
 7. **Automated release process** (GitHub Actions handles this automatically):
-   - ✅ Validates version matches tag (fails if mismatch)
+   - ✅ Validates version matches tag (auto-fixes if mismatch in CI)
    - ✅ Confirms matching CHANGELOG entry is present
    - ✅ Runs all tests
    - ✅ Builds release binary
    - ✅ Creates GitHub Release
    - ✅ Uploads binary artifacts (.tar.gz + SHA256)
    - ✅ Extracts release notes from CHANGELOG.md
+
+**NEW: Auto-Fix in CI**: If a version mismatch is detected during the release workflow, the validation script automatically updates the code version to match the git tag. This prevents release failures due to manual versioning errors.
 
 ### Version Number Guidelines
 
@@ -679,17 +681,22 @@ Examples:
 
 ### Troubleshooting
 
-**Version mismatch error**:
+**Version mismatch error** (local development):
 ```
 ❌ Version mismatch detected!
 The git tag version (X.Y.Z) does not match the code version (A.B.C)
 ```
-Solution:
+Solution (Option 1 - Auto-fix):
+```bash
+./scripts/validate-version.sh X.Y.Z --fix
+git commit -am "fix: sync version to X.Y.Z"
+```
+
+Solution (Option 2 - Manual):
 1. Update version in `Sources/fontlift/fontlift.swift` to match tag
 2. Commit the change: `git commit -am "fix: update version to X.Y.Z"`
-3. Delete old tag: `git tag -d vX.Y.Z && git push origin :refs/tags/vX.Y.Z`
-4. Re-create tag: `git tag -a vX.Y.Z -m "Release vX.Y.Z"`
-5. Push: `git push origin main && git push origin vX.Y.Z`
+
+**Note**: In CI environments, version mismatches are automatically fixed. No manual intervention needed.
 
 **Build failure**:
 - Check GitHub Actions logs for details
