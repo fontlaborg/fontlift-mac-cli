@@ -1,6 +1,10 @@
 # TODO.md
 <!-- this_file: TODO.md -->
 
+## ALWAYS
+
+test the build & publish GH actions via `gh run`, analyze the logs, fix, iterate, keep updating @WORK.md @TODO.md @PLAN.md @CHANGELOG.md 
+
 ## Phase 3: Production Polish & Documentation ✅
 
 ### Task 1: Improve .gitignore Coverage ✅
