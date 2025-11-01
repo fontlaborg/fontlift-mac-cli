@@ -14,11 +14,17 @@
 - **Binary Size**: 1.6M (native), 3.2M (universal)
 - **Compiler Warnings**: 0
 - **Platform**: macOS 12.0+ (Intel + Apple Silicon)
-- **Source Lines**: 669 lines (main file)
+- **Source Lines**: 698 lines (main file)
 
 ### Recent Changes
 
 **v1.1.29** (2025-11-01 - IN DEVELOPMENT):
+- **Round 3: Bug Fixes & Robustness**
+  - Fixed critical bug: font name extraction after file deletion
+  - Added race condition protection for concurrent operations
+  - Enhanced error specificity with NSError code parsing
+  - Source lines: 669 → 698 lines (+29 lines)
+
 - **Round 2: Error Handling & Validation**
   - Enhanced list command error with troubleshooting steps
   - Added font format validation (.ttf, .otf, .ttc, .otc, .dfont)
@@ -33,7 +39,7 @@
   - Test count: 61 → 63 tests
   - Source lines: 564 → 630 lines (+66 lines)
 
-- **Overall Impact**: Major safety and usability improvements - prevents catastrophic errors and provides clear guidance
+- **Overall Impact**: Major safety, usability, and reliability improvements - fixed actual bugs, prevents catastrophic errors, provides clear guidance
 
 **v1.1.28** (2025-11-01):
 - Streamlined codebase by removing enterprise tooling

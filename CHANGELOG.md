@@ -35,17 +35,37 @@ All notable changes to fontlift-mac-cli will be documented in this file.
   - Suggests `atsutil databases -remove` and Console.app checks
   - All error messages now include actionable guidance
 
+### Fixed
+- **Critical Bug**: Font name extraction in remove command
+  - Was attempting to read font metadata AFTER file deletion (impossible!)
+  - Now extracts font name before deletion for accurate success messages
+  - Added fallback to filename if font metadata unavailable
+  - Ensures users see which font was actually removed
+
+- **Race Condition**: File deletion timing issue
+  - Added verification that file still exists immediately before deletion
+  - Graceful handling if file removed by another process
+  - Prevents confusing errors in concurrent scenarios
+  - Returns early with success message if file already gone
+
+- **Error Handling**: Improved specificity in remove command
+  - Parse NSError codes to provide targeted guidance
+  - NSFileNoSuchFileError treated as success (file already deleted)
+  - NSFileWriteNoPermissionError shows sudo suggestion
+  - NSFileReadNoSuchFileError explains parent directory missing
+
 ### Changed
 - Modified name resolution logic to collect all matches instead of using first match
 - Test count: 61 → 65 tests (added 4 new validation and protection tests)
 - Swift test count: 23 → 27 tests
-- Source file size: 564 → 669 lines (+105 lines for safety and validation)
+- Source file size: 564 → 698 lines (+134 lines total: +105 safety/validation, +29 bug fixes)
 
 ### Improved
 - **Safety**: Major improvement - tool can no longer accidentally break macOS
+- **Reliability**: Fixed actual bugs, added race condition protection
 - **Predictability**: Ambiguous operations now fail explicitly with guidance
 - **User Experience**: Clear error messages with actionable solutions
-- **Code Quality**: All 63 tests passing, zero compiler warnings
+- **Code Quality**: All 65 tests passing, zero compiler warnings
 
 ## [1.1.28] - 2025-11-01
 

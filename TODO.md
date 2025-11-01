@@ -1,6 +1,26 @@
 # TODO.md
 <!-- this_file: TODO.md -->
 
+## Quality & Robustness Improvements - Round 3 (Completed)
+
+### Round 3 Tasks (Bug Fixes & Robustness) ✅
+1. **Fixed font name extraction bug in remove command**
+   - Critical bug: was reading font metadata AFTER file deletion
+   - Now extracts name before deletion for accurate success messages
+   - Added fallback to filename if metadata unavailable
+
+2. **Race condition protection**
+   - Added file existence check immediately before deletion
+   - Graceful handling if file removed by another process
+   - Prevents confusing errors in concurrent scenarios
+
+3. **Enhanced error specificity in remove command**
+   - Parse NSError codes for targeted guidance
+   - Distinguish file-not-found (success) from permission-denied (error)
+   - Specific suggestions based on error type (e.g., suggest sudo)
+
+---
+
 ## Quality & Robustness Improvements - Round 2 (Completed)
 
 ### Round 2 Tasks (Error Handling & Validation) ✅
