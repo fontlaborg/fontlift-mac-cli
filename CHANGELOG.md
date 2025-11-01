@@ -5,6 +5,8 @@ All notable changes to fontlift-mac-cli will be documented in this file.
 
 ## [Unreleased]
 
+## [1.1.28] - 2025-11-01
+
 ### Added
 - **Phase 41 (Code Quality & Developer Experience Refinements)**:
   - **Task 41.1**: Shellcheck cleanup
