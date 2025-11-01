@@ -7,7 +7,7 @@
 
 **One-sentence scope**: Install, uninstall, list, and remove fonts on macOS via CLI, supporting both file paths and internal font names.
 
-**Current Version**: v1.1.10
+**Current Version**: v1.1.17
 
 ## Project Status
 
@@ -30,57 +30,70 @@
 - Automatic release note extraction
 - Version detection fallback mechanism
 
-**Quality & Testing** (v1.1.0+):
-- 23 comprehensive tests
+**Quality & Testing** (v1.1.0-v1.1.17):
+- 23 comprehensive tests (unit + scripts test suite)
 - CLI error handling tests
 - Project validation tests
+- Scripts workflow validation (build, test, publish)
 - Zero compiler warnings
 - Fast test execution (<5 seconds)
 
 ---
 
-## Phase 3: Production Polish (In Progress)
+## Phase 3: Production Polish ✅
 
-**Objective**: Small-scale refinements for better maintainability and robustness.
+**Completed**: All tasks finished in v1.1.7-v1.1.10
+- ✅ Improved .gitignore coverage
+- ✅ Enhanced build script safety with `set -euo pipefail`
+- ✅ Added comprehensive inline code documentation
 
-### Task 1: Improve .gitignore Coverage
-**Goal**: Ensure all build artifacts and temporary files are properly ignored.
+---
+
+## Phase 4: Quality & Reliability Improvements (In Progress)
+
+**Objective**: Strengthen testing infrastructure and improve error handling.
+
+### ✅ Task 1: Create Scripts Test Suite (Completed v1.1.17)
+**Goal**: Verify all bash scripts work correctly and handle errors properly.
+
+**Completed**:
+- Created Tests/scripts_test.sh with 23 automated tests
+- Tested build.sh, test.sh, publish.sh workflows (success, --ci, --help, error cases)
+- Tested validate-version.sh and get-version.sh
+- Integrated into main test.sh workflow
+- Prevented recursive invocation with SKIP_SCRIPT_TESTS environment flag
+
+**Results**:
+- 23/23 tests passing
+- All scripts verified for success and failure modes
+- CI mode verification working
+- Help text validation complete
+
+### Task 2: Add Version Command Validation
+**Goal**: Prevent runtime version mismatches between binary and code.
 
 **Implementation**:
-- Review current .gitignore file
-- Add common Swift/Xcode patterns
-- Add .DS_Store and OS temp files
-- Verify .build/ covered
-- Verify Package.resolved tracked (not ignored)
+- Add runtime version check in main CLI
+- Warn if mismatch detected in development builds
+- Add test for version consistency
 
 **Success Criteria**:
-- Clean `git status` after build
-- No unwanted files committable
+- Version validation at runtime
+- Clear warnings for mismatches
+- Documented verification process
 
-### Task 2: Enhance Build Script Safety
-**Goal**: Add stricter error handling to all bash scripts.
+### Task 3: Enhance Error Messages
+**Goal**: Provide clear, actionable error messages.
 
 **Implementation**:
-- Add `set -euo pipefail` to all scripts
-- Improve error messages
-- Ensure consistent error output
+- Review all error messages in fontlift.swift
+- Add specific file paths to errors
+- Include suggestions for common mistakes
+- Add examples in permission errors
 
 **Success Criteria**:
-- Scripts fail fast on any error
-- Clear error messages on failures
-
-### Task 3: Add Inline Code Documentation
-**Goal**: Document all functions and complex logic.
-
-**Implementation**:
-- Add Swift doc comments (///) to all commands
-- Explain validation logic in Uninstall/Remove
-- Document ArgumentParser choices
-
-**Success Criteria**:
-- All functions documented
-- Complex logic explained
-- Focus on "why" not "what"
+- All errors include actionable guidance
+- Common error patterns documented
 
 ---
 

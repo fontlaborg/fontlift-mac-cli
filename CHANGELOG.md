@@ -3,6 +3,23 @@
 
 All notable changes to fontlift-mac-cli will be documented in this file.
 
+## [Unreleased]
+
+### Foundation Infrastructure
+
+**Initial Release** - Swift Package structure, build automation, testing infrastructure, and documentation framework.
+
+## [1.1.17] - 2025-11-01
+
+### Added
+- Comprehensive scripts test suite (`Tests/scripts_test.sh`) with 23 automated tests
+- Tests for build.sh, test.sh, publish.sh, validate-version.sh, and get-version.sh
+- Binary functionality tests (--version, --help, command help texts)
+- Integrated scripts suite into main test.sh workflow
+
+### Fixed
+- Prevented `./test.sh --ci` from hanging by allowing the scripts suite to skip self-invocation during its own tests
+
 ## [1.1.10] - 2025-11-01
 
 ### Fixed
@@ -80,9 +97,3 @@ All notable changes to fontlift-mac-cli will be documented in this file.
 - Automated GitHub Actions CI/CD
 - Binary artifacts with SHA256 checksums
 - Zero compiler warnings
-
-## [Unreleased]
-
-### Foundation Infrastructure
-
-**Initial Release** - Swift Package structure, build automation, testing infrastructure, and documentation framework.
