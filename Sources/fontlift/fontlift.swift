@@ -10,9 +10,41 @@ import Foundation
 /// When updating, also update:
 /// - CHANGELOG.md (add new version section)
 /// - Git tag (git tag vX.Y.Z)
-private let version = "1.1.21"
+private let version = "1.1.22"
 
 // MARK: - Font Management Helpers
+
+/// Validate that a file path exists, is readable, and is a regular file
+/// - Parameter path: The file path to validate
+/// - Returns: True if valid, false otherwise with printed error
+func validateFilePath(_ path: String) -> Bool {
+    let fileManager = FileManager.default
+
+    // Check if path exists
+    guard fileManager.fileExists(atPath: path) else {
+        print("❌ Error: File not found at path: \(path)")
+        print("   Please check that the path is correct and the file exists")
+        return false
+    }
+
+    // Check if it's a regular file (not a directory)
+    var isDirectory: ObjCBool = false
+    fileManager.fileExists(atPath: path, isDirectory: &isDirectory)
+    guard !isDirectory.boolValue else {
+        print("❌ Error: Path is a directory, not a file: \(path)")
+        print("   Please specify a font file (.ttf, .otf, .ttc, .otc)")
+        return false
+    }
+
+    // Check if file is readable
+    guard fileManager.isReadableFile(atPath: path) else {
+        print("❌ Error: File is not readable: \(path)")
+        print("   Please check file permissions")
+        return false
+    }
+
+    return true
+}
 
 /// Get the PostScript name of a font from its file URL
 func getFontName(from url: URL) -> String? {
@@ -185,14 +217,12 @@ extension Fontlift {
         var fontPath: String
 
         func run() throws {
-            let url = URL(fileURLWithPath: fontPath)
-
-            // Check if file exists
-            guard FileManager.default.fileExists(atPath: fontPath) else {
-                print("❌ Error: Font file not found at path: \(fontPath)")
+            // Validate file path before attempting installation
+            guard validateFilePath(fontPath) else {
                 throw ExitCode.failure
             }
 
+            let url = URL(fileURLWithPath: fontPath)
             print("Installing font from: \(fontPath)")
 
             var error: Unmanaged<CFError>?

@@ -58,8 +58,33 @@ cd fontlift-mac-cli
 ### Uninstalling fonts and removing the font files
 
 - `fontlift remove FILEPATH` or `fontlift remove -p FILEPATH` uninstalls from the system the font (or all fonts in case of a .ttc or .otc) with the FILEPATH (and removes the file)
-- `fontlift remove -n FONTNAME` uninstalls the font with the given internal font name from the system (and removes the file) 
+- `fontlift remove -n FONTNAME` uninstalls the font with the given internal font name from the system (and removes the file)
 - `rm` should be the synonym for `remove`
+
+### Exit Codes
+
+`fontlift` follows standard Unix exit code conventions:
+
+- `0` - Success: Command completed successfully
+- `1` - Failure: Command failed (file not found, permission denied, invalid input, etc.)
+
+**Examples in shell scripts:**
+
+```bash
+# Check if font installed successfully
+if fontlift install /path/to/font.ttf; then
+    echo "Font installed successfully"
+else
+    echo "Failed to install font"
+fi
+
+# Capture exit code
+fontlift list > fonts.txt
+EXIT_CODE=$?
+if [ $EXIT_CODE -eq 0 ]; then
+    echo "Successfully listed fonts"
+fi
+```
 
 ---
 

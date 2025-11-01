@@ -9,6 +9,24 @@ All notable changes to fontlift-mac-cli will be documented in this file.
 
 **Initial Release** - Swift Package structure, build automation, testing infrastructure, and documentation framework.
 
+## [1.1.22] - 2025-11-01
+
+### Added
+- **Task 4.4**: Enhanced file path validation before operations
+  - Validates file exists, is readable, and is a regular file (not directory)
+  - Clear error messages with actionable guidance
+  - Checks added to Install command
+  - Prevents confusing errors from attempting operations on invalid paths
+
+- **Task 4.6**: Exit code documentation in README.md
+  - Documented exit codes (0 = success, 1 = failure)
+  - Added shell script examples for checking exit codes
+  - Improved CLI integration documentation
+
+### Verified
+- **Task 4.5**: All scripts confirmed to have this_file comments ✅
+- All 46 tests passing
+
 ## [1.1.21] - 2025-11-01
 
 ### Added

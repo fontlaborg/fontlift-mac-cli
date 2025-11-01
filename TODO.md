@@ -44,7 +44,27 @@ test the build & publish GH actions via `gh run`, analyze the logs, fix, iterate
 
 ---
 
-### Task 2: Add Version Command Validation
+### ~~⚡ Next Quick Wins (Small-Scale Improvements)~~ ✅ COMPLETED (v1.1.22)
+
+#### ~~Task 4.4: Add File Path Validation Before Operations~~ ✅
+- ✅ Add path validation function (exists, readable, is file)
+- ✅ Use validation in Install command before attempting installation
+- ✅ Improve error message to include actual file path and issue
+- ✅ Tested with nonexistent file and directory
+- ✅ Documented in CHANGELOG
+
+#### ~~Task 4.5: Add .this_file Comments to All Scripts~~ ✅
+- ✅ Verified all scripts already have this_file comments
+- ✅ All scripts compliant with CLAUDE.md guidelines
+
+#### ~~Task 4.6: Add Exit Code Documentation~~ ✅
+- ✅ Document exit codes in README.md
+- ✅ Add examples of checking exit codes in shell scripts
+- ✅ All exit codes are consistent (0=success, 1=failure)
+
+---
+
+### Task 2: Add Version Command Validation (Medium Priority)
 **Goal**: Prevent runtime version mismatches between binary and code.
 
 - [ ] Add runtime version check in main CLI
@@ -53,7 +73,7 @@ test the build & publish GH actions via `gh run`, analyze the logs, fix, iterate
 - [ ] Add test for version consistency
 - [ ] Document version verification process
 
-### Task 3: Enhance Error Messages with Actionable Guidance
+### Task 3: Enhance Error Messages with Actionable Guidance (Medium Priority)
 **Goal**: Provide clear, actionable error messages that help users fix problems.
 
 - [ ] Review all error messages in fontlift.swift
