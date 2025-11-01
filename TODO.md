@@ -1,6 +1,28 @@
 # TODO.md
 <!-- this_file: TODO.md -->
 
+## Quality & Robustness Improvements - Round 10 (In Progress)
+
+### Round 10 Tasks (Repository Cleanup) 🔄
+1. **Remove duplicate documentation files**
+   - AGENTS.md, GEMINI.md, LLXPRT.md, QWEN.md are all duplicates of CLAUDE.md
+   - All 4 files are identical (26301 bytes each)
+   - These appear to be LLM-specific copies that are no longer needed
+   - Reduces repository bloat by ~102KB
+
+2. **Remove outdated STREAMLINE files**
+   - STREAMLINE_PLAN.md and STREAMLINE_STATUS.md are from earlier cleanup effort
+   - Phase 1 completed, remaining phases not relevant to current state
+   - Project is already streamlined (v1.1.29, 741 lines main file)
+   - These files add confusion about project status
+
+3. **Verify .gitignore correctness**
+   - Ensure removed files aren't tracked
+   - Confirm no unnecessary entries
+   - Keep .gitignore minimal and relevant
+
+---
+
 ## Quality & Robustness Improvements - Round 9 (Completed)
 
 ### Round 9 Tasks (Test Count Consistency) ✅
