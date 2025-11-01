@@ -449,9 +449,13 @@ extension Fontlift {
                 print("Uninstalling font by name: \(fontName)")
 
                 guard let fontURLs = CTFontManagerCopyAvailableFontURLs() as? [URL] else {
-                    print("❌ Error: Could not retrieve font list")
+                    print("❌ Error: Could not retrieve font list from system")
                     print("   This may indicate a system font database issue")
-                    print("   Try: sudo fc-cache -f -v (if fc-cache is installed)")
+                    print("")
+                    print("   Troubleshooting:")
+                    print("   - Restart your Mac to rebuild font cache")
+                    print("   - Run: sudo atsutil databases -remove")
+                    print("   - Check Console.app for system font errors")
                     throw ExitCode.failure
                 }
 
@@ -480,10 +484,10 @@ extension Fontlift {
                     print("   Matching fonts:")
                     for (index, url) in matchingURLs.enumerated() {
                         print("   \(index + 1). \(url.path)")
+                        print("        fontlift uninstall \(shellEscape(url.path))")
                     }
                     print("")
-                    print("   Please specify the font by its file path instead:")
-                    print("   fontlift uninstall /path/to/font.ttf")
+                    print("   Copy and run one of the commands above to uninstall the specific font.")
                     throw ExitCode.failure
                 }
 
@@ -600,9 +604,13 @@ extension Fontlift {
                 print("Removing font by name: \(fontName)")
 
                 guard let fontURLs = CTFontManagerCopyAvailableFontURLs() as? [URL] else {
-                    print("❌ Error: Could not retrieve font list")
+                    print("❌ Error: Could not retrieve font list from system")
                     print("   This may indicate a system font database issue")
-                    print("   Try: sudo fc-cache -f -v (if fc-cache is installed)")
+                    print("")
+                    print("   Troubleshooting:")
+                    print("   - Restart your Mac to rebuild font cache")
+                    print("   - Run: sudo atsutil databases -remove")
+                    print("   - Check Console.app for system font errors")
                     throw ExitCode.failure
                 }
 
@@ -631,10 +639,10 @@ extension Fontlift {
                     print("   Matching fonts:")
                     for (index, url) in matchingURLs.enumerated() {
                         print("   \(index + 1). \(url.path)")
+                        print("        fontlift remove \(shellEscape(url.path))")
                     }
                     print("")
-                    print("   Please specify the font by its file path instead:")
-                    print("   fontlift remove /path/to/font.ttf")
+                    print("   Copy and run one of the commands above to remove the specific font.")
                     throw ExitCode.failure
                 }
 
