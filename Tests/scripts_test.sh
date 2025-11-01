@@ -66,7 +66,7 @@ echo ""
 # Test validate-version.sh
 echo "Testing validate-version.sh..."
 run_test "validate-version.sh --help shows help" "./scripts/validate-version.sh --help | grep -q 'Usage:'"
-run_test "validate-version.sh matches current version" "./scripts/validate-version.sh 1.1.17"
+run_test "validate-version.sh matches current version" "./scripts/validate-version.sh 1.1.20"
 run_test "validate-version.sh rejects invalid semver" "! ./scripts/validate-version.sh 1.1 2>&1"
 run_test "validate-version.sh requires argument" "! ./scripts/validate-version.sh 2>&1"
 echo ""
@@ -74,7 +74,7 @@ echo ""
 # Test get-version.sh
 echo "Testing get-version.sh..."
 run_test "get-version.sh extracts version" "./scripts/get-version.sh | grep -q '^[0-9]\\+\\.[0-9]\\+\\.[0-9]\\+$'"
-run_test "get-version.sh matches code" "[ \"\$(./scripts/get-version.sh)\" = \"1.1.17\" ]"
+run_test "get-version.sh matches code" "[ \"\$(./scripts/get-version.sh)\" = \"1.1.20\" ]"
 echo ""
 
 # Test fontlift binary
