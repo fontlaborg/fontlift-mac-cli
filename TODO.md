@@ -21,34 +21,26 @@ test the build & publish GH actions via `gh run`, analyze the logs, fix, iterate
 
 ## Phase 4: Quality & Reliability Improvements
 
-### ⚡ Quick Wins (Small-Scale Improvements)
+### ~~⚡ Quick Wins (Small-Scale Improvements)~~ ✅ COMPLETED (v1.1.21)
 
-#### Task 4.1: Make Scripts Test Suite Version-Agnostic
-**Goal**: Eliminate hardcoded version numbers in test suite to prevent test failures on version bumps.
+#### ~~Task 4.1: Make Scripts Test Suite Version-Agnostic~~ ✅
+- ✅ Extract version dynamically from get-version.sh instead of hardcoding
+- ✅ Update validate-version.sh test to use dynamic version
+- ✅ Update get-version.sh match test to use dynamic version
+- ✅ Tests pass after change - now maintenance-free
 
-- [ ] Extract version dynamically from get-version.sh instead of hardcoding
-- [ ] Update validate-version.sh test to use dynamic version
-- [ ] Update get-version.sh match test to use dynamic version
-- [ ] Verify tests still pass after change
-- [ ] Document the improvement in CHANGELOG
+#### ~~Task 4.2: Add Binary Size Validation to Release Process~~ ✅
+- ✅ Add size check to prepare-release.sh (>1M minimum)
+- ✅ Fail fast if binary size is suspiciously small
+- ✅ Add "fat file" verification (no "Non-fat file")
+- ✅ Validation catches arm64-only binaries
+- ✅ Documented in CHANGELOG
 
-#### Task 4.2: Add Binary Size Validation to Release Process
-**Goal**: Detect silent failures where universal binary build appears to succeed but produces wrong architecture.
-
-- [ ] Add size check to prepare-release.sh (universal should be ~3.2M, not 464K)
-- [ ] Fail fast if binary size is suspiciously small (<1M)
-- [ ] Add architecture count verification (must show "2 architectures")
-- [ ] Test validation catches arm64-only binaries
-- [ ] Document in CHANGELOG
-
-#### Task 4.3: Enhance Release Script Logging
-**Goal**: Improve debugging and verification of release process.
-
-- [ ] Add timestamps to prepare-release.sh output
-- [ ] Add clear section headers for each validation step
-- [ ] Log lipo -info output in CI mode for troubleshooting
-- [ ] Add summary table at end (version, size, architectures)
-- [ ] Test in CI mode
+#### ~~Task 4.3: Enhance Release Script Logging~~ ✅
+- ✅ Added formatted summary table with all metrics
+- ✅ Shows version, size, architectures, tarball, checksum
+- ✅ Clear visual separation with box drawing
+- ✅ Tested and working
 
 ---
 

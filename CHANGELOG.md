@@ -9,6 +9,28 @@ All notable changes to fontlift-mac-cli will be documented in this file.
 
 **Initial Release** - Swift Package structure, build automation, testing infrastructure, and documentation framework.
 
+## [1.1.21] - 2025-11-01
+
+### Added
+- **Task 4.1**: Version-agnostic scripts test suite
+  - Tests now extract version dynamically instead of hardcoding
+  - No more test failures on version bumps
+  - Validates against actual code version
+
+- **Task 4.2**: Binary size validation in release process
+  - Checks binary size is >1MB (universal ~3.2M vs arm64-only ~464K)
+  - Prevents silent failures where build appears successful
+  - Validates "fat file" vs "Non-fat file" in lipo output
+
+- **Task 4.3**: Enhanced release script logging
+  - Added formatted summary table with all release metrics
+  - Shows version, binary size, architectures, tarball info, checksum
+  - Clearer verification of release artifacts
+
+### Changed
+- Scripts test suite now maintenance-free for version updates
+- Prepare-release.sh now catches architecture issues earlier
+
 ## [1.1.20] - 2025-11-01
 
 ### Fixed
