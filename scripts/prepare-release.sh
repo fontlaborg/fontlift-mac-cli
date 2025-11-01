@@ -64,6 +64,19 @@ fi
 echo -e "${BLUE}🔍 Verifying binary architecture...${NC}"
 LIPO_INFO=$(lipo -info "${BINARY_PATH}" 2>&1)
 
+# Check binary size (universal binary should be ~3.2M, arm64-only is ~464K)
+BINARY_SIZE=$(stat -f%z "${BINARY_PATH}" 2>/dev/null || stat -c%s "${BINARY_PATH}" 2>/dev/null)
+BINARY_SIZE_MB=$((BINARY_SIZE / 1048576))
+MIN_SIZE_BYTES=$((1 * 1048576))  # 1 MB minimum
+
+if [ "$BINARY_SIZE" -lt "$MIN_SIZE_BYTES" ]; then
+    echo -e "${RED}❌ Error: Binary size is suspiciously small${NC}"
+    echo "Expected: ~3.2M (universal binary)"
+    echo "Actual: $(numfmt --to=iec-i --suffix=B $BINARY_SIZE 2>/dev/null || echo \"${BINARY_SIZE_MB}M\")"
+    echo "This likely indicates an architecture-specific binary, not universal"
+    exit 1
+fi
+
 if ! echo "$LIPO_INFO" | grep -q "x86_64"; then
     echo -e "${RED}❌ Error: Binary is missing x86_64 architecture${NC}"
     echo "Expected: Universal binary (x86_64 + arm64)"
@@ -78,7 +91,16 @@ if ! echo "$LIPO_INFO" | grep -q "arm64"; then
     exit 1
 fi
 
+# Verify it shows "fat file" or multiple architectures (not "Non-fat file")
+if echo "$LIPO_INFO" | grep -q "Non-fat file"; then
+    echo -e "${RED}❌ Error: Binary is not a universal (fat) binary${NC}"
+    echo "Expected: Universal binary with multiple architectures"
+    echo "Actual: $LIPO_INFO"
+    exit 1
+fi
+
 echo -e "${GREEN}✅ Binary is universal (x86_64 + arm64)${NC}"
+echo "Size: $(numfmt --to=iec-i --suffix=B $BINARY_SIZE 2>/dev/null || echo \"${BINARY_SIZE_MB}M\")"
 
 # Extract version from binary
 echo -e "${BLUE}📦 Extracting version from binary...${NC}"
@@ -154,11 +176,16 @@ fi
 echo ""
 echo -e "${GREEN}✅ Release artifacts prepared successfully!${NC}"
 echo ""
-echo "Artifacts in ${DIST_DIR}:"
-echo "  - ${TARBALL_NAME} (${TARBALL_SIZE})"
-echo "  - ${CHECKSUM_NAME}"
-echo ""
-echo "Version: ${VERSION}"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo "📋 Release Summary"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+printf "%-20s %s\n" "Version:" "${VERSION}"
+printf "%-20s %s\n" "Binary Size:" "$(numfmt --to=iec-i --suffix=B $BINARY_SIZE 2>/dev/null || echo \"${BINARY_SIZE_MB}M\")"
+printf "%-20s %s\n" "Architectures:" "x86_64, arm64"
+printf "%-20s %s\n" "Tarball:" "${TARBALL_NAME}"
+printf "%-20s %s\n" "Tarball Size:" "${TARBALL_SIZE}"
+printf "%-20s %s\n" "Checksum:" "${CHECKSUM}"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo ""
 echo "To test extraction:"
 echo "  tar -xzf ${TARBALL_PATH} && ./fontlift --version"
