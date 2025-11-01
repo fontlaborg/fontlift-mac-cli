@@ -1,6 +1,21 @@
 # TODO.md
 <!-- this_file: TODO.md -->
 
+## Quality & Robustness Improvements - Round 6 (Completed)
+
+### Round 6 Tasks (Documentation & Correctness) ✅
+1. **Fixed incorrect command suggestion**
+   - Corrected `sudo atsutil databases -remove` to `atsutil databases -remove`
+   - atsutil doesn't require sudo for user-level operations
+   - Fixed in 3 locations across error messages
+
+2. **Updated PLAN.md for v1.1.29**
+   - Updated version from v1.1.28 to v1.1.29
+   - Updated test count from 61 to 65 tests
+   - Ensures documentation consistency
+
+---
+
 ## Quality & Robustness Improvements - Round 5 (Completed)
 
 ### Round 5 Tasks (Consistency & Polish) ✅

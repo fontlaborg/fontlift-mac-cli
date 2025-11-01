@@ -19,6 +19,10 @@
 ### Recent Changes
 
 **v1.1.29** (2025-11-01 - IN DEVELOPMENT):
+- **Round 6: Documentation & Correctness**
+  - Fixed incorrect command suggestion (removed sudo from atsutil)
+  - Updated PLAN.md to v1.1.29 and 65 tests
+
 - **Round 5: Consistency & Polish**
   - Standardized error messages for font list retrieval
   - Enhanced shell-escaped command suggestions in ambiguous name errors

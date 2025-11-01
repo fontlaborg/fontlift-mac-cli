@@ -54,6 +54,13 @@ All notable changes to fontlift-mac-cli will be documented in this file.
   - Users can copy-paste suggested commands directly, even with special characters in paths
 
 ### Fixed
+- **Incorrect Command Suggestions**: Fixed atsutil command guidance
+  - Corrected `sudo atsutil databases -remove` to `atsutil databases -remove`
+  - atsutil doesn't require sudo for user-level font database operations
+  - Fixed in 3 error message locations across list, uninstall, and remove commands
+  - Prevents users from unnecessarily escalating privileges
+
+
 - **Critical Bug**: Font name extraction in remove command
   - Was attempting to read font metadata AFTER file deletion (impossible!)
   - Now extracts font name before deletion for accurate success messages
