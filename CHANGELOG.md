@@ -9,6 +9,19 @@ All notable changes to fontlift-mac-cli will be documented in this file.
 
 **Initial Release** - Swift Package structure, build automation, testing infrastructure, and documentation framework.
 
+## [1.1.23] - 2025-11-01
+
+### Added
+- **Task 4.2 (Phase 4)**: Version validation command
+  - Added `fontlift verify-version` command for development/testing
+  - Compares binary version against source code version
+  - Detects version mismatches with actionable error messages
+  - Helps catch version inconsistencies during development
+  - Added 2 new tests to scripts test suite
+
+### Changed
+- Test suite now includes 25 script tests (was 23)
+
 ## [1.1.22] - 2025-11-01
 
 ### Added

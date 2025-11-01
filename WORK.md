@@ -154,13 +154,29 @@ $ ls -lh fontlift
 - Binary verified: Universal (x86_64 + arm64, 3.2M)
 - Better error messages and documentation
 
-### Next Tasks 🎯
+### Recent Work: Version Command Validation (v1.1.23) ✅
 
-**Phase 4 Task 2: Add Version Command Validation**
-- Add runtime version check in main CLI
-- Compare binary version with actual code version
-- Warn if mismatch detected (for development builds)
-- Add test for version consistency
+**Phase 4 Task 2: Add Version Command Validation** (COMPLETED)
+- ✅ Added `fontlift verify-version` subcommand
+- ✅ Compares binary version with source code version
+- ✅ Detects mismatches with actionable error messages
+- ✅ Added 2 new tests to scripts test suite
+- ✅ All 48 tests passing (23 Swift + 25 Script)
+
+**Implementation Details**:
+- Created VerifyVersion ParsableCommand subcommand
+- Uses get-version.sh to extract source code version
+- Compares against compiled binary version constant
+- Provides clear guidance when mismatches detected
+- Intended for development/debugging use
+
+**Results**:
+- All 48 tests passing (23 Swift + 25 Script tests)
+- v1.1.23 ready for release
+- Binary verified: Universal (x86_64 + arm64)
+- Version validation working correctly
+
+### Next Tasks 🎯
 
 **Phase 4 Task 3: Enhance Error Messages**
 - Review all error messages in fontlift.swift
