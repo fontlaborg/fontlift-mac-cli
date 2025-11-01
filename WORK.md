@@ -8,7 +8,7 @@
 
 ### Core Metrics
 
-- **Test Suite**: 65 tests passing (23 Swift + 25 Scripts + 17 Integration)
+- **Test Suite**: 61 tests passing (23 Swift + 23 Scripts + 15 Integration)
 - **Test Execution**: ~20s
 - **Build Time**: ~6-8s (release mode)
 - **Binary Size**: 1.6M (native), 3.2M (universal)
@@ -18,9 +18,11 @@
 ### Recent Changes
 
 **v1.1.28** (2025-11-01):
-- Added `./test.sh --check-all` for comprehensive quality checks
-- Enhanced commit-helper.sh with untracked files warning
-- Fixed shellcheck warnings across all scripts
+- Streamlined codebase by removing enterprise tooling
+- Removed VerifyVersion command (use scripts/validate-version.sh instead)
+- Removed development helper scripts (commit-helper, verify-ci-config, etc.)
+- Simplified to core font management functionality
+- Test count: 65 → 61 tests (removed enterprise feature tests)
 
 **v1.1.27** (2025-11-01):
 - Added CI/CD configuration validation

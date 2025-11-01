@@ -69,7 +69,6 @@ echo "Testing command help texts..."
 run_test "Install help" "$BINARY install --help | grep -q 'Install fonts'"
 run_test "Uninstall help" "$BINARY uninstall --help | grep -q 'Uninstall fonts'"
 run_test "Remove help" "$BINARY remove --help | grep -q 'Remove fonts'"
-run_test "Verify-version help" "$BINARY verify-version --help | grep -q 'Verify version'"
 echo ""
 
 # Test 4: Error handling
@@ -78,11 +77,6 @@ run_test "Install nonexistent file fails" "! $BINARY install /nonexistent/font.t
 run_test "Uninstall nonexistent font fails" "! $BINARY uninstall -n NonExistentFont12345 2>&1 | grep -q 'not found'"
 run_test "Install without args fails" "! $BINARY install 2>&1"
 run_test "Uninstall without args fails" "! $BINARY uninstall 2>&1"
-echo ""
-
-# Test 5: Version verification
-echo "Testing version verification..."
-run_test "Verify-version detects match" "$BINARY verify-version | grep -q 'Version consistency verified'"
 echo ""
 
 # Print summary

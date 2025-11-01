@@ -7,26 +7,6 @@
 # Options:
 #   --ci        CI mode (skip installation, just verify binary)
 #   --help      Show this help message
-#
-# Exit Codes:
-#   0  Installation/verification successful
-#   1  Installation/verification failed
-#
-# Dependencies:
-#   (none - uses only bash built-ins and standard Unix tools)
-#
-# Common Errors:
-#   "Binary not found at .build/release/fontlift"
-#     - Build must be run before publish
-#     - Try: Run ./build.sh to build the binary first
-#
-#   "Permission denied" when copying to /usr/local/bin
-#     - Need sudo permissions to install system-wide
-#     - Script will automatically prompt for sudo if needed
-#
-#   "fontlift not in PATH" after installation
-#     - /usr/local/bin not in PATH environment variable
-#     - Try: Add 'export PATH="/usr/local/bin:$PATH"' to ~/.zshrc or ~/.bashrc
 
 set -euo pipefail  # Exit on error, undefined vars, pipe failures
 cd "$(dirname "$0")"
@@ -86,9 +66,6 @@ done
 # Change to project root (where this script is located)
 cd "$(dirname "$0")"
 
-# Record start time for performance monitoring
-PUBLISH_START=$(date +%s)
-
 INSTALL_DIR="/usr/local/bin"
 BINARY_NAME="fontlift"
 SOURCE_BINARY=".build/release/${BINARY_NAME}"
@@ -99,13 +76,11 @@ if [ "$CI_MODE" = true ]; then
 
     if [ ! -f "${SOURCE_BINARY}" ]; then
         echo "❌ Error: Binary not found at ${SOURCE_BINARY}"
-        echo "   Try: Run ./build.sh to build the binary first"
         exit 1
     fi
 
     if [ ! -x "${SOURCE_BINARY}" ]; then
         echo "❌ Error: Binary is not executable"
-        echo "   Try: chmod +x ${SOURCE_BINARY}"
         exit 1
     fi
 
@@ -114,11 +89,7 @@ if [ "$CI_MODE" = true ]; then
     "${SOURCE_BINARY}" --version >/dev/null 2>&1
     "${SOURCE_BINARY}" --help >/dev/null 2>&1
 
-    # Calculate publish duration
-    PUBLISH_END=$(date +%s)
-    PUBLISH_DURATION=$((PUBLISH_END - PUBLISH_START))
-
-    echo "✅ Binary verified successfully (${PUBLISH_DURATION}s)"
+    echo "✅ Binary verified successfully"
     exit 0
 fi
 
@@ -136,7 +107,6 @@ fi
 # Check if install directory exists
 if [ ! -d "${INSTALL_DIR}" ]; then
     echo "❌ Error: ${INSTALL_DIR} does not exist"
-    echo "Create it with: sudo mkdir -p ${INSTALL_DIR}"
     exit 1
 fi
 
@@ -163,20 +133,9 @@ fi
 
 # Verify installation
 if command -v fontlift &> /dev/null; then
-    # Calculate publish duration
-    PUBLISH_END=$(date +%s)
-    PUBLISH_DURATION=$((PUBLISH_END - PUBLISH_START))
-
     echo ""
     echo "✅ Installation successful!"
     echo "Version: $(fontlift --version 2>&1 | head -1)"
-    echo "⏱️  Publish time: ${PUBLISH_DURATION}s"
-
-    # Baseline: <2s (just copy operation)
-    if [ "$PUBLISH_DURATION" -gt 3 ]; then
-        echo "⚠️  Warning: Publish slower than baseline (~2s + 20% = 3s)"
-    fi
-
     echo ""
     echo "Usage: fontlift --help"
 else

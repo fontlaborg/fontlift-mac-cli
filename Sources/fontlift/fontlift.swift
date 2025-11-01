@@ -130,8 +130,7 @@ struct Fontlift: ParsableCommand {
             List.self,
             Install.self,
             Uninstall.self,
-            Remove.self,
-            VerifyVersion.self
+            Remove.self
         ]
     )
 }
@@ -563,88 +562,3 @@ extension Fontlift {
     }
 }
 
-// MARK: - Verify Version Command
-extension Fontlift {
-    /// Verify version consistency between binary and source code.
-    ///
-    /// This command helps detect version mismatches during development,
-    /// such as when a binary is built from old code but reports a different version.
-    ///
-    /// The command compares:
-    /// - Binary version: The version compiled into this binary (from --version)
-    /// - Source version: The version defined in Sources/fontlift/fontlift.swift
-    ///
-    /// ⚠️ Note: This command requires access to the source code and scripts/get-version.sh.
-    /// It's intended for development and testing, not for end users of distributed binaries.
-    ///
-    /// Example usage:
-    /// ```bash
-    /// fontlift verify-version              # Check version consistency
-    /// ```
-    struct VerifyVersion: ParsableCommand {
-        static let configuration = CommandConfiguration(
-            commandName: "verify-version",
-            abstract: "Verify version consistency (development tool)"
-        )
-
-        func run() throws {
-            // Binary version is the version compiled into this executable
-            let binaryVersion = version
-
-            print("🔍 Verifying version consistency...")
-            print("Binary version: \(binaryVersion)")
-
-            // Try to get source code version by running get-version.sh
-            let scriptPath = "scripts/get-version.sh"
-
-            // Check if script exists
-            guard FileManager.default.fileExists(atPath: scriptPath) else {
-                print("⚠️  Warning: Cannot find \(scriptPath)")
-                print("   This command requires access to the source repository")
-                print("   Binary version: \(binaryVersion)")
-                throw ExitCode.failure
-            }
-
-            // Run get-version.sh to extract version from source code
-            let process = Process()
-            let pipe = Pipe()
-
-            process.executableURL = URL(fileURLWithPath: "/bin/bash")
-            process.arguments = [scriptPath]
-            process.standardOutput = pipe
-            process.standardError = pipe
-
-            do {
-                try process.run()
-                process.waitUntilExit()
-
-                let data = pipe.fileHandleForReading.readDataToEndOfFile()
-                guard let output = String(data: data, encoding: .utf8)?.trimmingCharacters(in: .whitespacesAndNewlines),
-                      !output.isEmpty else {
-                    print("❌ Error: Could not extract version from source code")
-                    throw ExitCode.failure
-                }
-
-                let sourceVersion = output
-                print("Source version:  \(sourceVersion)")
-
-                if binaryVersion == sourceVersion {
-                    print("✅ Version consistency verified: \(binaryVersion)")
-                } else {
-                    print("❌ Version mismatch detected!")
-                    print("   Binary version: \(binaryVersion)")
-                    print("   Source version: \(sourceVersion)")
-                    print("")
-                    print("   This usually means:")
-                    print("   - The binary was built from older/newer code")
-                    print("   - Version constant in source was changed without rebuilding")
-                    print("   - You need to rebuild: swift build -c release")
-                    throw ExitCode.failure
-                }
-            } catch let error as NSError {
-                print("❌ Error running version script: \(error.localizedDescription)")
-                throw ExitCode.failure
-            }
-        }
-    }
-}

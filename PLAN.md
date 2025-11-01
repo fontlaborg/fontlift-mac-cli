@@ -56,8 +56,8 @@ fontlift-mac-cli/
 │   └── fontlift.swift          # Main CLI implementation
 ├── Tests/
 │   ├── fontliftTests/          # Swift unit tests (23)
-│   ├── scripts_test.sh         # Script tests (25)
-│   └── integration_test.sh     # Integration tests (17)
+│   ├── scripts_test.sh         # Script tests (23)
+│   └── integration_test.sh     # Integration tests (15)
 ├── scripts/
 │   ├── get-version.sh          # Extract version from code
 │   ├── validate-version.sh     # Validate version consistency
@@ -76,7 +76,7 @@ fontlift-mac-cli/
 
 **Code Quality**:
 - ✅ Zero compiler warnings
-- ✅ All tests passing (65 total)
+- ✅ All tests passing (61 total)
 - ✅ Functions <20 lines
 - ✅ Clean, readable code
 

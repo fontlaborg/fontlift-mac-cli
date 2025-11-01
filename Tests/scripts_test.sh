@@ -86,8 +86,6 @@ run_test "fontlift list --help works" ".build/release/fontlift list --help | gre
 run_test "fontlift install --help works" ".build/release/fontlift install --help | grep -q 'Install fonts'"
 run_test "fontlift uninstall --help works" ".build/release/fontlift uninstall --help | grep -q 'Uninstall fonts'"
 run_test "fontlift remove --help works" ".build/release/fontlift remove --help | grep -q 'Remove fonts'"
-run_test "fontlift verify-version --help works" ".build/release/fontlift verify-version --help | grep -q 'Verify version consistency'"
-run_test "fontlift verify-version detects match" ".build/release/fontlift verify-version | grep -q 'Version consistency verified'"
 echo ""
 
 # Print summary
