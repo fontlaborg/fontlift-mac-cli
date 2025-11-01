@@ -68,8 +68,22 @@ if [ "$CI_MODE" = false ]; then
     echo ""
 fi
 
-# Run tests with verbose output
+# Run Swift tests with verbose output
 swift test --parallel
+
+if [ "$CI_MODE" = false ]; then
+    echo ""
+fi
+
+# Run scripts tests if they exist
+if [ -f "tests/scripts_test.sh" ]; then
+    if [ "$CI_MODE" = false ]; then
+        echo ""
+        echo "Running scripts test suite..."
+        echo ""
+    fi
+    ./tests/scripts_test.sh
+fi
 
 if [ "$CI_MODE" = false ]; then
     echo ""
