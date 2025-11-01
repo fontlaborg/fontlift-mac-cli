@@ -7,6 +7,26 @@ test the build & publish GH actions via `gh run`, analyze the logs, fix, iterate
 
 ---
 
+## CRITICAL: Fix Universal Binary in GitHub Actions
+
+**Problem**: GitHub Actions releases are producing arm64-only binaries instead of universal (x86_64 + arm64) binaries.
+
+**Options**:
+1. [ ] Fix universal build process to work in GitHub Actions ARM runners
+2. [ ] Alternative: Create separate artifacts for x86_64 and arm64 architectures
+   - [ ] Build x86_64 binary separately
+   - [ ] Build arm64 binary separately
+   - [ ] Upload both as separate release artifacts (fontlift-x86_64-macos.tar.gz and fontlift-arm64-macos.tar.gz)
+   - [ ] Add installation instructions for users to download correct architecture
+
+**Investigation findings**:
+- Local `./build.sh --universal` works correctly (creates true universal binary)
+- GitHub Actions workflow calls `./build.sh --ci --universal` but produces arm64-only binary
+- Enhanced build.sh with verification steps to catch the issue early
+- Need to test in CI to see exact failure point
+
+---
+
 ## Phase 4: Quality & Reliability Improvements
 
 ### Task 2: Add Version Command Validation

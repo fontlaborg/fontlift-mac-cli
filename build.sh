@@ -93,13 +93,22 @@ if [ "$UNIVERSAL_BUILD" = true ]; then
     if [ "$CI_MODE" = false ]; then
         echo "Building for x86_64 (Intel)..."
     fi
-    swift build -c release --arch x86_64
+
+    if ! swift build -c release --arch x86_64; then
+        echo "❌ Error: Failed to build for x86_64"
+        echo "This may indicate cross-compilation is not supported on this system"
+        exit 1
+    fi
 
     # Build for arm64 (Apple Silicon)
     if [ "$CI_MODE" = false ]; then
         echo "Building for arm64 (Apple Silicon)..."
     fi
-    swift build -c release --arch arm64
+
+    if ! swift build -c release --arch arm64; then
+        echo "❌ Error: Failed to build for arm64"
+        exit 1
+    fi
 
     # Create universal binary using lipo
     if [ "$CI_MODE" = false ]; then
@@ -113,22 +122,68 @@ if [ "$UNIVERSAL_BUILD" = true ]; then
     # Ensure output directory exists
     mkdir -p .build/release
 
+    # Verify architecture-specific binaries exist
+    if [ ! -f "${BINARY_X86}" ]; then
+        echo "❌ Error: x86_64 binary not found at ${BINARY_X86}"
+        echo "Cross-compilation to x86_64 may not be supported on this system"
+        exit 1
+    fi
+
+    if [ ! -f "${BINARY_ARM}" ]; then
+        echo "❌ Error: arm64 binary not found at ${BINARY_ARM}"
+        exit 1
+    fi
+
+    # Verify each binary is the correct architecture
+    if [ "$CI_MODE" = false ]; then
+        echo "Verifying architecture-specific binaries..."
+    fi
+
+    X86_ARCH=$(lipo -info "${BINARY_X86}" 2>/dev/null | grep -o "x86_64" || echo "")
+    ARM_ARCH=$(lipo -info "${BINARY_ARM}" 2>/dev/null | grep -o "arm64" || echo "")
+
+    if [ -z "$X86_ARCH" ]; then
+        echo "❌ Error: ${BINARY_X86} is not an x86_64 binary"
+        lipo -info "${BINARY_X86}" || true
+        exit 1
+    fi
+
+    if [ -z "$ARM_ARCH" ]; then
+        echo "❌ Error: ${BINARY_ARM} is not an arm64 binary"
+        lipo -info "${BINARY_ARM}" || true
+        exit 1
+    fi
+
     # Combine binaries
-    if [ -f "${BINARY_X86}" ] && [ -f "${BINARY_ARM}" ]; then
-        lipo -create "${BINARY_X86}" "${BINARY_ARM}" -output "${BINARY_UNIVERSAL}"
-    else
-        echo "❌ Error: Architecture-specific binaries not found"
-        echo "  x86_64: ${BINARY_X86} ($([ -f "${BINARY_X86}" ] && echo 'exists' || echo 'missing'))"
-        echo "  arm64:  ${BINARY_ARM} ($([ -f "${BINARY_ARM}" ] && echo 'exists' || echo 'missing'))"
+    if ! lipo -create "${BINARY_X86}" "${BINARY_ARM}" -output "${BINARY_UNIVERSAL}"; then
+        echo "❌ Error: Failed to create universal binary with lipo"
         exit 1
     fi
 
     # Verify universal binary
     BINARY_PATH="${BINARY_UNIVERSAL}"
+
+    # CRITICAL: Verify the output is actually universal
+    LIPO_OUTPUT=$(lipo -info "${BINARY_PATH}" 2>&1)
+    if ! echo "$LIPO_OUTPUT" | grep -q "x86_64"; then
+        echo "❌ Error: Universal binary missing x86_64 architecture"
+        echo "lipo output: $LIPO_OUTPUT"
+        exit 1
+    fi
+
+    if ! echo "$LIPO_OUTPUT" | grep -q "arm64"; then
+        echo "❌ Error: Universal binary missing arm64 architecture"
+        echo "lipo output: $LIPO_OUTPUT"
+        exit 1
+    fi
+
     if [ "$CI_MODE" = false ]; then
         echo ""
         echo "Architectures in binary:"
         lipo -info "${BINARY_PATH}"
+    else
+        # In CI mode, still show architecture verification
+        echo "Universal binary verified: x86_64 + arm64"
     fi
 else
     # Standard build for current architecture
