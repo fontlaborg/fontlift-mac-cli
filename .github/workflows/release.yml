@@ -48,11 +48,11 @@ jobs:
       - name: Build release binary (universal)
         run: ./build.sh --ci --universal
 
-      - name: Run tests
-        run: ./test.sh --ci
-
       - name: Prepare release artifacts
         run: ./scripts/prepare-release.sh
+
+      # Note: Tests are already run in CI workflow on every push
+      # Running tests here would overwrite the universal binary with a native-only debug binary
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4

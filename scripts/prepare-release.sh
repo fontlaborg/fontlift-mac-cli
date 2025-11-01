@@ -60,6 +60,26 @@ if [ ! -x "${BINARY_PATH}" ]; then
     exit 1
 fi
 
+# Verify binary is universal (contains both x86_64 and arm64)
+echo -e "${BLUE}🔍 Verifying binary architecture...${NC}"
+LIPO_INFO=$(lipo -info "${BINARY_PATH}" 2>&1)
+
+if ! echo "$LIPO_INFO" | grep -q "x86_64"; then
+    echo -e "${RED}❌ Error: Binary is missing x86_64 architecture${NC}"
+    echo "Expected: Universal binary (x86_64 + arm64)"
+    echo "Actual: $LIPO_INFO"
+    exit 1
+fi
+
+if ! echo "$LIPO_INFO" | grep -q "arm64"; then
+    echo -e "${RED}❌ Error: Binary is missing arm64 architecture${NC}"
+    echo "Expected: Universal binary (x86_64 + arm64)"
+    echo "Actual: $LIPO_INFO"
+    exit 1
+fi
+
+echo -e "${GREEN}✅ Binary is universal (x86_64 + arm64)${NC}"
+
 # Extract version from binary
 echo -e "${BLUE}📦 Extracting version from binary...${NC}"
 VERSION=$("${BINARY_PATH}" --version 2>&1 | head -1 | awk '{print $NF}')

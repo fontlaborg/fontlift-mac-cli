@@ -9,6 +9,19 @@ All notable changes to fontlift-mac-cli will be documented in this file.
 
 **Initial Release** - Swift Package structure, build automation, testing infrastructure, and documentation framework.
 
+## [1.1.20] - 2025-11-01
+
+### Fixed
+- **CRITICAL**: Release workflow now produces true universal binaries (x86_64 + arm64)
+  - Root cause: `swift test` was overwriting universal binary with arm64-only debug binary
+  - Solution: Removed test step from release workflow (tests already run in CI workflow)
+  - Added architecture verification to prepare-release.sh
+  - Verified universal binary contains both architectures before packaging
+
+### Changed
+- Updated release workflow: Build universal → Package (tests run separately in CI)
+- Enhanced prepare-release.sh with universal binary validation
+
 ## [1.1.19] - 2025-11-01
 
 ### Fixed
