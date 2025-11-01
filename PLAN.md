@@ -7,7 +7,7 @@
 
 **One-sentence scope**: Install, uninstall, list, and remove fonts on macOS via CLI, supporting both file paths and internal font names.
 
-**Current Version**: v1.1.8
+**Current Version**: v1.1.10
 
 ## Project Status
 
@@ -21,13 +21,14 @@
 - Sorted mode for list command
 - All command aliases (l, i, u, rm)
 
-**CI/CD Automation** (v1.1.3-v1.1.8):
+**CI/CD Automation** (v1.1.3-v1.1.10):
 - GitHub Actions for automated testing (CI workflow)
 - GitHub Actions for automated releases (Release workflow)
-- Version validation on releases
+- Version validation with auto-fix capability
 - Binary artifact creation with checksums
 - CHANGELOG enforcement
 - Automatic release note extraction
+- Version detection fallback mechanism
 
 **Quality & Testing** (v1.1.0+):
 - 23 comprehensive tests
@@ -119,6 +120,7 @@
 **CI/CD**:
 - Automated testing on every push ✅
 - Automated releases on version tags ✅
+- Auto-fix for version mismatches ✅
 - Build completes in <2 minutes ✅
 - Release completes in <10 minutes ✅
 

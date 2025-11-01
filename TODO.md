@@ -20,9 +20,9 @@
 
 ### Task 3: Add Inline Code Documentation
 - [ ] Add doc comments to List command
-- [ ] Add doc comments to Install command
-- [ ] Add doc comments to Uninstall command
-- [ ] Add doc comments to Remove command
+- [ ] Add doc comments to Install command (already has basic docs)
+- [ ] Add doc comments to Uninstall command (already has basic docs)
+- [ ] Add doc comments to Remove command (already has basic docs)
 - [ ] Document validation logic
 - [ ] Review all comments for clarity
 

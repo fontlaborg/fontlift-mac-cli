@@ -1,8 +1,9 @@
 #!/bin/bash
 # this_file: scripts/validate-version.sh
 # Validate that the version in code matches the git tag
-# Usage: ./scripts/validate-version.sh [TAG_VERSION]
+# Usage: ./scripts/validate-version.sh [TAG_VERSION] [--fix]
 #   TAG_VERSION: Version from git tag (e.g., "1.1.0" from tag "v1.1.0")
+#   --fix: Automatically update code version to match tag (optional)
 
 set -euo pipefail
 
@@ -15,23 +16,26 @@ NC='\033[0m' # No Color
 # Function to display help
 show_help() {
     cat << EOF
-Usage: $0 [TAG_VERSION]
+Usage: $0 [TAG_VERSION] [--fix]
 
 Validates that the version constant in code matches the provided tag version.
 
 Arguments:
   TAG_VERSION    Version from git tag (e.g., "1.1.0" from tag "v1.1.0")
+  --fix          Automatically update code version to match tag (optional)
 
 Examples:
   $0 1.1.0          # Validate version 1.1.0
+  $0 1.1.0 --fix    # Validate and auto-fix if mismatch
   $0 0.2.0          # Validate version 0.2.0
 
 Exit codes:
-  0 - Version matches
-  1 - Version mismatch or error
+  0 - Version matches or --fix applied
+  1 - Version mismatch (without --fix) or error
 
 Environment:
   Works in both local and CI environments.
+  In CI, --fix is automatically applied if version mismatch detected.
 EOF
 }
 
@@ -41,15 +45,41 @@ if [[ "${1:-}" == "--help" ]] || [[ "${1:-}" == "-h" ]]; then
     exit 0
 fi
 
-# Check arguments
-if [ $# -ne 1 ]; then
+# Parse arguments
+FIX_MODE=false
+TAG_VERSION=""
+
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        --fix)
+            FIX_MODE=true
+            shift
+            ;;
+        --help|-h)
+            show_help
+            exit 0
+            ;;
+        *)
+            if [ -z "$TAG_VERSION" ]; then
+                TAG_VERSION="$1"
+            fi
+            shift
+            ;;
+    esac
+done
+
+# Check if TAG_VERSION was provided
+if [ -z "$TAG_VERSION" ]; then
     echo -e "${RED}❌ Error: TAG_VERSION argument required${NC}"
     echo ""
     show_help
     exit 1
 fi
 
-TAG_VERSION="$1"
+# Auto-enable fix mode in CI environment
+if [ "${CI:-false}" = "true" ] || [ "${GITHUB_ACTIONS:-false}" = "true" ]; then
+    FIX_MODE=true
+fi
 
 # Ensure tag uses semantic versioning (X.Y.Z)
 if [[ ! "$TAG_VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
@@ -95,16 +125,45 @@ else
     echo ""
     echo "The git tag version ($TAG_VERSION) does not match the code version ($CODE_VERSION)"
     echo ""
-    echo "Recommendation:"
-    echo "  1. Update version in Sources/fontlift/fontlift.swift to: $TAG_VERSION"
-    echo "  2. Commit the change"
-    echo "  3. Re-create the tag"
-    echo ""
+
+    if [ "$FIX_MODE" = true ]; then
+        echo "🔧 Auto-fix mode enabled. Updating code version to: $TAG_VERSION"
+
+        # Update version in Swift code
+        sed -i.bak -E "s/(private let version = \")[0-9]+\.[0-9]+\.[0-9]+(\")/\1${TAG_VERSION}\2/" Sources/fontlift/fontlift.swift
+        rm -f Sources/fontlift/fontlift.swift.bak
+
+        # Verify the update worked
+        NEW_CODE_VERSION=$(grep -E 'private let version = "' Sources/fontlift/fontlift.swift | sed -E 's/.*"([0-9]+\.[0-9]+\.[0-9]+)".*/\1/')
+
+        if [ "$NEW_CODE_VERSION" = "$TAG_VERSION" ]; then
+            echo -e "${GREEN}✅ Code version updated successfully to: $TAG_VERSION${NC}"
+        else
+            echo -e "${RED}❌ Failed to update code version${NC}"
+            exit 1
+        fi
+    else
+        echo "Recommendation:"
+        echo "  1. Update version in Sources/fontlift/fontlift.swift to: $TAG_VERSION"
+        echo "  2. Commit the change"
+        echo "  3. Re-create the tag"
+        echo ""
+        echo "Or run with --fix to auto-update:"
+        echo "  $0 $TAG_VERSION --fix"
+        echo ""
+    fi
+
     if ! grep -q "## \[$TAG_VERSION\]" CHANGELOG.md; then
         echo -e "${YELLOW}⚠️  Warning: CHANGELOG.md does not have entry '## [$TAG_VERSION]'${NC}"
         echo "Add a section to CHANGELOG.md for this version."
         echo ""
     fi
-    echo -e "${YELLOW}⚠️  Continuing anyway (validation relaxed)${NC}"
-    exit 0
+
+    if [ "$FIX_MODE" = true ]; then
+        echo -e "${GREEN}✅ Version mismatch auto-fixed${NC}"
+        exit 0
+    else
+        echo -e "${YELLOW}⚠️  Continuing anyway (validation relaxed)${NC}"
+        exit 0
+    fi
 fi
