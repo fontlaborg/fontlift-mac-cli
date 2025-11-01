@@ -10,9 +10,28 @@ import Foundation
 /// When updating, also update:
 /// - CHANGELOG.md (add new version section)
 /// - Git tag (git tag vX.Y.Z)
-private let version = "1.1.28"
+private let version = "1.1.29"
 
 // MARK: - Font Management Helpers
+
+/// Escape a file path for safe use in shell commands
+///
+/// Wraps paths containing special characters in single quotes and escapes any single quotes within.
+/// This ensures suggested shell commands (like "sudo fontlift remove '/path/to/file'") work correctly
+/// even when paths contain spaces, quotes, or other shell metacharacters.
+///
+/// - Parameter path: The file path to escape
+/// - Returns: Shell-safe escaped path string
+///
+/// **Examples:**
+/// - "~/Downloads/My Font.ttf" → "'~/Downloads/My Font.ttf'"
+/// - "/path/with'quote.ttf" → "'/path/with'\''quote.ttf'"
+/// - "/simple/path.ttf" → "'/simple/path.ttf'"
+func shellEscape(_ path: String) -> String {
+    // Replace single quotes with '\'' (end quote, escaped quote, start quote)
+    let escaped = path.replacingOccurrences(of: "'", with: "'\\''")
+    return "'\(escaped)'"
+}
 
 /// Check if a font path is in a protected system directory
 ///
@@ -345,11 +364,27 @@ extension Fontlift {
             } else {
                 if let error = error?.takeRetainedValue() {
                     let errorDesc = CFErrorCopyDescription(error) as String
+
+                    // Check if this is a duplicate registration error
+                    if errorDesc.contains("already activated") || errorDesc.contains("already registered") {
+                        if let fontName = getFontName(from: url) ?? getFullFontName(from: url) {
+                            print("ℹ️  Font already installed: \(fontName)")
+                            print("   File: \(fontPath)")
+                        } else {
+                            print("ℹ️  Font already installed")
+                            print("   File: \(fontPath)")
+                        }
+                        print("")
+                        print("   Use 'fontlift list' to see all installed fonts")
+                        print("   Use 'fontlift uninstall' to remove before reinstalling")
+                        throw ExitCode.failure
+                    }
+
+                    // Generic error handling for other failures
                     print("❌ Error installing font: \(errorDesc)")
                     print("   File: \(fontPath)")
                     print("")
                     print("   Common causes:")
-                    print("   - Font already installed (use 'fontlift list' to check)")
                     print("   - Invalid or corrupted font file")
                     print("   - Font format not supported (.ttf, .otf, .ttc, .otc)")
                     print("   - Permission issues (try with sudo for system-level install)")
@@ -678,7 +713,7 @@ extension Fontlift {
                         return  // Success - file is already deleted
                     case NSFileWriteNoPermissionError:
                         print("   Permission denied - you don't have write access to this file")
-                        print("   Try running: sudo fontlift remove \"\(url.path)\"")
+                        print("   Try running: sudo fontlift remove \(shellEscape(url.path))")
                     case NSFileReadNoSuchFileError:
                         print("   Parent directory no longer exists")
                     default:
