@@ -88,3 +88,20 @@ Temporary Items
 # Swift
 *.swiftmodule
 *.swiftdoc
+
+# GitHub Actions logs (auto-generated, tracked separately in issues/)
+issues/logs/
+
+# Distribution artifacts (generated during releases)
+dist/
+
+# IDE files
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
+
+# Temporary files
+*.tmp
+*.log
