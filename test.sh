@@ -72,7 +72,7 @@ if [ "$CI_MODE" = false ]; then
     echo "🧪 Running fontlift test suite"
     echo ""
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-    echo "Suite 1/3: Swift Unit Tests (23 tests)"
+    echo "Suite 1/3: Swift Unit Tests (43 tests)"
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
     echo ""
 fi
@@ -135,11 +135,11 @@ TOTAL_DURATION=$((TOTAL_END - TOTAL_START))
 if [ "$CI_MODE" = false ]; then
     echo ""
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-    echo "✅ All Tests Passed! (65 total)"
+    echo "✅ All Tests Passed! (81 total)"
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
     echo ""
     echo "Test Execution Times:"
-    echo "  • Swift unit tests:       ${SWIFT_DURATION}s (27 tests)"
+    echo "  • Swift unit tests:       ${SWIFT_DURATION}s (43 tests)"
     if [ "$SCRIPTS_DURATION" -gt 0 ]; then
         echo "  • Scripts tests:          ${SCRIPTS_DURATION}s (23 tests)"
     fi
