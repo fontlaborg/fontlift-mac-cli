@@ -23,11 +23,6 @@ jobs:
           fetch-depth: 0
           fetch-tags: true
 
-      - name: Install Swift 6.2
-        uses: swift-actions/setup-swift@v1
-        with:
-          swift-version: "6.2"
-
       - name: Display Swift version
         run: swift --version
 

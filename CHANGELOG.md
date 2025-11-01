@@ -3,6 +3,22 @@
 
 All notable changes to fontlift-mac-cli will be documented in this file.
 
+## [1.1.6] - 2025-11-01
+
+### Fixed
+- **GitHub Actions CI failure**: Removed Swift 6.2 installation step that was causing build failures
+  - macOS-14 runners come with Swift pre-installed, no need for setup-swift action
+  - This resolves "Version 6.2 is not available" errors in CI builds
+- **Version synchronization**: Updated code version from 1.1.2 to 1.1.6 to match git tag
+  - Resolves release workflow validation failures
+- **Test hang issue**: Fixed `testListWithoutArgs()` in CLIErrorTests.swift
+  - Changed from running full `fontlift list` (5393 fonts, 15+ seconds) to `fontlift list --help` (<1 second)
+  - All 23 tests now complete reliably in <5 seconds
+
+### Changed
+- Simplified GitHub Actions workflows by using default Swift toolchain on macOS-14
+- Updated both ci.yml and release.yml to remove swift-actions/setup-swift dependency
+
 ## [1.1.5] - 2025-11-01
 
 ### Changed
