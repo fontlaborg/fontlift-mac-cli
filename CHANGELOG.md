@@ -3,6 +3,23 @@
 
 All notable changes to fontlift-mac-cli will be documented in this file.
 
+## [1.1.10] - 2025-11-01
+
+### Fixed
+- Implemented version detection fallback mechanism for build and release workflows
+- Enhanced validation script to handle missing or mismatched versions gracefully
+- Added robust error handling for git tag-based semver failures
+
+### Changed
+- Build and release scripts now work even when git tag version doesn't match code version
+- Improved documentation accuracy in README.md and CLAUDE.md
+
+## [1.1.9] - 2025-11-01
+
+### Fixed
+- Version synchronization between git tags and code
+- Documentation cleanup and compression
+
 ## [1.1.8] - 2025-11-01
 
 ### Added
