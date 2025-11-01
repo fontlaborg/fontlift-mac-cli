@@ -7,7 +7,7 @@
 
 **One-sentence scope**: Install, uninstall, list, and remove fonts on macOS via CLI.
 
-**Current Version**: v1.1.28 (RELEASED)
+**Current Version**: v1.1.29 (IN DEVELOPMENT)
 
 ---
 
@@ -76,7 +76,7 @@ fontlift-mac-cli/
 
 **Code Quality**:
 - ✅ Zero compiler warnings
-- ✅ All tests passing (61 total)
+- ✅ All tests passing (65 total)
 - ✅ Functions <20 lines
 - ✅ Clean, readable code
 

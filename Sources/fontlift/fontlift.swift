@@ -271,7 +271,7 @@ extension Fontlift {
                 print("")
                 print("   Troubleshooting:")
                 print("   - Restart your Mac to rebuild font cache")
-                print("   - Run: sudo atsutil databases -remove")
+                print("   - Run: atsutil databases -remove")
                 print("   - Check Console.app for system font errors")
                 throw ExitCode.failure
             }
@@ -454,7 +454,7 @@ extension Fontlift {
                     print("")
                     print("   Troubleshooting:")
                     print("   - Restart your Mac to rebuild font cache")
-                    print("   - Run: sudo atsutil databases -remove")
+                    print("   - Run: atsutil databases -remove")
                     print("   - Check Console.app for system font errors")
                     throw ExitCode.failure
                 }
@@ -609,7 +609,7 @@ extension Fontlift {
                     print("")
                     print("   Troubleshooting:")
                     print("   - Restart your Mac to rebuild font cache")
-                    print("   - Run: sudo atsutil databases -remove")
+                    print("   - Run: atsutil databases -remove")
                     print("   - Check Console.app for system font errors")
                     throw ExitCode.failure
                 }
