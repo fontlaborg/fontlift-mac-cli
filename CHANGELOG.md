@@ -9,6 +9,23 @@ All notable changes to fontlift-mac-cli will be documented in this file.
 
 **Initial Release** - Swift Package structure, build automation, testing infrastructure, and documentation framework.
 
+## [1.1.19] - 2025-11-01
+
+### Fixed
+- Enhanced universal binary build verification in build.sh
+  - Added comprehensive validation for architecture-specific binaries
+  - Verify swift build exit codes for each architecture
+  - Verify final universal binary contains both x86_64 and arm64
+  - Fail fast with clear error messages if verification fails
+  - Added CI mode output showing architecture verification
+
+### Changed
+- Improved build.sh error handling for cross-compilation failures
+- Added explicit architecture checks before and after lipo
+
+### Added
+- Documentation of universal binary issue in TODO.md and WORK.md
+
 ## [1.1.17] - 2025-11-01
 
 ### Added
