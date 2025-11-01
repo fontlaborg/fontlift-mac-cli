@@ -73,6 +73,24 @@ extension Fontlift {
     /// fontlift list -n -s        # List unique font names, sorted
     /// fontlift list | wc -l      # Count total fonts
     /// ```
+    ///
+    /// **Output Modes:**
+    /// - Default (no flags): Lists font file paths only
+    /// - `-n` / `--name`: Lists internal font names only
+    /// - `-p -n`: Lists both in format "path;name"
+    /// - `-s` / `--sorted`: Sorts output and removes duplicates
+    ///
+    /// **Examples:**
+    /// ```bash
+    /// fontlift list                    # List all font paths
+    /// fontlift list -n                 # List all font names
+    /// fontlift list -p -n              # List path;name pairs
+    /// fontlift list -n -s              # List unique sorted names
+    /// fontlift l                       # Same as 'list' (alias)
+    /// ```
+    ///
+    /// **Note:** Output is pure data without headers/footers for pipe-friendly usage.
+    /// Typical systems have 5000+ fonts installed.
     struct List: ParsableCommand {
         static let configuration = CommandConfiguration(
             commandName: "list",
@@ -90,25 +108,34 @@ extension Fontlift {
         var sorted = false
 
         func run() throws {
-            // Default to path if neither flag specified
+            // Default to showing paths if no flags specified
+            // This provides backwards compatibility and sensible defaults
             let showPath = path || !name
             let showName = name
 
-            // Get all available font URLs
+            // Query Core Text for all available font URLs in the system
+            // This includes fonts from /System/Library/Fonts, /Library/Fonts, ~/Library/Fonts
             guard let fontURLs = CTFontManagerCopyAvailableFontURLs() as? [URL] else {
                 throw ExitCode.failure
             }
 
-            // Collect output lines
+            // Collect output lines for batch processing
+            // Building array first allows sorting if requested
             var lines: [String] = []
 
+            // Process each font URL and format output based on flags
             for fontURL in fontURLs {
                 if showPath && showName {
+                    // Combined mode: output both path and name separated by semicolon
+                    // Format: /path/to/font.ttf;FontName
                     let fontName = getFontName(from: fontURL) ?? getFullFontName(from: fontURL) ?? "Unknown"
                     lines.append("\(fontURL.path);\(fontName)")
                 } else if showPath {
+                    // Path-only mode: just the file system path
                     lines.append(fontURL.path)
                 } else {
+                    // Name-only mode: extract and output PostScript or display name
+                    // Skip fonts where name can't be extracted
                     if let fontName = getFontName(from: fontURL) ?? getFullFontName(from: fontURL) {
                         lines.append(fontName)
                     }
@@ -116,6 +143,7 @@ extension Fontlift {
             }
 
             // Sort and deduplicate if requested
+            // Useful for reducing 5000+ font names to unique set (~1000-1500 names)
             if sorted {
                 let uniqueLines = Set(lines)
                 lines = uniqueLines.sorted()
