@@ -14,7 +14,7 @@
 #   • Integration Tests: 15 tests (binary metadata, list command, help texts, error handling)
 #
 # Note: Test counts in output are hardcoded and must be manually updated when tests are added/removed.
-#       Run `swift test` to get accurate Swift test count, then update lines 75, 138, 142.
+#       Run `swift test` to get accurate Swift test count, then update lines 83, 146, 150.
 
 set -euo pipefail  # Exit on error, undefined vars, pipe failures
 
@@ -108,7 +108,7 @@ if [ "$should_run_scripts_tests" = true ] && [ -f "Tests/scripts_test.sh" ]; the
     if [ "$CI_MODE" = false ]; then
         echo ""
         echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-        echo "Suite 2/3: Scripts Tests (25 tests)"
+        echo "Suite 2/3: Scripts Tests (23 tests)"
         echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
         echo ""
     fi
@@ -125,7 +125,7 @@ if [ -f "Tests/integration_test.sh" ]; then
     if [ "$CI_MODE" = false ]; then
         echo ""
         echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-        echo "Suite 3/3: Integration Tests (17 tests)"
+        echo "Suite 3/3: Integration Tests (15 tests)"
         echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
         echo ""
     fi
