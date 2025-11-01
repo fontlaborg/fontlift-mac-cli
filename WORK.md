@@ -19,6 +19,11 @@
 ### Recent Changes
 
 **v1.1.29** (2025-11-01 - IN DEVELOPMENT):
+- **Round 9: Test Count Consistency**
+  - Fixed test count mismatches in test.sh output banners (25→23, 17→15)
+  - Updated line number references in maintainability docs (75,138,142 → 83,146,150)
+  - All test counts now consistent across all locations
+
 - **Round 8: Documentation Accuracy**
   - Fixed outdated test counts in PLAN.md (23→43 Swift, 65→81 total)
   - Enhanced test.sh with comprehensive suite breakdown comments

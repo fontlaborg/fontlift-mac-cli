@@ -7,6 +7,14 @@ All notable changes to fontlift-mac-cli will be documented in this file.
 
 ## [1.1.29] - 2025-11-01
 
+### Fixed
+- **Test Count Consistency**: Corrected mismatched test counts in test.sh output
+  - Fixed "Suite 2/3: Scripts Tests" banner: 25 tests → 23 tests (correct)
+  - Fixed "Suite 3/3: Integration Tests" banner: 17 tests → 15 tests (correct)
+  - Updated line number references in maintainability comments (83, 146, 150)
+  - All test counts now consistent across header comment, suite banners, and summary output
+  - Eliminates confusion for contributors checking test suite status
+
 ### Added
 - **Enhanced Documentation Accuracy**: Fixed outdated metrics and improved maintainability
   - Updated PLAN.md with correct test counts (43 Swift tests, 81 total)
