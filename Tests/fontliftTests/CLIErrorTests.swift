@@ -217,4 +217,22 @@ final class CLIErrorTests: XCTestCase {
                      result.output.contains("critical for macOS stability"),
                      "Should show system font protection error")
     }
+
+    // MARK: - Font Format Validation Tests
+
+    func testInstallInvalidFileFormat() throws {
+        let result = runFontlift(args: ["install", "/etc/hosts"])
+        XCTAssertNotEqual(result.exitCode, 0, "Installing non-font file should fail")
+        XCTAssertTrue(result.output.contains("Invalid font file format") ||
+                     result.output.contains("Supported formats"),
+                     "Should show invalid format error")
+    }
+
+    func testInstallTextFile() throws {
+        let result = runFontlift(args: ["install", "/tmp/notafont.txt"])
+        XCTAssertNotEqual(result.exitCode, 0, "Installing .txt file should fail")
+        XCTAssertTrue(result.output.contains("Invalid font file format") ||
+                     result.output.contains("File not found"),
+                     "Should show format or file not found error")
+    }
 }

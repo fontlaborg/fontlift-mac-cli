@@ -135,11 +135,11 @@ TOTAL_DURATION=$((TOTAL_END - TOTAL_START))
 if [ "$CI_MODE" = false ]; then
     echo ""
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-    echo "✅ All Tests Passed! (63 total)"
+    echo "✅ All Tests Passed! (65 total)"
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
     echo ""
     echo "Test Execution Times:"
-    echo "  • Swift unit tests:       ${SWIFT_DURATION}s (25 tests)"
+    echo "  • Swift unit tests:       ${SWIFT_DURATION}s (27 tests)"
     if [ "$SCRIPTS_DURATION" -gt 0 ]; then
         echo "  • Scripts tests:          ${SCRIPTS_DURATION}s (23 tests)"
     fi

@@ -28,6 +28,26 @@ func isSystemFontPath(_ url: URL) -> Bool {
     return path.hasPrefix("/System/Library/Fonts/") || path.hasPrefix("/Library/Fonts/")
 }
 
+/// Validate that a file has a recognized font extension
+///
+/// Checks if the file extension matches known font formats supported by macOS Core Text.
+/// This provides early validation before attempting font operations.
+///
+/// - Parameter path: The file path to validate
+/// - Returns: `true` if the file has a valid font extension; `false` otherwise
+///
+/// Supported formats:
+/// - .ttf (TrueType Font)
+/// - .otf (OpenType Font)
+/// - .ttc (TrueType Collection)
+/// - .otc (OpenType Collection)
+/// - .dfont (macOS Data Fork Font)
+func isValidFontExtension(_ path: String) -> Bool {
+    let validExtensions = ["ttf", "otf", "ttc", "otc", "dfont"]
+    let pathExtension = (path as NSString).pathExtension.lowercased()
+    return validExtensions.contains(pathExtension)
+}
+
 /// Validate that a file path exists, is readable, and is a regular file
 ///
 /// Performs comprehensive validation before font operations to provide clear error messages.
@@ -70,6 +90,18 @@ func validateFilePath(_ path: String) -> Bool {
     guard fileManager.isReadableFile(atPath: path) else {
         print("❌ Error: File is not readable: \(path)")
         print("   Please check file permissions")
+        return false
+    }
+
+    // Check if file has a valid font extension
+    guard isValidFontExtension(path) else {
+        print("❌ Error: Invalid font file format: \(path)")
+        print("   Supported formats: .ttf, .otf, .ttc, .otc, .dfont")
+        print("")
+        print("   Common issues:")
+        print("   - File is not a font file")
+        print("   - File has wrong extension")
+        print("   - File is corrupted or renamed")
         return false
     }
 
@@ -215,6 +247,13 @@ extension Fontlift {
             // Query Core Text for all available font URLs in the system
             // This includes fonts from /System/Library/Fonts, /Library/Fonts, ~/Library/Fonts
             guard let fontURLs = CTFontManagerCopyAvailableFontURLs() as? [URL] else {
+                print("❌ Error: Could not retrieve font list from system")
+                print("   This may indicate a system font database issue")
+                print("")
+                print("   Troubleshooting:")
+                print("   - Restart your Mac to rebuild font cache")
+                print("   - Run: sudo atsutil databases -remove")
+                print("   - Check Console.app for system font errors")
                 throw ExitCode.failure
             }
 
