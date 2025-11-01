@@ -1,7 +1,23 @@
 # TODO.md
 <!-- this_file: TODO.md -->
 
-## Quality & Robustness Improvements (Completed v1.1.29)
+## Quality & Robustness Improvements - Round 2 (Completed)
+
+### Round 2 Tasks (Error Handling & Validation) ✅
+1. **Enhanced list command error messaging**
+   - Added descriptive error with troubleshooting steps for font database failures
+   - Suggests atsutil database rebuild and Console.app checks
+
+2. **Font format validation**
+   - Added `isValidFontExtension()` helper function
+   - Validates .ttf, .otf, .ttc, .otc, .dfont extensions
+   - Integrated into file validation for early error detection
+   - Prevents cryptic Core Text errors from invalid files
+   - Added 2 new tests for format validation
+
+---
+
+## Quality & Robustness Improvements - Round 1 (Completed v1.1.29)
 
 ### Task 1: System Font Protection ✅
 - [x] Add safeguard to prevent modifying system fonts in `/System/Library/Fonts/` and `/Library/Fonts/`

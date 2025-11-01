@@ -8,23 +8,32 @@
 
 ### Core Metrics
 
-- **Test Suite**: 63 tests passing (25 Swift + 23 Scripts + 15 Integration)
-- **Test Execution**: ~22-25s
+- **Test Suite**: 65 tests passing (27 Swift + 23 Scripts + 15 Integration)
+- **Test Execution**: ~27s
 - **Build Time**: ~6-8s (release mode)
 - **Binary Size**: 1.6M (native), 3.2M (universal)
 - **Compiler Warnings**: 0
 - **Platform**: macOS 12.0+ (Intel + Apple Silicon)
-- **Source Lines**: 630 lines (main file)
+- **Source Lines**: 669 lines (main file)
 
 ### Recent Changes
 
 **v1.1.29** (2025-11-01 - IN DEVELOPMENT):
-- **System Font Protection**: Prevents uninstall/remove operations on `/System/Library/Fonts/` and `/Library/Fonts/`
-- **Ambiguous Name Resolution**: Fails when multiple fonts match `-n` name, lists all matches, advises using file path
-- Added 2 new Swift unit tests for system font protection
-- Test count: 61 → 63 tests (+2 safety feature tests)
-- Source lines: 564 → 630 lines (+66 lines for safety checks)
-- **Impact**: Major safety improvement - prevents catastrophic system font deletion and ambiguous operations
+- **Round 2: Error Handling & Validation**
+  - Enhanced list command error with troubleshooting steps
+  - Added font format validation (.ttf, .otf, .ttc, .otc, .dfont)
+  - Added 2 new tests for format validation
+  - Test count: 63 → 65 tests
+  - Source lines: 630 → 669 lines (+39 lines)
+
+- **Round 1: Safety Features**
+  - System Font Protection: Prevents operations on system font directories
+  - Ambiguous Name Resolution: Fails when multiple fonts match `-n` name
+  - Added 2 new tests for system font protection
+  - Test count: 61 → 63 tests
+  - Source lines: 564 → 630 lines (+66 lines)
+
+- **Overall Impact**: Major safety and usability improvements - prevents catastrophic errors and provides clear guidance
 
 **v1.1.28** (2025-11-01):
 - Streamlined codebase by removing enterprise tooling

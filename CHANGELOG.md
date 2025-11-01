@@ -22,11 +22,24 @@ All notable changes to fontlift-mac-cli will be documented in this file.
   - Prevents accidental removal of wrong font variant (e.g., Bold vs Regular)
   - Implemented in both `uninstall -n` and `remove -n` commands
 
+- **Font Format Validation**: Early detection of invalid font files
+  - Added `isValidFontExtension()` helper function
+  - Validates file extensions: .ttf, .otf, .ttc, .otc, .dfont
+  - Integrated into `validateFilePath()` for pre-operation validation
+  - Clear error messages with supported formats list
+  - Prevents cryptic Core Text errors from attempting to install non-font files
+  - Added 2 new Swift unit tests: `testInstallInvalidFileFormat`, `testInstallTextFile`
+
+- **Enhanced Error Messages**:
+  - List command now provides troubleshooting steps on font database failure
+  - Suggests `atsutil databases -remove` and Console.app checks
+  - All error messages now include actionable guidance
+
 ### Changed
 - Modified name resolution logic to collect all matches instead of using first match
-- Test count: 61 → 63 tests (added 2 system font protection tests)
-- Swift test count: 23 → 25 tests
-- Source file size: 564 → 630 lines (+66 lines for safety features)
+- Test count: 61 → 65 tests (added 4 new validation and protection tests)
+- Swift test count: 23 → 27 tests
+- Source file size: 564 → 669 lines (+105 lines for safety and validation)
 
 ### Improved
 - **Safety**: Major improvement - tool can no longer accidentally break macOS
