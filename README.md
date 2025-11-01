@@ -8,21 +8,44 @@ CLI tool written in Swift for macOS to install/uninstall fonts
 
 ### From GitHub Releases (Recommended)
 
-Download the latest pre-built binary:
+Download and install the latest pre-built universal binary (supports both Intel and Apple Silicon):
 
 ```bash
-# Download latest release
-curl -L https://github.com/fontlaborg/fontlift-mac-cli/releases/latest/download/fontlift-v1.1.10-macos.tar.gz -o fontlift.tar.gz
+# Set version (or use 'latest')
+VERSION="1.1.27"  # Or check https://github.com/fontlaborg/fontlift-mac-cli/releases
 
-# Extract
+# Download release tarball and checksum
+curl -L "https://github.com/fontlaborg/fontlift-mac-cli/releases/download/v${VERSION}/fontlift-v${VERSION}-macos.tar.gz" -o fontlift.tar.gz
+curl -L "https://github.com/fontlaborg/fontlift-mac-cli/releases/download/v${VERSION}/fontlift-v${VERSION}-macos.tar.gz.sha256" -o fontlift.tar.gz.sha256
+
+# Verify checksum (recommended)
+shasum -a 256 -c fontlift.tar.gz.sha256
+
+# Extract binary
 tar -xzf fontlift.tar.gz
 
-# Install to /usr/local/bin
+# Install to /usr/local/bin (may require sudo)
 sudo mv fontlift /usr/local/bin/
 
 # Verify installation
 fontlift --version
 ```
+
+**Troubleshooting:** If you encounter issues, see [TROUBLESHOOTING.md](./TROUBLESHOOTING.md)
+
+### Via Homebrew (Coming Soon)
+
+Homebrew formula submission is planned for a future release:
+
+```bash
+# Future installation method (not yet available)
+brew tap fontlaborg/fontlift
+brew install fontlift
+```
+
+**Requirements:**
+- macOS 12.0 (Monterey) or later
+- Intel (x86_64) or Apple Silicon (arm64) Mac
 
 ### From Source
 
@@ -33,6 +56,130 @@ git clone https://github.com/fontlaborg/fontlift-mac-cli.git
 cd fontlift-mac-cli
 ./build.sh
 ./publish.sh  # Installs to /usr/local/bin
+```
+
+## Quick Start
+
+Here are the most common workflows:
+
+### Discover available fonts
+```bash
+# List all installed fonts (sorted by family)
+fontlift list -n -s
+
+# Find fonts matching a name
+fontlift list -n | grep -i "helvetica"
+
+# See where a font is installed
+fontlift list -p -n | grep "Helvetica"
+```
+
+### Install a new font
+```bash
+# Install a single font file
+fontlift install ~/Downloads/MyFont.ttf
+
+# Install works with .ttf, .otf, .ttc, .otc files
+fontlift install /path/to/font.otf
+```
+
+### Uninstall a font (keep file)
+```bash
+# Uninstall by file path
+fontlift uninstall ~/Library/Fonts/MyFont.ttf
+
+# Uninstall by font name
+fontlift list -n | grep "MyFont"  # Find exact name first
+fontlift uninstall -n "MyFont-Regular"
+```
+
+### Remove a font (delete file)
+```bash
+# Remove by file path (deletes file)
+fontlift remove ~/Downloads/OldFont.ttf
+
+# Remove by font name (deletes file)
+fontlift remove -n "OldFont-Bold"
+```
+
+## Advanced Usage Examples
+
+### Installing a Custom Font Family
+
+Installing all fonts from a downloaded font family:
+
+```bash
+# Download and install a font family (e.g., Inter from Google Fonts)
+cd ~/Downloads
+unzip Inter.zip -d Inter/
+
+# Install all font files in the directory
+for font in Inter/*.ttf; do
+    fontlift install "$font"
+done
+
+# Verify installation
+fontlift list -n | grep "Inter"
+```
+
+### Batch Font Management
+
+Managing multiple fonts at once:
+
+```bash
+# List all fonts in a specific directory
+ls ~/Library/Fonts/*.ttf
+
+# Remove all fonts from a specific directory
+for font in ~/Library/Fonts/CustomFonts/*.ttf; do
+    fontlift remove "$font"
+done
+
+# Reinstall fonts after system upgrade
+find ~/FontBackup -name "*.ttf" -o -name "*.otf" | while read font; do
+    fontlift install "$font"
+done
+```
+
+### Troubleshooting Font Installation
+
+If you encounter issues installing fonts:
+
+```bash
+# 1. Check if font file exists and is readable
+ls -la /path/to/font.ttf
+file /path/to/font.ttf
+
+# 2. Try installing with full path
+fontlift install "$(pwd)/MyFont.ttf"
+
+# 3. Check if font is already installed
+fontlift list -n | grep -i "myfont"
+
+# 4. If installation fails, check system font cache
+# (macOS will rebuild it automatically)
+atsutil databases -remove  # Requires sudo
+```
+
+### Verifying Installed Fonts
+
+Comprehensive font verification:
+
+```bash
+# List all installed fonts (sorted alphabetically)
+fontlift list -n -s > installed-fonts.txt
+
+# Count total installed fonts
+fontlift list -n | wc -l
+
+# Find duplicate font names
+fontlift list -n | sort | uniq -d
+
+# Find fonts by family
+fontlift list -n | grep -i "helvetica"
+
+# Get both path and name for specific font
+fontlift list -n -p | grep "Helvetica"
 ```
 
 ## Usage
@@ -107,6 +254,29 @@ For development instructions, build automation, and release process:
 # Local install
 ./publish.sh
 ```
+
+### Developer Tools
+
+The project includes several developer tools for quality assurance:
+
+```bash
+# Verify CI/CD workflows are configured correctly
+./test.sh --verify-ci
+
+# Verify build reproducibility (detects non-deterministic builds)
+./build.sh --verify-reproducible
+
+# Install pre-commit hook (optional, helps catch issues before committing)
+cp .git-hooks/pre-commit .git/hooks/pre-commit
+chmod +x .git/hooks/pre-commit
+```
+
+**Pre-commit hook checks**:
+- Version consistency between source and commits
+- CHANGELOG.md updates when code changes
+- Quick smoke test (build + unit tests)
+
+To bypass the hook when needed: `git commit --no-verify`
 
 ### CI/CD
 

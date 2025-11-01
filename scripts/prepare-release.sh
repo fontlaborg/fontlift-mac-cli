@@ -6,6 +6,29 @@
 
 set -euo pipefail
 
+# Function to verify required dependencies
+verify_dependencies() {
+    local missing_deps=()
+
+    # Check for required commands
+    for cmd in lipo tar shasum stat awk; do
+        if ! command -v "$cmd" &> /dev/null; then
+            missing_deps+=("$cmd")
+        fi
+    done
+
+    if [ ${#missing_deps[@]} -gt 0 ]; then
+        echo "❌ Error: Missing required dependencies:"
+        for dep in "${missing_deps[@]}"; do
+            echo "  - $dep"
+        done
+        echo ""
+        echo "These are standard macOS/Unix tools."
+        echo "Install Xcode Command Line Tools: xcode-select --install"
+        exit 1
+    fi
+}
+
 # Colors for output
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -44,6 +67,12 @@ fi
 # Change to project root (where this script's parent is located)
 cd "$(dirname "$0")/.."
 
+# Record start time for performance monitoring
+PREPARE_START=$(date +%s)
+
+# Verify all required dependencies are installed
+verify_dependencies
+
 BINARY_PATH=".build/release/fontlift"
 DIST_DIR="dist"
 
@@ -72,7 +101,7 @@ MIN_SIZE_BYTES=$((1 * 1048576))  # 1 MB minimum
 if [ "$BINARY_SIZE" -lt "$MIN_SIZE_BYTES" ]; then
     echo -e "${RED}❌ Error: Binary size is suspiciously small${NC}"
     echo "Expected: ~3.2M (universal binary)"
-    echo "Actual: $(numfmt --to=iec-i --suffix=B $BINARY_SIZE 2>/dev/null || echo \"${BINARY_SIZE_MB}M\")"
+    echo "Actual: $(numfmt --to=iec-i --suffix=B "$BINARY_SIZE" 2>/dev/null || echo \"${BINARY_SIZE_MB}M\")"
     echo "This likely indicates an architecture-specific binary, not universal"
     exit 1
 fi
@@ -100,7 +129,7 @@ if echo "$LIPO_INFO" | grep -q "Non-fat file"; then
 fi
 
 echo -e "${GREEN}✅ Binary is universal (x86_64 + arm64)${NC}"
-echo "Size: $(numfmt --to=iec-i --suffix=B $BINARY_SIZE 2>/dev/null || echo \"${BINARY_SIZE_MB}M\")"
+echo "Size: $(numfmt --to=iec-i --suffix=B "$BINARY_SIZE" 2>/dev/null || echo \"${BINARY_SIZE_MB}M\")"
 
 # Extract version from binary
 echo -e "${BLUE}📦 Extracting version from binary...${NC}"
@@ -172,6 +201,10 @@ else
     exit 1
 fi
 
+# Calculate prepare duration
+PREPARE_END=$(date +%s)
+PREPARE_DURATION=$((PREPARE_END - PREPARE_START))
+
 # Summary
 echo ""
 echo -e "${GREEN}✅ Release artifacts prepared successfully!${NC}"
@@ -180,12 +213,19 @@ echo "━━━━━━━━━━━━━━━━━━━━━━━━�
 echo "📋 Release Summary"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 printf "%-20s %s\n" "Version:" "${VERSION}"
-printf "%-20s %s\n" "Binary Size:" "$(numfmt --to=iec-i --suffix=B $BINARY_SIZE 2>/dev/null || echo \"${BINARY_SIZE_MB}M\")"
+printf "%-20s %s\n" "Binary Size:" "$(numfmt --to=iec-i --suffix=B "$BINARY_SIZE" 2>/dev/null || echo \"${BINARY_SIZE_MB}M\")"
 printf "%-20s %s\n" "Architectures:" "x86_64, arm64"
 printf "%-20s %s\n" "Tarball:" "${TARBALL_NAME}"
 printf "%-20s %s\n" "Tarball Size:" "${TARBALL_SIZE}"
 printf "%-20s %s\n" "Checksum:" "${CHECKSUM}"
+printf "%-20s %s\n" "Prepare Time:" "${PREPARE_DURATION}s"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+
+# Baseline: <2s (verification, tar, checksum)
+if [ "$PREPARE_DURATION" -gt 3 ]; then
+    echo "⚠️  Warning: Prepare time slower than baseline (~2s + 20% = 3s)"
+fi
+
 echo ""
 echo "To test extraction:"
 echo "  tar -xzf ${TARBALL_PATH} && ./fontlift --version"

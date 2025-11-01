@@ -7,6 +7,26 @@
 
 set -euo pipefail
 
+# Function to verify required dependencies
+verify_dependencies() {
+    local missing_deps=()
+
+    # Check for required commands
+    for cmd in grep sed; do
+        if ! command -v "$cmd" &> /dev/null; then
+            missing_deps+=("$cmd")
+        fi
+    done
+
+    if [ ${#missing_deps[@]} -gt 0 ]; then
+        echo "❌ Error: Missing required dependencies:"
+        for dep in "${missing_deps[@]}"; do
+            echo "  - $dep"
+        done
+        exit 1
+    fi
+}
+
 # Colors for output
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -91,6 +111,9 @@ fi
 
 # Change to project root (where this script's parent is located)
 cd "$(dirname "$0")/.."
+
+# Verify all required dependencies are installed
+verify_dependencies
 
 # Extract version from Swift code
 # The version is defined as: private let version = "X.Y.Z"

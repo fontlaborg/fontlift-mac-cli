@@ -47,7 +47,6 @@ for arg in "$@"; do
     case $arg in
         --ci)
             CI_MODE=true
-            shift
             ;;
         --help|-h)
             show_help
@@ -64,6 +63,9 @@ done
 
 # Change to project root (where this script is located)
 cd "$(dirname "$0")"
+
+# Record start time for performance monitoring
+PUBLISH_START=$(date +%s)
 
 INSTALL_DIR="/usr/local/bin"
 BINARY_NAME="fontlift"
@@ -88,7 +90,11 @@ if [ "$CI_MODE" = true ]; then
     "${SOURCE_BINARY}" --version >/dev/null 2>&1
     "${SOURCE_BINARY}" --help >/dev/null 2>&1
 
-    echo "✅ Binary verified successfully"
+    # Calculate publish duration
+    PUBLISH_END=$(date +%s)
+    PUBLISH_DURATION=$((PUBLISH_END - PUBLISH_START))
+
+    echo "✅ Binary verified successfully (${PUBLISH_DURATION}s)"
     exit 0
 fi
 
@@ -133,9 +139,20 @@ fi
 
 # Verify installation
 if command -v fontlift &> /dev/null; then
+    # Calculate publish duration
+    PUBLISH_END=$(date +%s)
+    PUBLISH_DURATION=$((PUBLISH_END - PUBLISH_START))
+
     echo ""
     echo "✅ Installation successful!"
     echo "Version: $(fontlift --version 2>&1 | head -1)"
+    echo "⏱️  Publish time: ${PUBLISH_DURATION}s"
+
+    # Baseline: <2s (just copy operation)
+    if [ "$PUBLISH_DURATION" -gt 3 ]; then
+        echo "⚠️  Warning: Publish slower than baseline (~2s + 20% = 3s)"
+    fi
+
     echo ""
     echo "Usage: fontlift --help"
 else

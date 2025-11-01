@@ -10,7 +10,7 @@ import Foundation
 /// When updating, also update:
 /// - CHANGELOG.md (add new version section)
 /// - Git tag (git tag vX.Y.Z)
-private let version = "1.1.25"
+private let version = "1.1.27"
 
 // MARK: - Font Management Helpers
 

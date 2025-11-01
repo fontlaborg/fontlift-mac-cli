@@ -1,0 +1,126 @@
+#!/bin/bash
+# this_file: .git-hooks/pre-commit
+# Pre-commit hook for fontlift-mac-cli
+#
+# This hook helps catch common issues before committing:
+# 1. Version consistency (source code vs binary)
+# 2. CHANGELOG.md updates
+# 3. Quick smoke test (build + unit tests)
+#
+# Installation:
+#   cp .git-hooks/pre-commit .git/hooks/pre-commit
+#   chmod +x .git/hooks/pre-commit
+#
+# To bypass this hook (use sparingly):
+#   git commit --no-verify
+
+set -euo pipefail
+
+# Color output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+NC='\033[0m' # No Color
+
+echo "🔍 Running pre-commit checks..."
+echo ""
+
+error_count=0
+warning_count=0
+
+# Check 1: Version consistency
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo "Check 1: Version Consistency"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+
+if [ -f "./scripts/get-version.sh" ]; then
+    SOURCE_VERSION=$(./scripts/get-version.sh)
+
+    # Check if version was updated in this commit
+    if git diff --cached Sources/fontlift/fontlift.swift | grep -q "private let version ="; then
+        echo -e "${GREEN}✅${NC} Version was updated in this commit: $SOURCE_VERSION"
+    else
+        echo -e "${YELLOW}⚠️${NC}  Version not changed (source: $SOURCE_VERSION)"
+        ((warning_count++))
+    fi
+else
+    echo -e "${RED}❌${NC} scripts/get-version.sh not found"
+    ((error_count++))
+fi
+
+echo ""
+
+# Check 2: CHANGELOG.md updates
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo "Check 2: CHANGELOG.md Updates"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+
+if git diff --cached --name-only | grep -q "CHANGELOG.md"; then
+    echo -e "${GREEN}✅${NC} CHANGELOG.md was updated in this commit"
+elif git diff --cached --name-only | grep -qE "Sources/|\.swift$|\.sh$|scripts/"; then
+    echo -e "${YELLOW}⚠️${NC}  Code changes detected but CHANGELOG.md not updated"
+    echo "   Consider documenting your changes in CHANGELOG.md"
+    ((warning_count++))
+else
+    echo -e "${GREEN}✅${NC} No code changes detected (documentation only)"
+fi
+
+echo ""
+
+# Check 3: Quick smoke test (build + unit tests only, skip integration)
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo "Check 3: Quick Smoke Test"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+
+# Only run smoke test if source code changed
+if git diff --cached --name-only | grep -qE "Sources/|\.swift$"; then
+    echo "Running quick build..."
+    if swift build > /dev/null 2>&1; then
+        echo -e "${GREEN}✅${NC} Build successful"
+    else
+        echo -e "${RED}❌${NC} Build failed"
+        echo "   Run 'swift build' to see detailed errors"
+        ((error_count++))
+    fi
+
+    echo "Running Swift unit tests..."
+    if swift test --parallel 2>&1 | grep -q "Test run with"; then
+        echo -e "${GREEN}✅${NC} Unit tests passed"
+    else
+        echo -e "${RED}❌${NC} Unit tests failed"
+        echo "   Run 'swift test' to see detailed errors"
+        ((error_count++))
+    fi
+else
+    echo -e "${GREEN}✅${NC} No Swift source changes (skipping build/test)"
+fi
+
+echo ""
+
+# Summary
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo "Pre-commit Summary"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+
+if [ $error_count -gt 0 ]; then
+    echo -e "${RED}❌ $error_count error(s) found - commit blocked${NC}"
+    echo ""
+    echo "To fix:"
+    echo "  1. Fix the errors listed above"
+    echo "  2. Stage your fixes: git add ..."
+    echo "  3. Try committing again"
+    echo ""
+    echo "To bypass this hook (not recommended):"
+    echo "  git commit --no-verify"
+    exit 1
+elif [ $warning_count -gt 0 ]; then
+    echo -e "${YELLOW}⚠️  $warning_count warning(s) found - review recommended${NC}"
+    echo ""
+    echo "Warnings don't block commits, but you should address them."
+    echo ""
+    echo -e "${GREEN}✅ Pre-commit checks passed (with warnings)${NC}"
+    exit 0
+else
+    echo -e "${GREEN}✅ All pre-commit checks passed!${NC}"
+    exit 0
+fi

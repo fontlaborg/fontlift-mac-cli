@@ -5,9 +5,140 @@ All notable changes to fontlift-mac-cli will be documented in this file.
 
 ## [Unreleased]
 
-### Foundation Infrastructure
+## [1.1.27] - 2025-11-01
 
-**Initial Release** - Swift Package structure, build automation, testing infrastructure, and documentation framework.
+### Added
+- **Phase 10 (CI/CD Robustness & Developer Experience)**:
+  - **Task 10.1**: GitHub Actions workflow status verification
+    - Created `scripts/verify-ci-config.sh` for CI/CD configuration validation
+    - Added `--verify-ci` flag to test.sh
+    - Verifies CI and Release workflows are correctly configured
+    - Checks for required jobs, steps, and scripts
+
+  - **Task 10.2**: Pre-commit hook template
+    - Created `.git-hooks/pre-commit` template for developer use
+    - Hook checks version consistency before commits
+    - Warns if CHANGELOG.md hasn't been updated
+    - Runs quick smoke test (build + unit tests)
+    - Installation and bypass instructions included
+
+  - **Task 10.3**: Build reproducibility verification
+    - Added `--verify-reproducible` flag to build.sh
+    - Builds binary twice and compares checksums
+    - Detects non-deterministic build behavior
+    - Tested: Swift builds are NOT reproducible (expected - timestamps embedded)
+
+- **Phase 14 (Release Polish & Workflow Refinement)**:
+  - **Task 14.1**: CHANGELOG extraction verification
+    - Verified release.yml's sed command extracts release notes correctly
+    - Tested extraction with v1.1.27 section (28 lines)
+    - Confirmed proper isolation of version-specific sections
+
+  - **Task 14.2**: Test execution time baseline
+    - Added timing to test.sh for all test suites
+    - Displays execution times: Swift (4s), Scripts (13s), Integration (3s)
+    - Total baseline: ~20s on macOS 14 M-series
+    - Helps detect performance regressions
+
+  - **Task 14.3**: Git commit helper script
+    - Created scripts/commit-helper.sh for streamlined commits
+    - Validates version, CHANGELOG, tests, and CI config before commit
+    - Provides commit message template
+    - Shows clear git status summary
+
+- **Phase 21 (Production Deployment Readiness)**:
+  - **Task 21.1**: Homebrew installation documentation
+    - Added "Via Homebrew (Coming Soon)" section to README.md
+    - Documented future installation: `brew tap fontlaborg/fontlift && brew install fontlift`
+    - Documented system requirements (macOS 12.0+, Intel/arm64)
+
+  - **Task 21.2**: Comprehensive usage examples
+    - Added "Advanced Usage Examples" section to README.md
+    - Example 1: Installing a Custom Font Family (batch installation)
+    - Example 2: Batch Font Management (directory operations, reinstall)
+    - Example 3: Troubleshooting Font Installation (file checks, cache rebuild)
+    - Example 4: Verifying Installed Fonts (comprehensive verification)
+
+  - **Task 21.3**: Release workflow verification
+    - Verified CHANGELOG extraction pattern (extracts 47 lines for v1.1.27)
+    - Verified artifact upload configuration (dist/* uploads tarball + checksum)
+    - Confirmed release workflow ready for v1.1.27
+
+- **Phase 29 (Error Handling & User Experience Refinements)**:
+  - **Task 29.1**: Enhanced validation error messages with actionable guidance
+    - Swift version check shows current vs required version side-by-side
+    - Lists common causes (Xcode too old, using system Swift)
+    - Provides specific solutions (xcode-select, Swift download, version checking)
+    - Disk space error shows actual available space with suggestions for freeing space
+    - Build permissions error includes common causes and 3 solutions
+    - All validation failures now provide clear, actionable guidance
+
+  - **Task 29.2**: Build progress indicators for long operations
+    - Added phased progress messages for universal builds
+    - "📦 Phase 1/3: Building for x86_64 (Intel)..."
+    - "📦 Phase 2/3: Building for arm64 (Apple Silicon)..."
+    - "🔗 Phase 3/3: Creating universal binary..."
+    - Completion checkmarks after each phase (✅ x86_64 complete, etc.)
+    - Prevents perceived hangs during long builds
+
+  - **Task 29.3**: Enhanced test output readability
+    - Added clear separators between test suite sections (━━━━ lines)
+    - Added test counts to suite headers: "Suite 1/3: Swift Unit Tests (23 tests)"
+    - Enhanced final summary: "✅ All Tests Passed! (65 total)"
+    - Improved timing display with bullet points and test counts
+    - Consistent formatting across all three test suites
+
+### Improved
+- Enhanced developer experience with pre-commit safety checks and commit helper
+- Better CI/CD configuration validation tools
+- Build process transparency with reproducibility checks
+- Test performance monitoring with execution time baselines
+- Significantly improved README with Homebrew section and 4 advanced usage examples
+- Users can now quickly find solutions for common workflows with copy-paste ready commands
+- Release workflow verified end-to-end for v1.1.27
+- Error messages now provide actionable guidance with common causes and specific solutions
+- Universal build process provides clear progress indicators (Phase 1/3, 2/3, 3/3)
+- Test output is highly scannable with suite separators and comprehensive summaries
+- Developer and user experience greatly enhanced with better feedback and guidance
+
+## [1.1.26] - 2025-11-01
+
+### Added
+- **Phase 6 (Production Hardening)**:
+  - **Task 6.1**: Comprehensive script error handling
+    - Added dependency verification functions to build.sh, prepare-release.sh, validate-version.sh
+    - Fixed incorrect `shift` commands in test.sh and publish.sh argument parsing
+    - All scripts now verify required dependencies before execution
+    - Clear error messages with installation instructions for missing dependencies
+
+  - **Task 6.2**: Release artifact smoke testing
+    - Created scripts/verify-release-artifact.sh for post-release verification
+    - Downloads release tarball and checksum from GitHub
+    - Verifies checksum integrity
+    - Tests binary functionality (--version, --help, list command)
+    - Ensures published releases are actually usable
+
+  - **Task 6.3**: Common failure modes documentation
+    - Created comprehensive TROUBLESHOOTING.md guide (500+ lines)
+    - Documented 20+ common issues with solutions
+    - Sections: Build, Test, Installation, Runtime, CI/CD, Release issues
+    - Added debugging tips and quick reference guide
+
+- **Phase 7 (Final Release Preparation)**:
+  - **Task 7.1**: Enhanced README with release installation instructions
+    - Added checksum verification steps
+    - Updated installation section with VERSION variable
+    - Added troubleshooting section reference
+
+  - **Task 7.2**: README Quick Start section
+    - Added 4 practical workflow examples
+    - Discover, install, uninstall, remove workflows
+    - Copy-paste ready commands
+
+  - **Task 7.3**: Version bump to 1.1.26
+    - Updated version constant in source code
+    - Verified version consistency
+    - All 65 tests passing
 
 ## [1.1.25] - 2025-11-01
 
