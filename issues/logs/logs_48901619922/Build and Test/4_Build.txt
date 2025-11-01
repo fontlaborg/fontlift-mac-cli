@@ -1,0 +1,6 @@
+﻿2025-11-01T00:24:32.9302990Z ##[group]Run ./build.sh --ci
+2025-11-01T00:24:32.9303320Z [36;1m./build.sh --ci[0m
+2025-11-01T00:24:32.9364360Z shell: /bin/bash -e {0}
+2025-11-01T00:24:32.9364680Z ##[endgroup]
+2025-11-01T00:24:34.6021300Z error: 'fontlift-mac-cli': package 'fontlift-mac-cli' is using Swift tools version 6.2.0 but the installed version is 5.10.0
+2025-11-01T00:24:34.6252710Z ##[error]Process completed with exit code 1.

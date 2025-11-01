@@ -1,0 +1,79 @@
+﻿2025-11-01T00:24:28.0649750Z ##[group]Run actions/checkout@v4
+2025-11-01T00:24:28.0651900Z with:
+2025-11-01T00:24:28.0652630Z   fetch-depth: 0
+2025-11-01T00:24:28.0653430Z   fetch-tags: true
+2025-11-01T00:24:28.0654280Z   repository: fontlaborg/fontlift-mac-cli
+2025-11-01T00:24:28.0655690Z   token: ***
+2025-11-01T00:24:28.0656430Z   ssh-strict: true
+2025-11-01T00:24:28.0657180Z   ssh-user: git
+2025-11-01T00:24:28.0657970Z   persist-credentials: true
+2025-11-01T00:24:28.0658840Z   clean: true
+2025-11-01T00:24:28.0659660Z   sparse-checkout-cone-mode: true
+2025-11-01T00:24:28.0660680Z   show-progress: true
+2025-11-01T00:24:28.0661520Z   lfs: false
+2025-11-01T00:24:28.0662280Z   submodules: false
+2025-11-01T00:24:28.0663060Z   set-safe-directory: true
+2025-11-01T00:24:28.0664650Z ##[endgroup]
+2025-11-01T00:24:28.2521210Z Syncing repository: fontlaborg/fontlift-mac-cli
+2025-11-01T00:24:28.2522820Z ##[group]Getting Git version info
+2025-11-01T00:24:28.2523350Z Working directory is '/Users/runner/work/fontlift-mac-cli/fontlift-mac-cli'
+2025-11-01T00:24:28.2524320Z [command]/opt/homebrew/bin/git version
+2025-11-01T00:24:28.3129110Z git version 2.50.1
+2025-11-01T00:24:28.3147140Z ##[endgroup]
+2025-11-01T00:24:28.3158810Z Copying '/Users/runner/.gitconfig' to '/Users/runner/work/_temp/023bd9fb-7bc9-49ee-8560-ed1eecd72ab6/.gitconfig'
+2025-11-01T00:24:28.3173240Z Temporarily overriding HOME='/Users/runner/work/_temp/023bd9fb-7bc9-49ee-8560-ed1eecd72ab6' before making global git config changes
+2025-11-01T00:24:28.3174730Z Adding repository directory to the temporary git global config as a safe directory
+2025-11-01T00:24:28.3177360Z [command]/opt/homebrew/bin/git config --global --add safe.directory /Users/runner/work/fontlift-mac-cli/fontlift-mac-cli
+2025-11-01T00:24:28.3331670Z Deleting the contents of '/Users/runner/work/fontlift-mac-cli/fontlift-mac-cli'
+2025-11-01T00:24:28.3358090Z ##[group]Initializing the repository
+2025-11-01T00:24:28.3362860Z [command]/opt/homebrew/bin/git init /Users/runner/work/fontlift-mac-cli/fontlift-mac-cli
+2025-11-01T00:24:28.3771810Z hint: Using 'master' as the name for the initial branch. This default branch name
+2025-11-01T00:24:28.3776860Z hint: is subject to change. To configure the initial branch name to use in all
+2025-11-01T00:24:28.3779110Z hint: of your new repositories, which will suppress this warning, call:
+2025-11-01T00:24:28.3780770Z hint:
+2025-11-01T00:24:28.3781920Z hint: 	git config --global init.defaultBranch <name>
+2025-11-01T00:24:28.3783210Z hint:
+2025-11-01T00:24:28.3784670Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2025-11-01T00:24:28.3786980Z hint: 'development'. The just-created branch can be renamed via this command:
+2025-11-01T00:24:28.3788580Z hint:
+2025-11-01T00:24:28.3795430Z hint: 	git branch -m <name>
+2025-11-01T00:24:28.3797040Z hint:
+2025-11-01T00:24:28.3797800Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2025-11-01T00:24:28.3798920Z Initialized empty Git repository in /Users/runner/work/fontlift-mac-cli/fontlift-mac-cli/.git/
+2025-11-01T00:24:28.3810670Z [command]/opt/homebrew/bin/git remote add origin https://github.com/fontlaborg/fontlift-mac-cli
+2025-11-01T00:24:28.3880710Z ##[endgroup]
+2025-11-01T00:24:28.3882240Z ##[group]Disabling automatic garbage collection
+2025-11-01T00:24:28.3883350Z [command]/opt/homebrew/bin/git config --local gc.auto 0
+2025-11-01T00:24:28.3963180Z ##[endgroup]
+2025-11-01T00:24:28.3963970Z ##[group]Setting up auth
+2025-11-01T00:24:28.3964850Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp core\.sshCommand
+2025-11-01T00:24:28.4024190Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2025-11-01T00:24:28.6070760Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2025-11-01T00:24:28.6540420Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2025-11-01T00:24:28.8121230Z [command]/opt/homebrew/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2025-11-01T00:24:28.8123330Z ##[endgroup]
+2025-11-01T00:24:28.8123960Z ##[group]Fetching the repository
+2025-11-01T00:24:28.8125170Z [command]/opt/homebrew/bin/git -c protocol.version=2 fetch --prune --no-recurse-submodules origin +refs/heads/*:refs/remotes/origin/* +refs/tags/*:refs/tags/*
+2025-11-01T00:24:29.7015340Z From https://github.com/fontlaborg/fontlift-mac-cli
+2025-11-01T00:24:29.7016280Z  * [new branch]      main       -> origin/main
+2025-11-01T00:24:29.7016780Z  * [new tag]         v1.0.0     -> v1.0.0
+2025-11-01T00:24:29.7017270Z  * [new tag]         v1.1.0     -> v1.1.0
+2025-11-01T00:24:29.7018840Z  * [new tag]         v1.1.1     -> v1.1.1
+2025-11-01T00:24:29.7030640Z  * [new tag]         v1.1.2     -> v1.1.2
+2025-11-01T00:24:29.7032570Z  * [new tag]         v1.1.3     -> v1.1.3
+2025-11-01T00:24:29.7123020Z [command]/opt/homebrew/bin/git branch --list --remote origin/main
+2025-11-01T00:24:29.7193480Z   origin/main
+2025-11-01T00:24:29.7198450Z [command]/opt/homebrew/bin/git rev-parse refs/remotes/origin/main
+2025-11-01T00:24:29.7257470Z 105b834a5ad117bbbb7cb9c74256cf54a10c2ce6
+2025-11-01T00:24:29.7261580Z ##[endgroup]
+2025-11-01T00:24:29.7265430Z ##[group]Determining the checkout info
+2025-11-01T00:24:29.7268820Z ##[endgroup]
+2025-11-01T00:24:29.7270090Z [command]/opt/homebrew/bin/git sparse-checkout disable
+2025-11-01T00:24:29.7341100Z [command]/opt/homebrew/bin/git config --local --unset-all extensions.worktreeConfig
+2025-11-01T00:24:29.7403620Z ##[group]Checking out the ref
+2025-11-01T00:24:29.7406900Z [command]/opt/homebrew/bin/git checkout --progress --force -B main refs/remotes/origin/main
+2025-11-01T00:24:29.7586800Z Switched to a new branch 'main'
+2025-11-01T00:24:29.7690780Z branch 'main' set up to track 'origin/main'.
+2025-11-01T00:24:29.7997090Z ##[endgroup]
+2025-11-01T00:24:29.8301890Z [command]/opt/homebrew/bin/git log -1 --format=%H
+2025-11-01T00:24:29.8350680Z 105b834a5ad117bbbb7cb9c74256cf54a10c2ce6

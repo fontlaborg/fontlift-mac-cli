@@ -1,0 +1,5 @@
+2025-11-01T00:24:24.9040000Z Requested labels: macos-14
+2025-11-01T00:24:24.9040000Z Job defined at: fontlaborg/fontlift-mac-cli/.github/workflows/ci.yml@refs/heads/main
+2025-11-01T00:24:24.9040000Z Waiting for a runner to pick up this job...
+2025-11-01T00:24:25.4010000Z Job is waiting for a hosted runner to come online.
+2025-11-01T00:24:25.4000000Z Job is about to start running on the hosted runner: GitHub Actions 1000000547

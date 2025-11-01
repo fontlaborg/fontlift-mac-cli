@@ -1,0 +1,41 @@
+﻿2025-11-01T00:24:26.8781220Z Current runner version: '2.329.0'
+2025-11-01T00:24:26.8818370Z ##[group]Runner Image Provisioner
+2025-11-01T00:24:26.8819030Z Hosted Compute Agent
+2025-11-01T00:24:26.8820920Z Version: 20251016.436
+2025-11-01T00:24:26.8821340Z Commit: 8ab8ac8bfd662a3739dab9fe09456aba92132568
+2025-11-01T00:24:26.8821770Z Build Date: 2025-10-15T20:44:12Z
+2025-11-01T00:24:26.8822130Z ##[endgroup]
+2025-11-01T00:24:26.8822460Z ##[group]Operating System
+2025-11-01T00:24:26.8822810Z macOS
+2025-11-01T00:24:26.8823090Z 14.8.1
+2025-11-01T00:24:26.8823390Z 23J30
+2025-11-01T00:24:26.8823680Z ##[endgroup]
+2025-11-01T00:24:26.8823980Z ##[group]Runner Image
+2025-11-01T00:24:26.8824310Z Image: macos-14-arm64
+2025-11-01T00:24:26.8825110Z Version: 20251020.0056
+2025-11-01T00:24:26.8825830Z Included Software: https://github.com/actions/runner-images/blob/macos-14-arm64/20251020.0056/images/macos/macos-14-arm64-Readme.md
+2025-11-01T00:24:26.8826770Z Image Release: https://github.com/actions/runner-images/releases/tag/macos-14-arm64%2F20251020.0056
+2025-11-01T00:24:26.8827870Z ##[endgroup]
+2025-11-01T00:24:26.8829530Z ##[group]GITHUB_TOKEN Permissions
+2025-11-01T00:24:26.8831820Z Actions: write
+2025-11-01T00:24:26.8832140Z Attestations: write
+2025-11-01T00:24:26.8832460Z Checks: write
+2025-11-01T00:24:26.8832810Z Contents: write
+2025-11-01T00:24:26.8833180Z Deployments: write
+2025-11-01T00:24:26.8833530Z Discussions: write
+2025-11-01T00:24:26.8833850Z Issues: write
+2025-11-01T00:24:26.8834200Z Metadata: read
+2025-11-01T00:24:26.8834500Z Models: read
+2025-11-01T00:24:26.8834830Z Packages: write
+2025-11-01T00:24:26.8835220Z Pages: write
+2025-11-01T00:24:26.8835540Z PullRequests: write
+2025-11-01T00:24:26.8835860Z RepositoryProjects: write
+2025-11-01T00:24:26.8836240Z SecurityEvents: write
+2025-11-01T00:24:26.8836700Z Statuses: write
+2025-11-01T00:24:26.8837010Z ##[endgroup]
+2025-11-01T00:24:26.8839870Z Secret source: Actions
+2025-11-01T00:24:26.8840400Z Prepare workflow directory
+2025-11-01T00:24:26.9102590Z Prepare all required actions
+2025-11-01T00:24:26.9134210Z Getting action download info
+2025-11-01T00:24:27.2041830Z Download action repository 'actions/checkout@v4' (SHA:08eba0b27e820071cde6df949e0beb9ba4906955)
+2025-11-01T00:24:28.0170860Z Complete job name: Build and Test

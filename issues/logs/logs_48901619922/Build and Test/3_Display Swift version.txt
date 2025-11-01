@@ -1,0 +1,7 @@
+﻿2025-11-01T00:24:29.8541710Z ##[group]Run swift --version
+2025-11-01T00:24:29.8542570Z [36;1mswift --version[0m
+2025-11-01T00:24:29.8615810Z shell: /bin/bash -e {0}
+2025-11-01T00:24:29.8616560Z ##[endgroup]
+2025-11-01T00:24:32.9176260Z Apple Swift version 5.10 (swiftlang-5.10.0.13 clang-1500.3.9.4)
+2025-11-01T00:24:32.9178430Z Target: arm64-apple-macosx14.0
+2025-11-01T00:24:32.9254740Z swift-driver version: 1.90.11.1 
