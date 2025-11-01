@@ -9,6 +9,23 @@ All notable changes to fontlift-mac-cli will be documented in this file.
 
 **Initial Release** - Swift Package structure, build automation, testing infrastructure, and documentation framework.
 
+## [1.1.24] - 2025-11-01
+
+### Changed
+- **Task 4.3 (Phase 4)**: Enhanced error messages with actionable guidance
+  - Install command: Added common causes and suggestions for installation failures
+  - Uninstall command: Added suggestions for font not found errors
+  - Remove command: Added detailed guidance for file deletion errors
+  - All error messages now include file paths and specific troubleshooting steps
+  - Permission errors suggest trying with sudo when appropriate
+  - Font name errors suggest using `fontlift list -n` to verify names
+  - System font database errors include fc-cache suggestion
+
+### Improved
+- Error messages now provide clear, actionable steps to resolve common issues
+- Users get specific guidance based on the type of error encountered
+- All failures include relevant context (file paths, font names)
+
 ## [1.1.23] - 2025-11-01
 
 ### Added

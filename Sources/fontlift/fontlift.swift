@@ -10,7 +10,7 @@ import Foundation
 /// When updating, also update:
 /// - CHANGELOG.md (add new version section)
 /// - Git tag (git tag vX.Y.Z)
-private let version = "1.1.23"
+private let version = "1.1.24"
 
 // MARK: - Font Management Helpers
 
@@ -239,9 +239,17 @@ extension Fontlift {
                 if let error = error?.takeRetainedValue() {
                     let errorDesc = CFErrorCopyDescription(error) as String
                     print("❌ Error installing font: \(errorDesc)")
+                    print("   File: \(fontPath)")
+                    print("")
+                    print("   Common causes:")
+                    print("   - Font already installed (use 'fontlift list' to check)")
+                    print("   - Invalid or corrupted font file")
+                    print("   - Font format not supported (.ttf, .otf, .ttc, .otc)")
+                    print("   - Permission issues (try with sudo for system-level install)")
                     throw ExitCode.failure
                 } else {
                     print("❌ Error: Failed to install font")
+                    print("   File: \(fontPath)")
                     throw ExitCode.failure
                 }
             }
@@ -300,6 +308,8 @@ extension Fontlift {
 
                 guard let fontURLs = CTFontManagerCopyAvailableFontURLs() as? [URL] else {
                     print("❌ Error: Could not retrieve font list")
+                    print("   This may indicate a system font database issue")
+                    print("   Try: sudo fc-cache -f -v (if fc-cache is installed)")
                     throw ExitCode.failure
                 }
 
@@ -314,6 +324,12 @@ extension Fontlift {
 
                 guard let url = foundURL else {
                     print("❌ Error: Font '\(fontName)' not found in installed fonts")
+                    print("   Font name: \(fontName)")
+                    print("")
+                    print("   Suggestions:")
+                    print("   - Use 'fontlift list -n' to see all installed font names")
+                    print("   - Check spelling and case (font names are case-sensitive)")
+                    print("   - Font may have already been uninstalled")
                     throw ExitCode.failure
                 }
 
@@ -346,9 +362,16 @@ extension Fontlift {
                 if let error = error?.takeRetainedValue() {
                     let errorDesc = CFErrorCopyDescription(error) as String
                     print("❌ Error uninstalling font: \(errorDesc)")
+                    print("   File: \(url.path)")
+                    print("")
+                    print("   Common causes:")
+                    print("   - Font not currently installed")
+                    print("   - Font installed at system level (try with sudo)")
+                    print("   - Permission issues")
                     throw ExitCode.failure
                 } else {
                     print("❌ Error: Failed to uninstall font")
+                    print("   File: \(url.path)")
                     throw ExitCode.failure
                 }
             }
@@ -410,6 +433,8 @@ extension Fontlift {
 
                 guard let fontURLs = CTFontManagerCopyAvailableFontURLs() as? [URL] else {
                     print("❌ Error: Could not retrieve font list")
+                    print("   This may indicate a system font database issue")
+                    print("   Try: sudo fc-cache -f -v (if fc-cache is installed)")
                     throw ExitCode.failure
                 }
 
@@ -424,6 +449,12 @@ extension Fontlift {
 
                 guard let url = foundURL else {
                     print("❌ Error: Font '\(fontName)' not found in installed fonts")
+                    print("   Font name: \(fontName)")
+                    print("")
+                    print("   Suggestions:")
+                    print("   - Use 'fontlift list -n' to see all installed font names")
+                    print("   - Check spelling and case (font names are case-sensitive)")
+                    print("   - Font may have already been removed")
                     throw ExitCode.failure
                 }
 
@@ -464,6 +495,13 @@ extension Fontlift {
                 }
             } catch {
                 print("❌ Error deleting font file: \(error.localizedDescription)")
+                print("   File: \(url.path)")
+                print("")
+                print("   Common causes:")
+                print("   - File is read-only or protected")
+                print("   - Permission denied (try with sudo)")
+                print("   - File is in use by another process")
+                print("   - File is in a protected system directory")
                 throw ExitCode.failure
             }
         }

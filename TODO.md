@@ -73,15 +73,15 @@ test the build & publish GH actions via `gh run`, analyze the logs, fix, iterate
 - ✅ Add test for version consistency
 - ✅ Document version verification process
 
-### Task 3: Enhance Error Messages with Actionable Guidance (Medium Priority)
+### ~~Task 3: Enhance Error Messages with Actionable Guidance~~ ✅ COMPLETED (v1.1.24)
 **Goal**: Provide clear, actionable error messages that help users fix problems.
 
-- [ ] Review all error messages in fontlift.swift
-- [ ] Add specific file path in "file not found" errors
-- [ ] Add suggestions for common mistakes (e.g., missing sudo)
-- [ ] Add examples in permission errors
-- [ ] Test error scenarios and verify messages are helpful
-- [ ] Document common error patterns
+- ✅ Review all error messages in fontlift.swift
+- ✅ Add specific file path in "file not found" errors
+- ✅ Add suggestions for common mistakes (e.g., missing sudo)
+- ✅ Add examples in permission errors
+- ✅ Test error scenarios and verify messages are helpful
+- ✅ Document common error patterns
 
 ---
 
