@@ -5,11 +5,12 @@
 
 ### Project Status ✅
 
-**Version**: v1.1.20
+**Version**: v1.1.21
 **Test Suite**: 23 Swift + 23 Script tests = 46 total tests passing
 **Build**: Zero compiler warnings (release build: ~22s)
 **CI/CD**: Auto-fix enabled and verified working
 **Universal Binary**: ✅ FIXED - Releases now produce true universal binaries (x86_64 + arm64)
+**Quality**: ✅ Enhanced - Version-agnostic tests, size validation, improved logging
 
 ### Completed Work ✅
 
@@ -93,6 +94,33 @@ $ ls -lh fontlift
 ```
 
 **Status**: ✅ RESOLVED - Releases now produce true universal binaries
+
+---
+
+### Quality Improvements (v1.1.21) ✅
+
+**Task 4.1: Version-Agnostic Scripts Test Suite**
+- Problem: Tests had hardcoded version numbers (1.1.20)
+- Solution: Extract version dynamically from source
+- Benefit: Tests now work with any version - maintenance-free
+- Verification: Changed version to 9.9.9 and tests still passed
+
+**Task 4.2: Binary Size Validation in Release Process**
+- Problem: Silent failures where universal build produces wrong arch
+- Solution: Added size check (>1MB) and "fat file" verification
+- Benefit: Catches arm64-only binaries early (464K vs 3.2M)
+- Implemented in: prepare-release.sh
+
+**Task 4.3: Enhanced Release Script Logging**
+- Added: Formatted summary table with all release metrics
+- Shows: Version, binary size, architectures, tarball, checksum
+- Benefit: Easier verification and debugging at a glance
+
+**Results**:
+- All 46 tests passing
+- v1.1.21 release successful
+- Binary verified: Universal (x86_64 + arm64, 3.2M)
+- Release process more robust and maintainable
 
 ### Next Tasks 🎯
 
