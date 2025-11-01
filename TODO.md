@@ -1,6 +1,28 @@
 # TODO.md
 <!-- this_file: TODO.md -->
 
+## Quality & Robustness Improvements - Round 4 (Completed)
+
+### Round 4 Tasks (Polish & User Experience) ✅
+1. **Version number synchronization**
+   - Updated version constant from 1.1.28 to 1.1.29
+   - Synced with CHANGELOG.md and WORK.md documentation
+   - Ensures consistency across codebase
+
+2. **Shell-safe path escaping**
+   - Added `shellEscape()` helper function for path sanitization
+   - Properly escapes special characters (spaces, quotes) in file paths
+   - Used in error messages that suggest shell commands
+   - Prevents copy-paste errors when paths contain special characters
+
+3. **Enhanced duplicate detection in install command**
+   - Detects "already installed" errors specifically
+   - Displays font name when duplicate detected
+   - Provides clear guidance: "Use 'fontlift uninstall' to remove before reinstalling"
+   - Better user experience vs. generic error message
+
+---
+
 ## Quality & Robustness Improvements - Round 3 (Completed)
 
 ### Round 3 Tasks (Bug Fixes & Robustness) ✅

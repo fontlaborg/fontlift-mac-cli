@@ -9,16 +9,22 @@
 ### Core Metrics
 
 - **Test Suite**: 65 tests passing (27 Swift + 23 Scripts + 15 Integration)
-- **Test Execution**: ~27s
-- **Build Time**: ~6-8s (release mode)
+- **Test Execution**: ~26s
+- **Build Time**: ~7s (release mode)
 - **Binary Size**: 1.6M (native), 3.2M (universal)
 - **Compiler Warnings**: 0
 - **Platform**: macOS 12.0+ (Intel + Apple Silicon)
-- **Source Lines**: 698 lines (main file)
+- **Source Lines**: 733 lines (main file)
 
 ### Recent Changes
 
 **v1.1.29** (2025-11-01 - IN DEVELOPMENT):
+- **Round 4: Polish & User Experience**
+  - Version synchronization: 1.1.28 → 1.1.29
+  - Shell-safe path escaping for suggested commands
+  - Enhanced duplicate detection with font name display
+  - Source lines: 698 → 733 lines (+35 lines)
+
 - **Round 3: Bug Fixes & Robustness**
   - Fixed critical bug: font name extraction after file deletion
   - Added race condition protection for concurrent operations

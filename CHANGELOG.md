@@ -35,6 +35,18 @@ All notable changes to fontlift-mac-cli will be documented in this file.
   - Suggests `atsutil databases -remove` and Console.app checks
   - All error messages now include actionable guidance
 
+- **Shell-Safe Path Escaping**: Protection against copy-paste errors
+  - Added `shellEscape()` helper function for path sanitization
+  - Properly escapes special characters (spaces, quotes) in file paths
+  - Used in error messages that suggest shell commands
+  - Prevents errors when users copy-paste suggested commands with paths containing spaces
+
+- **Enhanced Duplicate Detection**: Better feedback for already-installed fonts
+  - Install command now detects "already installed" errors specifically
+  - Displays font name when duplicate detected: "ℹ️  Font already installed: FontName"
+  - Provides clear next steps: "Use 'fontlift uninstall' to remove before reinstalling"
+  - More helpful than generic "Font already installed" message
+
 ### Fixed
 - **Critical Bug**: Font name extraction in remove command
   - Was attempting to read font metadata AFTER file deletion (impossible!)
@@ -56,9 +68,10 @@ All notable changes to fontlift-mac-cli will be documented in this file.
 
 ### Changed
 - Modified name resolution logic to collect all matches instead of using first match
+- Synchronized version constant from 1.1.28 to 1.1.29 to match documentation
 - Test count: 61 → 65 tests (added 4 new validation and protection tests)
 - Swift test count: 23 → 27 tests
-- Source file size: 564 → 698 lines (+134 lines total: +105 safety/validation, +29 bug fixes)
+- Source file size: 564 → 733 lines (+169 lines total: +105 safety/validation, +29 bug fixes, +35 UX improvements)
 
 ### Improved
 - **Safety**: Major improvement - tool can no longer accidentally break macOS
