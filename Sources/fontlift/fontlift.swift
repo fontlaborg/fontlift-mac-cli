@@ -633,6 +633,9 @@ extension Fontlift {
                 throw ExitCode.failure
             }
 
+            // Get font name before deletion (file must exist to read metadata)
+            let fontName = getFontName(from: url) ?? getFullFontName(from: url)
+
             // First unregister the font
             var error: Unmanaged<CFError>?
             let unregistered = CTFontManagerUnregisterFontsForURL(url as CFURL, .user, &error)
@@ -644,23 +647,49 @@ extension Fontlift {
                 }
             }
 
+            // Verify file still exists before deletion (race condition protection)
+            guard FileManager.default.fileExists(atPath: url.path) else {
+                print("⚠️  Warning: Font file no longer exists at: \(url.path)")
+                print("   File may have been removed by another process")
+                print("   Font was unregistered successfully (if it was registered)")
+                return
+            }
+
             // Then delete the file
             do {
                 try FileManager.default.removeItem(at: url)
-                if let fontName = getFontName(from: url) ?? getFullFontName(from: url) {
-                    print("✅ Successfully removed: \(fontName)")
+                if let name = fontName {
+                    print("✅ Successfully removed: \(name)")
                 } else {
-                    print("✅ Successfully removed font file")
+                    print("✅ Successfully removed font file: \(url.lastPathComponent)")
                 }
-            } catch {
+            } catch let error as NSError {
+                // Provide specific error guidance based on error type
                 print("❌ Error deleting font file: \(error.localizedDescription)")
                 print("   File: \(url.path)")
                 print("")
-                print("   Common causes:")
-                print("   - File is read-only or protected")
-                print("   - Permission denied (try with sudo)")
-                print("   - File is in use by another process")
-                print("   - File is in a protected system directory")
+
+                // Check for specific error codes to provide targeted guidance
+                if error.domain == NSCocoaErrorDomain {
+                    switch error.code {
+                    case NSFileNoSuchFileError:
+                        print("   File was removed by another process between validation and deletion")
+                        print("   This is not an error - the file is already gone")
+                        return  // Success - file is already deleted
+                    case NSFileWriteNoPermissionError:
+                        print("   Permission denied - you don't have write access to this file")
+                        print("   Try running: sudo fontlift remove \"\(url.path)\"")
+                    case NSFileReadNoSuchFileError:
+                        print("   Parent directory no longer exists")
+                    default:
+                        print("   Common causes:")
+                        print("   - File is read-only or protected")
+                        print("   - Permission denied (try with sudo)")
+                        print("   - File is in use by another process")
+                        print("   - File is in a protected system directory")
+                    }
+                }
+
                 throw ExitCode.failure
             }
         }
