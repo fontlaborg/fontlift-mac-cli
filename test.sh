@@ -7,6 +7,14 @@
 # Options:
 #   --ci     CI mode (minimal output, strict error codes)
 #   --help   Show this help message
+#
+# Test Suite Breakdown (Total: 81 tests):
+#   • Swift Unit Tests: 43 tests (CLIErrorTests, HelperFunctionTests, ProjectValidationTests)
+#   • Scripts Tests: 23 tests (build.sh, test.sh, publish.sh, validate-version.sh, get-version.sh, binary)
+#   • Integration Tests: 15 tests (binary metadata, list command, help texts, error handling)
+#
+# Note: Test counts in output are hardcoded and must be manually updated when tests are added/removed.
+#       Run `swift test` to get accurate Swift test count, then update lines 75, 138, 142.
 
 set -euo pipefail  # Exit on error, undefined vars, pipe failures
 

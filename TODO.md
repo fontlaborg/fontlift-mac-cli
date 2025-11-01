@@ -1,6 +1,26 @@
 # TODO.md
 <!-- this_file: TODO.md -->
 
+## Quality & Robustness Improvements - Round 8 (In Progress)
+
+### Round 8 Tasks (Documentation Accuracy) 🔄
+1. **Update PLAN.md test counts**
+   - Fix outdated test count: 23 → 43 Swift unit tests
+   - Fix outdated total: 65 → 81 tests
+   - Ensure documentation reflects current state
+
+2. **Update test.sh internal documentation**
+   - Add comment explaining test suite breakdown
+   - Document why counts are hardcoded
+   - Improve maintainability
+
+3. **Verify function length compliance**
+   - Check all functions are <20 lines (coding standard)
+   - Document any exceptions with justification
+   - Update success metrics if needed
+
+---
+
 ## Quality & Robustness Improvements - Round 7 (Completed)
 
 ### Round 7 Tasks (Test Coverage) ✅
