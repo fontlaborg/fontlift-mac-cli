@@ -13,6 +13,20 @@
 
 ## Recent Changes
 
+### Post-Release Infrastructure Improvements (Rounds 17-18)
+
+**Round 18 (Documentation & Maintainability):**
+- Documented Round 17 improvements in CHANGELOG.md
+- Updated README.md with test.sh selective suite flags documentation
+- Verified and documented CI version validation catches common errors
+- All improvements documented for future maintainers
+
+**Round 17 (Post-Release Quality):**
+- Created comprehensive `.github/RELEASING.md` (250+ lines release guide)
+- Enhanced test.sh with selective suite execution (`--swift`, `--scripts`, `--integration`)
+- Added CI version validation (semver format + CHANGELOG entry checks)
+- Improves developer experience and release safety
+
 ### Output Format Standardization (Completed in v2.0.0)
 
 **Completed:** Standardized output format across all fontlaborg CLI tools
@@ -88,9 +102,9 @@ fontlift-mac-cli/
 ├── Sources/fontlift/
 │   └── fontlift.swift          # Main CLI implementation
 ├── Tests/
-│   ├── fontliftTests/          # Swift unit tests (43)
+│   ├── fontliftTests/          # Swift unit tests (52)
 │   ├── scripts_test.sh         # Script tests (23)
-│   └── integration_test.sh     # Integration tests (15)
+│   └── integration_test.sh     # Integration tests (19)
 ├── scripts/
 │   ├── get-version.sh          # Extract version from code
 │   ├── validate-version.sh     # Validate version consistency

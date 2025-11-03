@@ -7,12 +7,12 @@
 **Release Date**: 2025-11-03
 **Release URL**: https://github.com/fontlaborg/fontlift-mac-cli/releases/tag/v2.0.0
 **Last Updated**: 2025-11-03
-**Total Improvement Rounds**: 18 (16 pre-release + 2 post-release)
+**Total Improvement Rounds**: 19 (16 pre-release + 3 post-release)
 
 ### Core Metrics
 
-- **Test Suite**: 94 tests passing (52 Swift + 23 Scripts + 19 Integration)
-- **Test Execution**: ~34s
+- **Test Suite**: 96 tests passing (52 Swift + 23 Scripts + 21 Integration)
+- **Test Execution**: ~30s
 - **Build Time**: ~7s (release mode)
 - **Binary Size**: 1.6M (native), 3.2M (universal)
 - **Compiler Warnings**: 0
@@ -211,17 +211,32 @@
 - ✅ All 94 tests passing (52 Swift + 23 Scripts + 19 Integration)
 - ✅ Test execution: 30s (6s + 17s + 7s)
 
-**Final Metrics (After 18 Rounds):**
-- Test suite: 94/94 tests passing (100%)
-- Test execution: ~30s total (6s Swift + 17s Scripts + 7s Integration)
-- Code: 819 lines, 0 warnings
-- Documentation: Complete with examples, migration guide, release notes, and maintainer guides
+**Continuous Improvement Round 19:**
+- ✅ Updated PLAN.md with Rounds 17-18 improvements in "Recent Changes"
+- ✅ Fixed outdated test counts in PLAN.md (43→52 Swift, 15→19 Integration)
+- ✅ Added performance timing baselines to integration tests
+  - Binary startup timing (<1000ms validation)
+  - List command timing (<1000ms validation)
+  - Python3-based cross-platform millisecond timestamps
+- ✅ Fixed test.sh test count calculation to be dynamic
+- ✅ Verified selective suite flags work correctly
+  - --swift shows 52 tests, --integration shows 21 tests
+  - Combined flags work correctly with accurate totals
+- ✅ Test count: 94 → 96 tests (+2 performance tests)
+- ✅ All 96 tests passing (52 Swift + 23 Scripts + 21 Integration)
+
+**Final Metrics (After 19 Rounds):**
+- Test suite: 96/96 tests passing (100%)
+- Test execution: ~30s total (5s Swift + 17s Scripts + 8s Integration)
+- Code: 818 lines, 0 warnings
+- Documentation: Complete with examples, migration guide, release notes, maintainer guides, and performance baselines
 - Error messages: User-friendly and actionable
 - Edge cases: All verified and working correctly
+- Performance: Baselines established for regression detection
 - Git: All changes pushed to GitHub
 - Release: **LIVE IN PRODUCTION!** 🎉🚀
 - Release URL: https://github.com/fontlaborg/fontlift-mac-cli/releases/tag/v2.0.0
-- **Project Status: Mature and production-ready with 18 rounds of improvements**
+- **Project Status: Mature and production-ready with 19 rounds of improvements**
 
 ### Core Functionality
 

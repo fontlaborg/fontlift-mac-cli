@@ -48,12 +48,31 @@ run_test() {
     fi
 }
 
-# Test 1: Binary metadata
+# Test 1: Binary metadata and performance
 echo "Testing binary metadata..."
 run_test "Binary is executable" "[ -x $BINARY ]"
 run_test "Binary size >1MB (universal)" "[ $(stat -f%z $BINARY) -gt 1048576 ]"
 run_test "Binary --version outputs version" "$BINARY --version | grep -q '^[0-9]'"
 run_test "Binary --help shows usage" "$BINARY --help | grep -q 'USAGE:'"
+
+# Performance baselines (for regression detection)
+echo ""
+echo "Performance baselines:"
+START_TIME=$(python3 -c 'import time; print(int(time.time() * 1000))')
+$BINARY --version > /dev/null
+END_TIME=$(python3 -c 'import time; print(int(time.time() * 1000))')
+STARTUP_MS=$((END_TIME - START_TIME))
+echo "  • Binary startup (--version): ${STARTUP_MS}ms"
+
+START_TIME=$(python3 -c 'import time; print(int(time.time() * 1000))')
+$BINARY list > /dev/null
+END_TIME=$(python3 -c 'import time; print(int(time.time() * 1000))')
+LIST_MS=$((END_TIME - START_TIME))
+echo "  • List command execution: ${LIST_MS}ms"
+
+# Validate performance is reasonable (<1s for each operation)
+run_test "Startup time <1000ms" "[ $STARTUP_MS -lt 1000 ]"
+run_test "List command <1000ms" "[ $LIST_MS -lt 1000 ]"
 echo ""
 
 # Test 2: List command (non-destructive)

@@ -206,19 +206,33 @@ fi
 TOTAL_END=$(date +%s)
 TOTAL_DURATION=$((TOTAL_END - TOTAL_START))
 
+# Calculate total test count based on what ran
+TOTAL_TESTS=0
+if [ "$RUN_SWIFT" = true ]; then
+    TOTAL_TESTS=$((TOTAL_TESTS + 52))
+fi
+if [ "$RUN_SCRIPTS" = true ] && [ "$SKIP_SCRIPT_TESTS" != "true" ]; then
+    TOTAL_TESTS=$((TOTAL_TESTS + 23))
+fi
+if [ "$RUN_INTEGRATION" = true ]; then
+    TOTAL_TESTS=$((TOTAL_TESTS + 21))  # 19 tests + 2 performance tests
+fi
+
 if [ "$CI_MODE" = false ]; then
     echo ""
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-    echo "✅ All Tests Passed! (94 total)"
+    echo "✅ All Tests Passed! ($TOTAL_TESTS total)"
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
     echo ""
     echo "Test Execution Times:"
-    echo "  • Swift unit tests:       ${SWIFT_DURATION}s (52 tests)"
-    if [ "$SCRIPTS_DURATION" -gt 0 ]; then
+    if [ "$RUN_SWIFT" = true ]; then
+        echo "  • Swift unit tests:       ${SWIFT_DURATION}s (52 tests)"
+    fi
+    if [ "$RUN_SCRIPTS" = true ] && [ "$SKIP_SCRIPT_TESTS" != "true" ]; then
         echo "  • Scripts tests:          ${SCRIPTS_DURATION}s (23 tests)"
     fi
-    if [ "$INTEGRATION_DURATION" -gt 0 ]; then
-        echo "  • Integration tests:      ${INTEGRATION_DURATION}s (19 tests)"
+    if [ "$RUN_INTEGRATION" = true ]; then
+        echo "  • Integration tests:      ${INTEGRATION_DURATION}s (21 tests)"
     fi
     echo "  ────────────────────────────────────────────────────"
     echo "  • Total:                  ${TOTAL_DURATION}s"
