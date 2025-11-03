@@ -62,6 +62,10 @@ run_test "List command works" "$BINARY list | wc -l | grep -q '[0-9]'"
 run_test "List -n works" "$BINARY list -n | wc -l | grep -q '[0-9]'"
 run_test "List -p works" "$BINARY list -p | wc -l | grep -q '[0-9]'"
 run_test "List -s reduces output" "[ $($BINARY list -n | wc -l) -gt $($BINARY list -n -s | wc -l) ]"
+run_test "List -p -n uses :: separator" "($BINARY list -p -n 2>&1 || true) | head -1 | grep -q '::'"
+run_test "List -n -p uses :: separator" "($BINARY list -n -p 2>&1 || true) | head -1 | grep -q '::'"
+run_test "List -p does NOT use :: separator" "! (($BINARY list -p 2>&1 || true) | head -1 | grep -q '::')"
+run_test "List -n does NOT use :: separator" "! (($BINARY list -n 2>&1 || true) | head -1 | grep -q '::')"
 echo ""
 
 # Test 3: Help texts for all commands

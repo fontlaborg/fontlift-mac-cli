@@ -8,10 +8,10 @@
 #   --ci     CI mode (minimal output, strict error codes)
 #   --help   Show this help message
 #
-# Test Suite Breakdown (Total: 90 tests):
+# Test Suite Breakdown (Total: 94 tests):
 #   • Swift Unit Tests: 52 tests (CLIErrorTests, HelperFunctionTests, ProjectValidationTests)
 #   • Scripts Tests: 23 tests (build.sh, test.sh, publish.sh, validate-version.sh, get-version.sh, binary)
-#   • Integration Tests: 15 tests (binary metadata, list command, help texts, error handling)
+#   • Integration Tests: 19 tests (binary metadata, list command, help texts, error handling, output format)
 #
 # Note: Test counts in output are hardcoded and must be manually updated when tests are added/removed.
 #       Run `swift test` to get accurate Swift test count, then update lines 83, 146, 150.
@@ -125,7 +125,7 @@ if [ -f "Tests/integration_test.sh" ]; then
     if [ "$CI_MODE" = false ]; then
         echo ""
         echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-        echo "Suite 3/3: Integration Tests (15 tests)"
+        echo "Suite 3/3: Integration Tests (19 tests)"
         echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
         echo ""
     fi
@@ -143,7 +143,7 @@ TOTAL_DURATION=$((TOTAL_END - TOTAL_START))
 if [ "$CI_MODE" = false ]; then
     echo ""
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-    echo "✅ All Tests Passed! (90 total)"
+    echo "✅ All Tests Passed! (94 total)"
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
     echo ""
     echo "Test Execution Times:"
@@ -152,7 +152,7 @@ if [ "$CI_MODE" = false ]; then
         echo "  • Scripts tests:          ${SCRIPTS_DURATION}s (23 tests)"
     fi
     if [ "$INTEGRATION_DURATION" -gt 0 ]; then
-        echo "  • Integration tests:      ${INTEGRATION_DURATION}s (15 tests)"
+        echo "  • Integration tests:      ${INTEGRATION_DURATION}s (19 tests)"
     fi
     echo "  ────────────────────────────────────────────────────"
     echo "  • Total:                  ${TOTAL_DURATION}s"

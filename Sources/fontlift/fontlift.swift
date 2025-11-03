@@ -10,7 +10,7 @@ import Foundation
 /// When updating, also update:
 /// - CHANGELOG.md (add new version section)
 /// - Git tag (git tag vX.Y.Z)
-private let version = "1.1.29"
+private let version = "2.0.0"
 
 // MARK: - Font Management Helpers
 
@@ -210,7 +210,7 @@ extension Fontlift {
     /// Output modes:
     /// - Default (`-p`): Font file paths only
     /// - Names (`-n`): Internal font names (PostScript or display names)
-    /// - Both (`-p -n`): Combined format as `path;name`
+    /// - Both (`-p -n`): Combined format as `path::name`
     /// - Sorted (`-s`): Alphabetically sorted with duplicates removed
     ///
     /// The output is pure data (no headers/footers) for pipe-friendly usage.
@@ -219,7 +219,7 @@ extension Fontlift {
     /// ```bash
     /// fontlift list              # List all font paths
     /// fontlift list -n           # List all font names
-    /// fontlift list -p -n        # List path;name pairs
+    /// fontlift list -p -n        # List path::name pairs
     /// fontlift list -n -s        # List unique font names, sorted
     /// fontlift list | wc -l      # Count total fonts
     /// ```
@@ -227,14 +227,14 @@ extension Fontlift {
     /// **Output Modes:**
     /// - Default (no flags): Lists font file paths only
     /// - `-n` / `--name`: Lists internal font names only
-    /// - `-p -n`: Lists both in format "path;name"
+    /// - `-p -n`: Lists both in format "path::name"
     /// - `-s` / `--sorted`: Sorts output and removes duplicates
     ///
     /// **Examples:**
     /// ```bash
     /// fontlift list                    # List all font paths
     /// fontlift list -n                 # List all font names
-    /// fontlift list -p -n              # List path;name pairs
+    /// fontlift list -p -n              # List path::name pairs
     /// fontlift list -n -s              # List unique sorted names
     /// fontlift l                       # Same as 'list' (alias)
     /// ```
@@ -283,10 +283,10 @@ extension Fontlift {
             // Process each font URL and format output based on flags
             for fontURL in fontURLs {
                 if showPath && showName {
-                    // Combined mode: output both path and name separated by semicolon
-                    // Format: /path/to/font.ttf;FontName
+                    // Combined mode: output both path and name separated by double colon
+                    // Format: /path/to/font.ttf::FontName
                     let fontName = getFontName(from: fontURL) ?? getFullFontName(from: fontURL) ?? "Unknown"
-                    lines.append("\(fontURL.path);\(fontName)")
+                    lines.append("\(fontURL.path)::\(fontName)")
                 } else if showPath {
                     // Path-only mode: just the file system path
                     lines.append(fontURL.path)

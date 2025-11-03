@@ -70,8 +70,11 @@ fontlift list -n -s
 # Find fonts matching a name
 fontlift list -n | grep -i "helvetica"
 
-# See where a font is installed
+# See where a font is installed (shows path::name format)
 fontlift list -p -n | grep "Helvetica"
+# Example output:
+# /System/Library/Fonts/Helvetica.ttc::Helvetica
+# /System/Library/Fonts/Helvetica.ttc::Helvetica-Bold
 ```
 
 ### Install a new font
@@ -188,7 +191,7 @@ fontlift list -n -p | grep "Helvetica"
 
 - `fontlift list` or `fontlift list -p` lists the paths of all installed fonts, one path per line
 - `fontlift list -n` lists the internal font names of all installed fonts, one name per line
-- `fontlift list -n -p` or `fontlift list -n -p` lists the the paths and internal font names of all installed fonts; each line consists of the path followed by semicolon followed by the internal font name
+- `fontlift list -n -p` or `fontlift list -p -n` lists the paths and internal font names of all installed fonts; each line consists of the path followed by double colon (`::`) followed by the internal font name
 - `l` should be a synonym for `list`
 
 ### Installing fonts

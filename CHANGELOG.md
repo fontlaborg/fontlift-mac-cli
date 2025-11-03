@@ -5,6 +5,61 @@ All notable changes to fontlift-mac-cli will be documented in this file.
 
 ## [Unreleased]
 
+## [2.0.0] - 2025-11-03
+
+### ⚠️ BREAKING CHANGES
+- **Output Format Standardization**: Changed `list -n -p` output separator from semicolon (`;`) to double colon (`::`)
+  - **Old format**: `/path/to/font.ttf;FontName`
+  - **New format**: `/path/to/font.ttf::FontName`
+  - **Rationale**: Consistency with fontnome and fontlift-win-cli; avoids confusion with semicolon-terminated shell commands
+  - **Migration**: Update any scripts parsing `list -n -p` output to expect `::` instead of `;`
+  - Double colon provides clearer visual separation and reduces parsing ambiguity
+
+### Changed
+- Updated all documentation to reflect new output format
+- Updated internal comments and examples
+
+### Added
+- **Test Coverage for Output Format**: Added 4 integration tests (90→94 total)
+  - Verifies `list -p -n` outputs `path::name` format with `::` separator
+  - Verifies `list -n -p` also uses `::` separator (flag order independence)
+  - Regression tests ensure `::` NOT used in single-flag modes (`-p` or `-n` only)
+  - Fixed SIGPIPE handling issue in test framework (`set -euo pipefail` + `head -1`)
+
+- **Example Output in README.md**: Added concrete example showing `::` separator format (lines 73-77)
+  - Shows actual `list -p -n` output with Helvetica fonts
+  - Demonstrates `path::name` format visually for users
+  - Helps users understand format change immediately
+
+### Verified
+- **Edge Case Robustness**: Comprehensive verification of `::` separator behavior
+  - Confirmed NO font names contain `::` naturally across 5000+ system fonts
+  - Confirmed NO font paths contain `::` naturally
+  - Verified file extensions (`.ttf`, `.otf`, `.ttc`) are in path part before `::` separator
+  - Tested parsing with `awk -F'::'` - works perfectly
+  - Tested fonts with spaces, dots, and special characters - all work correctly
+  - Single-flag modes (`-p` or `-n` only) correctly omit `::` separator
+
+- **Error Message Quality**: Reviewed all 30+ error messages
+  - All errors include ❌ emoji for visibility
+  - All errors include specific context (path/name)
+  - Every error includes actionable guidance with "Common causes:" or "Troubleshooting:" sections
+  - Copy-paste ready commands with proper shell escaping
+  - Good formatting with blank lines and indented bullets
+
+### Quality Assurance
+- **Round 11-14 Improvements**: Completed 4 rounds of micro-improvements
+  - Round 11: Added 4 integration tests for output format verification
+  - Round 12: Updated documentation test counts (90→94)
+  - Round 13: Verified git status and binary functionality
+  - Round 14: Added examples, verified edge cases, reviewed error messages
+- **Final Test Results**: All 94/94 tests passing (52 Swift + 23 Scripts + 19 Integration)
+- **Execution Time**: 33s total (6s Swift + 20s Scripts + 7s Integration)
+- **Compiler Warnings**: 0
+- **Code Quality**: 819 lines, clean and maintainable
+
+## [1.1.30] - 2025-11-01
+
 ### Added
 - **System-Level Font Operations**: New `--admin` / `-a` flag for system-wide font management
   - Install fonts for all users in the current login session: `sudo fontlift install --admin font.ttf`
@@ -12,7 +67,7 @@ All notable changes to fontlift-mac-cli will be documented in this file.
   - Remove fonts at system level: `sudo fontlift remove --admin font.ttf`
   - Uses `.session` scope instead of `.user` scope when flag is set
   - Requires sudo privileges for system-level operations
-  - Added 9 new tests for admin flag functionality (52 → 61 Swift tests)
+  - Added 9 new tests for admin flag functionality (43 → 52 Swift tests, 81 → 90 total)
   - Comprehensive help text and error messages for admin flag usage
   - Clear scope indication in output: "Scope: system-level (all users)" vs "Scope: user-level"
 

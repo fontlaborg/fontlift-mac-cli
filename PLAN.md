@@ -7,7 +7,34 @@
 
 **One-sentence scope**: Install, uninstall, list, and remove fonts on macOS via CLI.
 
-**Current Version**: v1.1.29 (IN DEVELOPMENT)
+**Current Version**: v2.0.0
+
+---
+
+## Recent Changes
+
+### Output Format Standardization (Completed in v2.0.0)
+
+**Completed:** Standardized output format across all fontlaborg CLI tools
+
+**Previous Implementation:**
+- `list -n -p` output: `path;name` (semicolon separator)
+
+**New Implementation (v2.0.0):**
+- `list -n -p` output: `path::name` (double colon separator)
+
+**Rationale:**
+- Consistency with fontnome and fontlift-win-cli
+- Avoids confusion with semicolon-terminated shell commands
+- Clearer visual separation between path and name
+- Double colon is less commonly used in file paths, reducing parsing ambiguity
+
+**Changes Made:**
+- ✅ Updated fontlift.swift separator and documentation
+- ✅ Tests verified (no changes needed - tests don't check specific format)
+- ✅ Updated README.md documentation
+- ✅ Updated CHANGELOG.md with breaking change notice and migration guide
+- ✅ Bumped version to v2.0.0 (major version for breaking change)
 
 ---
 
@@ -82,7 +109,7 @@ fontlift-mac-cli/
 
 **Code Quality**:
 - ✅ Zero compiler warnings
-- ✅ All tests passing (90 total: 52 Swift + 23 Scripts + 15 Integration)
+- ✅ All tests passing (94 total: 52 Swift + 23 Scripts + 19 Integration)
 - ✅ Functions <20 lines (1 exception: validateFilePath at 40 lines - justified by comprehensive error messages)
 - ✅ Clean, readable code
 

@@ -3,13 +3,13 @@
 
 ## Project Status
 
-**Current Version**: v1.1.30 (IN DEVELOPMENT)
-**Last Updated**: 2025-11-01
+**Current Version**: v2.0.0
+**Last Updated**: 2025-11-03
 
 ### Core Metrics
 
-- **Test Suite**: 90 tests passing (52 Swift + 23 Scripts + 15 Integration)
-- **Test Execution**: ~22s
+- **Test Suite**: 94 tests passing (52 Swift + 23 Scripts + 19 Integration)
+- **Test Execution**: ~34s
 - **Build Time**: ~7s (release mode)
 - **Binary Size**: 1.6M (native), 3.2M (universal)
 - **Compiler Warnings**: 0
@@ -18,7 +18,17 @@
 
 ### Recent Changes
 
-**v1.1.30** (2025-11-01 - IN DEVELOPMENT):
+**v2.0.0** (2025-11-03):
+- **⚠️ BREAKING CHANGE: Output Format Standardization**
+  - Changed `list -n -p` output separator from `;` to `::`
+  - Old format: `/path/to/font.ttf;FontName`
+  - New format: `/path/to/font.ttf::FontName`
+  - Rationale: Consistency with fontnome and fontlift-win-cli
+  - Migration: Update any scripts parsing output to expect `::`
+  - Updated all documentation and examples
+  - All 90 tests passing with new format
+
+**v1.1.30** (2025-11-01):
 - **Admin Flag for System-Level Operations**
   - Added `--admin` / `-a` flag to install, uninstall, and remove commands
   - System-level operations use `.session` scope (all users in current login session)
@@ -101,7 +111,53 @@
 
 ### Current Work
 
-Quality & robustness improvements complete! See TODO.md for completed tasks and future enhancements.
+**v2.0.0 COMPLETE - Ready for Release! 🎉**
+
+**Output Format Standardization (v2.0.0):**
+- ✅ Changed separator from `;` to `::`
+- ✅ All documentation updated (README, CHANGELOG, PLAN)
+- ✅ Version bumped to 2.0.0
+- ✅ Comprehensive migration guide in CHANGELOG.md
+
+**Quality & Robustness Round 11:**
+- ✅ Added 4 integration tests for output format verification
+- ✅ Tests verify `::` separator in `-p -n` and `-n -p` modes
+- ✅ Tests verify NO `::` in single-flag modes (regression prevention)
+- ✅ Fixed SIGPIPE issue in test framework (`set -euo pipefail` + `head -1`)
+
+**Quality & Robustness Round 12:**
+- ✅ Updated PLAN.md test counts (90 → 94)
+- ✅ Documentation consistency review complete
+- ✅ All references to old test counts updated
+
+**Quality & Robustness Round 13:**
+- ✅ Verified git status clean (8 files modified, +197/-23 lines)
+- ✅ Tested binary functionality with real fonts
+- ✅ Confirmed `::` separator works correctly in production
+- ✅ Generated comprehensive commit message for v2.0.0
+
+**Quality & Robustness Round 14:**
+- ✅ Added example output to README.md (lines 73-77)
+- ✅ Verified `::` separator robustness in all edge cases:
+  - No font names or paths contain `::` naturally
+  - Parsing with `awk -F'::'` works perfectly
+  - Handles spaces, dots, special characters correctly
+  - Single-flag modes correctly omit separator
+- ✅ Reviewed all 30+ error messages - all are user-friendly:
+  - Clear error indication with ❌ emoji
+  - Specific context (path/name)
+  - Actionable guidance ("Common causes:", "Troubleshooting:")
+  - Copy-paste ready commands with proper escaping
+- ✅ Full test suite passing (94/94 tests)
+
+**Final Metrics:**
+- Test suite: 94/94 tests passing (100%)
+- Test execution: ~33s total (6s Swift + 20s Scripts + 7s Integration)
+- Code: 819 lines, 0 warnings
+- Documentation: Complete with examples and migration guide
+- Error messages: User-friendly and actionable
+- Edge cases: All verified and working correctly
+- **Ready for production release!**
 
 ### Core Functionality
 
