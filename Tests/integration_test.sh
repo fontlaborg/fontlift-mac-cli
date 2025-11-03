@@ -102,6 +102,22 @@ run_test "Install without args fails" "! $BINARY install 2>&1"
 run_test "Uninstall without args fails" "! $BINARY uninstall 2>&1"
 echo ""
 
+# Test 5: Version extraction and consistency
+echo "Testing version extraction..."
+EXTRACTED_VERSION=$(./scripts/get-version.sh)
+BINARY_VERSION=$($BINARY --version)
+
+# Test extracted version is valid semver (X.Y.Z format)
+run_test "get-version.sh outputs valid semver" "echo '$EXTRACTED_VERSION' | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+$'"
+
+# Test extracted version matches binary version
+run_test "Extracted version matches binary" "[ '$EXTRACTED_VERSION' = '$BINARY_VERSION' ]"
+
+# Test get-version.sh script exists and is executable
+run_test "get-version.sh script exists" "[ -f ./scripts/get-version.sh ]"
+run_test "get-version.sh is executable" "[ -x ./scripts/get-version.sh ]"
+echo ""
+
 # Print summary
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo "Integration Test Summary:"

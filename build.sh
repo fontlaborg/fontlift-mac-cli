@@ -69,6 +69,43 @@ for arg in "$@"; do
     esac
 done
 
+# Verify Swift version ≥5.9
+REQUIRED_SWIFT_VERSION="5.9"
+SWIFT_VERSION=$(swift --version 2>&1 | head -n 1 | grep -oE 'Swift version [0-9]+\.[0-9]+' | grep -oE '[0-9]+\.[0-9]+' | head -n 1)
+
+if [ -z "$SWIFT_VERSION" ]; then
+    echo "❌ Error: Failed to detect Swift version"
+    echo ""
+    echo "Please ensure Swift is installed and in your PATH."
+    echo "Run: swift --version"
+    exit 1
+fi
+
+# Compare versions (supports X.Y format)
+REQUIRED_MAJOR=$(echo "$REQUIRED_SWIFT_VERSION" | cut -d. -f1)
+REQUIRED_MINOR=$(echo "$REQUIRED_SWIFT_VERSION" | cut -d. -f2)
+CURRENT_MAJOR=$(echo "$SWIFT_VERSION" | cut -d. -f1)
+CURRENT_MINOR=$(echo "$SWIFT_VERSION" | cut -d. -f2)
+
+if [ "$CURRENT_MAJOR" -lt "$REQUIRED_MAJOR" ] || \
+   ([ "$CURRENT_MAJOR" -eq "$REQUIRED_MAJOR" ] && [ "$CURRENT_MINOR" -lt "$REQUIRED_MINOR" ]); then
+    echo "❌ Error: Swift version $REQUIRED_SWIFT_VERSION or later is required"
+    echo ""
+    echo "Current version: Swift $SWIFT_VERSION"
+    echo "Required version: Swift $REQUIRED_SWIFT_VERSION+"
+    echo ""
+    echo "Common causes:"
+    echo "  • Xcode version is too old (requires Xcode 15.0+)"
+    echo "  • Using outdated system Swift instead of Xcode's Swift"
+    echo ""
+    echo "Solutions:"
+    echo "  1. Update Xcode from the Mac App Store"
+    echo "  2. Select correct Xcode: sudo xcode-select -s /Applications/Xcode.app"
+    echo "  3. Download Swift from https://swift.org/download/"
+    echo "  4. Check installed version: swift --version"
+    exit 1
+fi
+
 if [ "$UNIVERSAL_BUILD" = true ]; then
     # Build universal binary (Intel + Apple Silicon)
     if [ "$CI_MODE" = false ]; then

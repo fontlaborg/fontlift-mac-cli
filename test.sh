@@ -11,10 +11,10 @@
 #   --integration   Run only integration tests
 #   --help          Show this help message
 #
-# Test Suite Breakdown (Total: 94 tests):
+# Test Suite Breakdown (Total: 100 tests):
 #   • Swift Unit Tests: 52 tests (CLIErrorTests, HelperFunctionTests, ProjectValidationTests)
 #   • Scripts Tests: 23 tests (build.sh, test.sh, publish.sh, validate-version.sh, get-version.sh, binary)
-#   • Integration Tests: 19 tests (binary metadata, list command, help texts, error handling, output format)
+#   • Integration Tests: 25 tests (binary metadata, list command, help texts, error handling, output format, version extraction)
 #
 # Note: Test counts in output are hardcoded and must be manually updated when tests are added/removed.
 #       Run `swift test` to get accurate Swift test count, then update lines 83, 146, 150.
@@ -215,7 +215,7 @@ if [ "$RUN_SCRIPTS" = true ] && [ "$SKIP_SCRIPT_TESTS" != "true" ]; then
     TOTAL_TESTS=$((TOTAL_TESTS + 23))
 fi
 if [ "$RUN_INTEGRATION" = true ]; then
-    TOTAL_TESTS=$((TOTAL_TESTS + 21))  # 19 tests + 2 performance tests
+    TOTAL_TESTS=$((TOTAL_TESTS + 25))  # 21 base + 2 performance + 2 version extraction
 fi
 
 if [ "$CI_MODE" = false ]; then
@@ -232,7 +232,7 @@ if [ "$CI_MODE" = false ]; then
         echo "  • Scripts tests:          ${SCRIPTS_DURATION}s (23 tests)"
     fi
     if [ "$RUN_INTEGRATION" = true ]; then
-        echo "  • Integration tests:      ${INTEGRATION_DURATION}s (21 tests)"
+        echo "  • Integration tests:      ${INTEGRATION_DURATION}s (25 tests)"
     fi
     echo "  ────────────────────────────────────────────────────"
     echo "  • Total:                  ${TOTAL_DURATION}s"

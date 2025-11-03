@@ -7,11 +7,11 @@
 **Release Date**: 2025-11-03
 **Release URL**: https://github.com/fontlaborg/fontlift-mac-cli/releases/tag/v2.0.0
 **Last Updated**: 2025-11-03
-**Total Improvement Rounds**: 20 (16 pre-release + 4 post-release)
+**Total Improvement Rounds**: 21 (16 pre-release + 5 post-release)
 
 ### Core Metrics
 
-- **Test Suite**: 96 tests passing (52 Swift + 23 Scripts + 21 Integration)
+- **Test Suite**: 100 tests passing (52 Swift + 23 Scripts + 25 Integration)
 - **Test Execution**: ~30s
 - **Build Time**: ~7s (release mode)
 - **Binary Size**: 1.6M (native), 3.2M (universal)
@@ -238,18 +238,39 @@
 - ✅ All 96 tests passing
 - ✅ Project ready for open source contributions
 
-**Final Metrics (After 20 Rounds):**
-- Test suite: 96/96 tests passing (100%)
-- Test execution: ~30s total (5s Swift + 17s Scripts + 8s Integration)
-- Code: 818 lines, 0 warnings
+**Release Preparation Round 21:**
+- ✅ Updated CHANGELOG.md Unreleased section with Rounds 18-20
+  - Documented all post-v2.0.0 improvements (4 rounds of enhancements)
+  - Added metrics summary after 20 rounds
+  - Ready for next potential release
+- ✅ Added Swift version check to build.sh
+  - Verifies Swift ≥5.9 before building
+  - Extracts version from "Swift version X.Y" pattern (not driver version)
+  - Clear error message with actionable guidance
+  - Prevents cryptic build failures on outdated toolchains
+- ✅ Added 4 integration tests for version extraction
+  - Tests get-version.sh outputs valid semver
+  - Verifies extracted version matches binary --version
+  - Tests script exists and is executable
+  - Test count: 96 → 100 tests (+4 version tests)
+  - Integration tests: 21 → 25 tests
+- ✅ All 100 tests passing (52 Swift + 23 Scripts + 25 Integration)
+- ✅ Test execution: ~30s total
+
+**Final Metrics (After 21 Rounds):**
+- Test suite: 100/100 tests passing (100%)
+- Test execution: ~30s total (5s Swift + 17s Scripts + 7s Integration)
+- Code: 819 lines, 0 warnings
+- Build validation: Swift version check added
 - Documentation: Complete with examples, migration guide, release notes, maintainer guides, and performance baselines
 - Error messages: User-friendly and actionable
 - Edge cases: All verified and working correctly
 - Performance: Baselines established for regression detection
-- Git: All changes pushed to GitHub
+- Version consistency: Automated testing in place
+- Git: All changes ready to commit
 - Release: **LIVE IN PRODUCTION!** 🎉🚀
 - Release URL: https://github.com/fontlaborg/fontlift-mac-cli/releases/tag/v2.0.0
-- **Project Status: Mature and production-ready with 19 rounds of improvements**
+- **Project Status: Mature and production-ready with 21 rounds of improvements**
 
 ### Core Functionality
 
