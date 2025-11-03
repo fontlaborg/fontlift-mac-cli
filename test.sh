@@ -5,8 +5,11 @@
 # Usage: ./test.sh [OPTIONS]
 #
 # Options:
-#   --ci     CI mode (minimal output, strict error codes)
-#   --help   Show this help message
+#   --ci            CI mode (minimal output, strict error codes)
+#   --swift         Run only Swift unit tests
+#   --scripts       Run only scripts tests
+#   --integration   Run only integration tests
+#   --help          Show this help message
 #
 # Test Suite Breakdown (Total: 94 tests):
 #   • Swift Unit Tests: 52 tests (CLIErrorTests, HelperFunctionTests, ProjectValidationTests)
@@ -26,29 +29,66 @@ Usage: $0 [OPTIONS]
 Run all tests for fontlift.
 
 Options:
-  --ci     CI mode (minimal output, strict error codes)
-  --help   Show this help message
+  --ci            CI mode (minimal output, strict error codes)
+  --swift         Run only Swift unit tests (52 tests)
+  --scripts       Run only scripts tests (23 tests)
+  --integration   Run only integration tests (19 tests)
+  --help          Show this help message
 
 Examples:
-  $0              # Run tests normally (local mode)
-  $0 --ci         # Run tests in CI mode
-  CI=true $0      # Run tests in CI mode (environment variable)
+  $0                  # Run all tests (default)
+  $0 --ci             # Run all tests in CI mode
+  $0 --swift          # Run only Swift unit tests
+  $0 --scripts        # Run only scripts tests
+  $0 --integration    # Run only integration tests
+  $0 --swift --ci     # Run Swift tests in CI mode
 
 Environment:
-  CI              Set to "true" to enable CI mode
+  CI                  Set to "true" to enable CI mode
 EOF
 }
 
 # Parse arguments
 CI_MODE=false
+RUN_SWIFT=true
+RUN_SCRIPTS=true
+RUN_INTEGRATION=true
+
 if [[ "${CI:-}" == "true" ]]; then
     CI_MODE=true
+fi
+
+# Check if any suite-specific flags are set
+SUITE_SPECIFIC=false
+for arg in "$@"; do
+    case $arg in
+        --swift|--scripts|--integration)
+            SUITE_SPECIFIC=true
+            break
+            ;;
+    esac
+done
+
+# If suite-specific flags are present, disable all suites by default
+if [ "$SUITE_SPECIFIC" = true ]; then
+    RUN_SWIFT=false
+    RUN_SCRIPTS=false
+    RUN_INTEGRATION=false
 fi
 
 for arg in "$@"; do
     case $arg in
         --ci)
             CI_MODE=true
+            ;;
+        --swift)
+            RUN_SWIFT=true
+            ;;
+        --scripts)
+            RUN_SCRIPTS=true
+            ;;
+        --integration)
+            RUN_INTEGRATION=true
             ;;
         --help|-h)
             show_help
@@ -76,12 +116,16 @@ if ! command -v swift &> /dev/null; then
     exit 1
 fi
 
+# Count which suites are running
+SUITES_RUNNING=0
+if [ "$RUN_SWIFT" = true ]; then ((SUITES_RUNNING++)); fi
+if [ "$RUN_SCRIPTS" = true ] && [ "$SKIP_SCRIPT_TESTS" != "true" ]; then ((SUITES_RUNNING++)); fi
+if [ "$RUN_INTEGRATION" = true ]; then ((SUITES_RUNNING++)); fi
+
+SUITE_NUM=0
+
 if [ "$CI_MODE" = false ]; then
     echo "🧪 Running fontlift test suite"
-    echo ""
-    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-    echo "Suite 1/3: Swift Unit Tests (52 tests)"
-    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
     echo ""
 fi
 
@@ -89,26 +133,46 @@ fi
 TOTAL_START=$(date +%s)
 
 # Run Swift tests with verbose output
-SWIFT_START=$(date +%s)
-swift test --parallel
-SWIFT_END=$(date +%s)
-SWIFT_DURATION=$((SWIFT_END - SWIFT_START))
+SWIFT_DURATION=0
+if [ "$RUN_SWIFT" = true ]; then
+    ((SUITE_NUM++))
+    if [ "$CI_MODE" = false ]; then
+        echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+        if [ "$SUITES_RUNNING" -gt 1 ]; then
+            echo "Suite $SUITE_NUM/$SUITES_RUNNING: Swift Unit Tests (52 tests)"
+        else
+            echo "Swift Unit Tests (52 tests)"
+        fi
+        echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+        echo ""
+    fi
+    SWIFT_START=$(date +%s)
+    swift test --parallel
+    SWIFT_END=$(date +%s)
+    SWIFT_DURATION=$((SWIFT_END - SWIFT_START))
+fi
 
 if [ "$CI_MODE" = false ]; then
     echo ""
 fi
 
 # Run scripts tests if they exist and we're not skipping them
+SCRIPTS_DURATION=0
 should_run_scripts_tests=true
 if [[ "$SKIP_SCRIPT_TESTS" == "true" || "$SKIP_SCRIPT_TESTS" == "1" ]]; then
     should_run_scripts_tests=false
 fi
 
-if [ "$should_run_scripts_tests" = true ] && [ -f "Tests/scripts_test.sh" ]; then
+if [ "$RUN_SCRIPTS" = true ] && [ "$should_run_scripts_tests" = true ] && [ -f "Tests/scripts_test.sh" ]; then
+    ((SUITE_NUM++))
     if [ "$CI_MODE" = false ]; then
         echo ""
         echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-        echo "Suite 2/3: Scripts Tests (23 tests)"
+        if [ "$SUITES_RUNNING" -gt 1 ]; then
+            echo "Suite $SUITE_NUM/$SUITES_RUNNING: Scripts Tests (23 tests)"
+        else
+            echo "Scripts Tests (23 tests)"
+        fi
         echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
         echo ""
     fi
@@ -116,16 +180,20 @@ if [ "$should_run_scripts_tests" = true ] && [ -f "Tests/scripts_test.sh" ]; the
     ./Tests/scripts_test.sh
     SCRIPTS_END=$(date +%s)
     SCRIPTS_DURATION=$((SCRIPTS_END - SCRIPTS_START))
-else
-    SCRIPTS_DURATION=0
 fi
 
 # Run integration tests if they exist
-if [ -f "Tests/integration_test.sh" ]; then
+INTEGRATION_DURATION=0
+if [ "$RUN_INTEGRATION" = true ] && [ -f "Tests/integration_test.sh" ]; then
+    ((SUITE_NUM++))
     if [ "$CI_MODE" = false ]; then
         echo ""
         echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-        echo "Suite 3/3: Integration Tests (19 tests)"
+        if [ "$SUITES_RUNNING" -gt 1 ]; then
+            echo "Suite $SUITE_NUM/$SUITES_RUNNING: Integration Tests (19 tests)"
+        else
+            echo "Integration Tests (19 tests)"
+        fi
         echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
         echo ""
     fi
@@ -133,8 +201,6 @@ if [ -f "Tests/integration_test.sh" ]; then
     ./Tests/integration_test.sh
     INTEGRATION_END=$(date +%s)
     INTEGRATION_DURATION=$((INTEGRATION_END - INTEGRATION_START))
-else
-    INTEGRATION_DURATION=0
 fi
 
 TOTAL_END=$(date +%s)

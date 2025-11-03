@@ -26,6 +26,28 @@ jobs:
       - name: Display Swift version
         run: swift --version
 
+      - name: Validate version consistency
+        run: |
+          # Extract version from code
+          CODE_VERSION=$(./scripts/get-version.sh)
+          echo "Code version: $CODE_VERSION"
+
+          # Verify version format (semver)
+          if ! [[ "$CODE_VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "❌ Error: Invalid version format in code: $CODE_VERSION"
+            echo "   Expected format: X.Y.Z (semantic versioning)"
+            exit 1
+          fi
+
+          # Check if CHANGELOG.md has a section for this version
+          if ! grep -q "^## \[$CODE_VERSION\]" CHANGELOG.md; then
+            echo "⚠️  Warning: No CHANGELOG.md entry found for version $CODE_VERSION"
+            echo "   Add a section: ## [$CODE_VERSION] - YYYY-MM-DD"
+            echo "   This is a warning only - build will continue"
+          else
+            echo "✅ CHANGELOG.md entry exists for version $CODE_VERSION"
+          fi
+
       - name: Build
         run: ./build.sh --ci
 
