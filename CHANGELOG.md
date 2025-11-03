@@ -5,6 +5,34 @@ All notable changes to fontlift-mac-cli will be documented in this file.
 
 ## [Unreleased]
 
+### Added
+- **Comprehensive Release Documentation**: Created `.github/RELEASING.md` (250+ lines)
+  - Step-by-step release checklist with 9 detailed steps
+  - Version number guidelines (MAJOR.MINOR.PATCH semantic versioning)
+  - CHANGELOG.md format requirements and examples
+  - Troubleshooting section covering 5 common release issues
+  - Rollback procedures for emergency situations
+  - Tips for successful releases and automation details
+  - Makes future releases more reliable and reduces human error
+
+- **Test Suite Selective Execution**: Enhanced `test.sh` with individual suite flags
+  - Added `--swift` flag: Run only Swift unit tests (52 tests)
+  - Added `--scripts` flag: Run only scripts tests (23 tests)
+  - Added `--integration` flag: Run only integration tests (19 tests)
+  - Flags can be combined: `--swift --integration` runs 2 suites
+  - Dynamic suite headers adjust based on selected suites
+  - Speeds up development iteration by focusing on relevant tests
+  - Useful for debugging specific test failures
+
+- **CI Version Validation**: Added version consistency check to CI workflow
+  - Extracts version from code using `./scripts/get-version.sh`
+  - Validates version format matches semver (X.Y.Z)
+  - Checks CHANGELOG.md has entry for current version
+  - Fails build on invalid version format (prevents broken releases)
+  - Warns (but continues) if CHANGELOG entry missing
+  - Catches version inconsistencies earlier in development cycle
+  - Complements existing release validation
+
 ## [2.0.0] - 2025-11-03
 
 ### ⚠️ BREAKING CHANGES

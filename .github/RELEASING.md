@@ -218,6 +218,13 @@ gh release edit vX.Y.Z --not-prerelease=false
 The release process is largely automated via GitHub Actions:
 
 - **CI Workflow** (`.github/workflows/ci.yml`): Runs on every push/PR
+  - Validates version consistency:
+    - Checks version format matches semver (X.Y.Z)
+    - Verifies CHANGELOG.md has entry for current version
+    - **Catches common errors:**
+      - Invalid format like `1.0.0.0` (fails build)
+      - Missing CHANGELOG entry (warns, but continues)
+      - Non-numeric version components (fails build)
   - Builds the project
   - Runs all 94 tests
   - Validates code quality

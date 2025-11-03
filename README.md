@@ -303,14 +303,21 @@ To bypass the hook when needed: `git commit --no-verify`
 **test.sh** - Run all tests
 
 ```bash
-./test.sh                    # Run all 65 tests (23 Swift + 25 Script + 17 Integration)
+./test.sh                    # Run all 94 tests (52 Swift + 23 Scripts + 19 Integration)
 ./test.sh --ci               # CI mode (quiet output, no colors)
-./test.sh --verify-ci        # Verify CI/CD workflows configured correctly (18 checks)
-./test.sh --shellcheck       # Run shellcheck on all bash scripts
-./test.sh --check-size       # Check binary size for regressions
-./test.sh --coverage         # Generate code coverage report
+./test.sh --swift            # Run only Swift unit tests (52 tests)
+./test.sh --scripts          # Run only scripts tests (23 tests)
+./test.sh --integration      # Run only integration tests (19 tests)
+./test.sh --swift --ci       # Combine flags: Swift tests in CI mode
 ./test.sh --help             # Show all available options
 ```
+
+**When to use selective test suite execution:**
+- `--swift`: During core logic development, fast iteration (~6s)
+- `--scripts`: When modifying build/test scripts (~20s)
+- `--integration`: After binary changes, end-to-end validation (~7s)
+- Combined: `--swift --integration` for focused testing without scripts
+- Full suite: Default behavior, recommended before commits (~33s)
 
 **scripts/prepare-release.sh** - Prepare release artifacts
 
