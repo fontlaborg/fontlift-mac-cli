@@ -13,7 +13,26 @@
 
 ## Recent Changes
 
-### Post-Release Infrastructure Improvements (Rounds 17-18)
+### Post-Release Infrastructure Improvements (Rounds 17-21)
+
+**Round 21 (Release Preparation & Build Improvements):**
+- Updated CHANGELOG.md with all Rounds 17-20 documentation
+- Added Swift version check to build.sh (≥5.9 validation)
+- Added 4 integration tests for version extraction consistency
+- Test count: 96 → 100 tests (25 integration tests total)
+- Prevents cryptic build failures on outdated toolchains
+
+**Round 20 (Open Source Readiness):**
+- Added GitHub contribution templates (bug reports, feature requests, PRs)
+- Updated all documentation to reflect 96 tests
+- Streamlined documentation structure (14 purposeful files)
+- Project ready for open source contributions
+
+**Round 19 (Performance & Test Framework):**
+- Added performance timing baselines (206ms startup, 355ms list)
+- Fixed dynamic test count calculation in test.sh
+- Updated PLAN.md with current metrics
+- Test count: 94 → 96 tests (+2 performance validation)
 
 **Round 18 (Documentation & Maintainability):**
 - Documented Round 17 improvements in CHANGELOG.md
@@ -104,7 +123,7 @@ fontlift-mac-cli/
 ├── Tests/
 │   ├── fontliftTests/          # Swift unit tests (52)
 │   ├── scripts_test.sh         # Script tests (23)
-│   └── integration_test.sh     # Integration tests (19)
+│   └── integration_test.sh     # Integration tests (25)
 ├── scripts/
 │   ├── get-version.sh          # Extract version from code
 │   ├── validate-version.sh     # Validate version consistency
@@ -123,14 +142,15 @@ fontlift-mac-cli/
 
 **Code Quality**:
 - ✅ Zero compiler warnings
-- ✅ All tests passing (94 total: 52 Swift + 23 Scripts + 19 Integration)
+- ✅ All tests passing (100 total: 52 Swift + 23 Scripts + 25 Integration)
 - ✅ Functions <20 lines (1 exception: validateFilePath at 40 lines - justified by comprehensive error messages)
 - ✅ Clean, readable code
 
 **Build & Test**:
 - ✅ Build time: <10s
-- ✅ Test time: ~20s
+- ✅ Test time: ~30s
 - ✅ Universal binary: x86_64 + arm64
+- ✅ Swift version validation: ≥5.9
 
 **Distribution**:
 - ✅ GitHub Releases with artifacts

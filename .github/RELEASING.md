@@ -64,7 +64,7 @@ git commit -m "chore: bump version to X.Y.Z"
 ./test.sh
 ```
 
-Verify all 96 tests pass.
+Verify all 100 tests pass.
 
 ### 5. Create Git Tag
 
@@ -226,7 +226,7 @@ The release process is largely automated via GitHub Actions:
       - Missing CHANGELOG entry (warns, but continues)
       - Non-numeric version components (fails build)
   - Builds the project
-  - Runs all 96 tests
+  - Runs all 100 tests
   - Validates code quality
 
 - **Release Workflow** (`.github/workflows/release.yml`): Runs on version tags
