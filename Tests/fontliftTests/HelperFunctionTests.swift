@@ -3,6 +3,7 @@
 
 import XCTest
 import Foundation
+@testable import fontlift
 
 final class HelperFunctionTests: XCTestCase {
 
@@ -89,27 +90,24 @@ final class HelperFunctionTests: XCTestCase {
     func testIsValidFontExtensionNoExtension() throws {
         XCTAssertFalse(isValidFontExtension("/path/to/fontfile"), "Paths without extension should be invalid")
     }
-}
+    // MARK: - getFontFamilyName() Tests
 
-// MARK: - Helper Function Imports
-// These functions are defined in the main fontlift.swift file
-// We need to make them accessible for testing
+    func testGetFontFamilyNameReturnsFamilyForSystemFont() throws {
+        let helveticaURL = URL(fileURLWithPath: "/System/Library/Fonts/Helvetica.ttc")
+        let familyName = getFontFamilyName(from: helveticaURL)
+        XCTAssertEqual(
+            familyName,
+            "Helvetica",
+            "Should extract Helvetica family name from system font"
+        )
+    }
 
-/// Escape a file path for safe use in shell commands
-func shellEscape(_ path: String) -> String {
-    let escaped = path.replacingOccurrences(of: "'", with: "'\\''")
-    return "'\(escaped)'"
-}
+    func testGetFontFamilyNameReturnsNilForInvalidFile() throws {
+        let tempURL = FileManager.default.temporaryDirectory.appendingPathComponent("not-a-font.ttf")
+        defer { try? FileManager.default.removeItem(at: tempURL) }
+        try Data("not a real font".utf8).write(to: tempURL)
 
-/// Check if a font path is in a protected system directory
-func isSystemFontPath(_ url: URL) -> Bool {
-    let path = url.path
-    return path.hasPrefix("/System/Library/Fonts/") || path.hasPrefix("/Library/Fonts/")
-}
-
-/// Validate that a file has a recognized font extension
-func isValidFontExtension(_ path: String) -> Bool {
-    let validExtensions = ["ttf", "otf", "ttc", "otc", "dfont"]
-    let pathExtension = (path as NSString).pathExtension.lowercased()
-    return validExtensions.contains(pathExtension)
+        let familyName = getFontFamilyName(from: tempURL)
+        XCTAssertNil(familyName, "Invalid font file should return nil family name")
+    }
 }

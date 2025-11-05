@@ -4,6 +4,7 @@
 import ArgumentParser
 import CoreText
 import Foundation
+import Darwin
 
 // MARK: - Version Management
 /// Current version of fontlift
@@ -11,6 +12,100 @@ import Foundation
 /// - CHANGELOG.md (add new version section)
 /// - Git tag (git tag vX.Y.Z)
 private let version = "2.0.0"
+private let fakeRegistrationMode = ProcessInfo.processInfo.environment["FONTLIFT_FAKE_REGISTRATION"] == "1"
+private let overrideUserLibraryPath = ProcessInfo.processInfo.environment["FONTLIFT_OVERRIDE_USER_LIBRARY"]
+private let overrideSystemLibraryPath = ProcessInfo.processInfo.environment["FONTLIFT_OVERRIDE_SYSTEM_LIBRARY"]
+
+private struct ThirdPartyCacheSummary {
+    let userRemoved: Int
+    let systemRemoved: Int
+    let warnings: [String]
+}
+
+private let adobeCacheRegex = try! NSRegularExpression(pattern: "^(Adobe|Acro|Illustrator)Fnt.*\\.lst$", options: .caseInsensitive)
+private let officeCacheRegex = try! NSRegularExpression(pattern: "^Office Font Cache.*$", options: .caseInsensitive)
+
+private func resolvedUserLibraryURL() -> URL {
+    if let overrideUserLibraryPath, !overrideUserLibraryPath.isEmpty {
+        return URL(fileURLWithPath: overrideUserLibraryPath, isDirectory: true)
+    }
+    return FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent("Library", isDirectory: true)
+}
+
+private func resolvedSystemLibraryURL() -> URL {
+    if let overrideSystemLibraryPath, !overrideSystemLibraryPath.isEmpty {
+        return URL(fileURLWithPath: overrideSystemLibraryPath, isDirectory: true)
+    }
+    return URL(fileURLWithPath: "/Library", isDirectory: true)
+}
+
+private func regexMatches(_ regex: NSRegularExpression, string: String) -> Bool {
+    let range = NSRange(location: 0, length: (string as NSString).length)
+    return regex.firstMatch(in: string, options: [], range: range) != nil
+}
+
+private struct FakeFontRegistry: Codable {
+    private var fontsByName: [String: [String]] = [:]
+
+    mutating func register(name: String, path: String) {
+        var paths = fontsByName[name] ?? []
+        if !paths.contains(path) {
+            paths.append(path)
+            fontsByName[name] = paths
+        }
+    }
+
+    mutating func unregister(path: String) -> Bool {
+        var removed = false
+        for (name, var paths) in fontsByName {
+            if let index = paths.firstIndex(of: path) {
+                paths.remove(at: index)
+                removed = true
+                if paths.isEmpty {
+                    fontsByName.removeValue(forKey: name)
+                } else {
+                    fontsByName[name] = paths
+                }
+                break
+            }
+        }
+        return removed
+    }
+
+    func paths(for name: String) -> [String] {
+        fontsByName[name] ?? []
+    }
+
+    func allPaths() -> [String] {
+        fontsByName.values.flatMap { $0 }
+    }
+}
+
+private var fakeFontRegistry = FakeFontRegistry()
+private let fakeRegistryURL = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent("fontlift-fake-registry.json")
+private var isFakeRegistryLoaded = false
+private func persistFakeRegistry() {
+    guard fakeRegistrationMode else { return }
+    ensureFakeRegistryLoaded()
+    if let data = try? JSONEncoder().encode(fakeFontRegistry) {
+        try? data.write(to: fakeRegistryURL, options: .atomic)
+    }
+}
+private func ensureFakeRegistryLoaded(reload: Bool = false) {
+    guard fakeRegistrationMode else { return }
+    if !isFakeRegistryLoaded || reload {
+        if FileManager.default.fileExists(atPath: fakeRegistryURL.path),
+           let data = try? Data(contentsOf: fakeRegistryURL),
+           let registry = try? JSONDecoder().decode(FakeFontRegistry.self, from: data) {
+            fakeFontRegistry = registry
+        }
+        atexit {
+            guard fakeRegistrationMode else { return }
+            persistFakeRegistry()
+        }
+        isFakeRegistryLoaded = true
+    }
+}
 
 // MARK: - Font Management Helpers
 
@@ -185,6 +280,118 @@ func getFullFontName(from url: URL) -> String? {
     return CTFontCopyFullName(font) as String?
 }
 
+/// Get the font family name from a URL
+///
+/// Extracts the human-readable family name (e.g., "Helvetica") using Core Text APIs.
+/// This differs from the PostScript name which includes weight/style (e.g., "Helvetica-Bold").
+///
+/// - Parameter url: File URL pointing to a font file (.ttf, .otf, .ttc, .otc)
+/// - Returns: Family name string if successful; `nil` otherwise
+func getFontFamilyName(from url: URL) -> String? {
+    guard let descriptors = CTFontManagerCreateFontDescriptorsFromURL(url as CFURL) as? [CTFontDescriptor],
+          let descriptor = descriptors.first else {
+        return nil
+    }
+
+    return CTFontDescriptorCopyAttribute(descriptor, kCTFontFamilyNameAttribute) as? String
+}
+
+/// Run a shell command and capture output/status.
+///
+/// Used for lightweight system maintenance commands (e.g., clearing font caches).
+/// Returns combined stdout/stderr output trimmed of trailing whitespace.
+///
+/// - Parameter command: Command string executed via `/bin/zsh -c`
+/// - Returns: Tuple of optional output string and process exit status
+func shell(_ command: String) -> (String?, Int32) {
+    let process = Process()
+    process.executableURL = URL(fileURLWithPath: "/bin/zsh")
+    process.arguments = ["-c", command]
+
+    let stdoutPipe = Pipe()
+    let stderrPipe = Pipe()
+    process.standardOutput = stdoutPipe
+    process.standardError = stderrPipe
+
+    do {
+        try process.run()
+    } catch {
+        return ("Failed to launch command: \(error.localizedDescription)", -1)
+    }
+
+    process.waitUntilExit()
+
+    let stdoutData = stdoutPipe.fileHandleForReading.readDataToEndOfFile()
+    let stderrData = stderrPipe.fileHandleForReading.readDataToEndOfFile()
+
+    let stdout = String(data: stdoutData, encoding: .utf8)?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+    let stderr = String(data: stderrData, encoding: .utf8)?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+
+    let combined = [stdout, stderr].filter { !$0.isEmpty }.joined(separator: "\n")
+    return (combined.isEmpty ? nil : combined, process.terminationStatus)
+}
+
+/// Unregister a font from the system with shared safety checks.
+///
+/// - Parameters:
+///   - url: Font file URL to unregister
+///   - admin: When `true`, unregisters at `.session` scope (requires sudo). Otherwise `.user`.
+///   - silent: When `true`, suppresses informational logging (still throws on failures).
+/// - Throws: `ExitCode.failure` when unregistration is blocked or fails.
+func unregisterFont(at url: URL, admin: Bool, silent: Bool = false) throws {
+    if isSystemFontPath(url) {
+        if !silent {
+            print("❌ Error: Cannot uninstall system font.")
+            print("   Path: \(url.path)")
+            print("   System fonts in /System/Library/Fonts/ and /Library/Fonts/ are protected for macOS stability.")
+            print("   Operations on these directories are blocked for safety.")
+        }
+        throw ExitCode.failure
+    }
+
+    if fakeRegistrationMode {
+        ensureFakeRegistryLoaded()
+        if !silent {
+            let scopeDescription = admin ? "system-level (simulated)" : "user-level (simulated)"
+            if let fontName = getFontName(from: url) ?? getFullFontName(from: url) {
+                print("✅ [Simulated] Unregistered '\(fontName)' (\(scopeDescription))")
+            } else {
+                print("✅ [Simulated] Unregistered font at \(url.path) (\(scopeDescription))")
+            }
+        }
+        _ = fakeFontRegistry.unregister(path: url.path)
+        persistFakeRegistry()
+        return
+    }
+
+    let scope: CTFontManagerScope = admin ? .session : .user
+    let scopeDescription = admin ? "system-level (all users)" : "user-level"
+
+    var error: Unmanaged<CFError>?
+    let success = CTFontManagerUnregisterFontsForURL(url as CFURL, scope, &error)
+
+    if success {
+        guard !silent else { return }
+        if let fontName = getFontName(from: url) ?? getFullFontName(from: url) {
+            print("✅ Successfully unregistered '\(fontName)' (\(scopeDescription))")
+        } else {
+            print("✅ Successfully unregistered font at \(url.path) (\(scopeDescription))")
+        }
+        return
+    }
+
+    let description: String
+    if let error = error?.takeRetainedValue() {
+        description = CFErrorCopyDescription(error) as String
+    } else {
+        description = "Failed to unregister font due to unknown Core Text error."
+    }
+
+    print("❌ Error unregistering font: \(description)")
+    print("   File: \(url.path)")
+    throw ExitCode.failure
+}
+
 @main
 struct Fontlift: ParsableCommand {
     static let configuration = CommandConfiguration(
@@ -195,7 +402,8 @@ struct Fontlift: ParsableCommand {
             List.self,
             Install.self,
             Uninstall.self,
-            Remove.self
+            Remove.self,
+            Cleanup.self
         ]
     )
 }
@@ -314,6 +522,306 @@ extension Fontlift {
     }
 }
 
+// MARK: - Cleanup Command
+extension Fontlift {
+    /// Maintenance command to prune missing registrations and clear caches.
+    struct Cleanup: ParsableCommand {
+        static let configuration = CommandConfiguration(
+            commandName: "cleanup",
+            abstract: "Prune missing fonts and clear font caches",
+            aliases: ["c"]
+        )
+
+        @Flag(help: "Only prune missing font file registrations.")
+        var pruneOnly = false
+
+        @Flag(help: "Only clear font caches.")
+        var cacheOnly = false
+
+        @Flag(name: .shortAndLong, help: "Perform system-level cleanup (all users, requires sudo)")
+        var admin = false
+
+        func run() throws {
+            let runBoth = (!pruneOnly && !cacheOnly) || (pruneOnly && cacheOnly)
+            let doPrune = runBoth || pruneOnly
+            let doCache = runBoth || cacheOnly
+            let scopeDescription = admin ? "system-level (all users)" : "user-level (current user)"
+
+            print("Scope: \(scopeDescription)")
+
+            var hadErrors = false
+
+            if doPrune {
+                print("--- Pruning Missing Fonts ---")
+                do {
+                    try pruneMissingFonts(admin: admin)
+                } catch {
+                    hadErrors = true
+                    print("❌ Pruning missing fonts failed.")
+                }
+                print("")
+            }
+
+            if doCache {
+                print("--- Clearing Font Caches ---")
+                do {
+                    try clearFontCaches(admin: admin)
+                } catch {
+                    hadErrors = true
+                    print("❌ Cache clearing failed.")
+                }
+                print("")
+            }
+
+            print("✅ Cleanup complete.")
+            if hadErrors {
+                throw ExitCode.failure
+            }
+        }
+
+        /// Scan all registered fonts and remove entries whose files are missing.
+        private func pruneMissingFonts(admin: Bool) throws {
+            print("Scanning for missing font registrations...")
+
+            if fakeRegistrationMode {
+                var registry = FakeFontRegistry()
+                if let data = try? Data(contentsOf: fakeRegistryURL),
+                   let decoded = try? JSONDecoder().decode(FakeFontRegistry.self, from: data) {
+                    registry = decoded
+                }
+
+                let paths = registry.allPaths()
+                var prunedCount = 0
+                var checkedCount = 0
+
+                for path in paths {
+                    checkedCount += 1
+                    if FileManager.default.fileExists(atPath: path) {
+                        continue
+                    }
+
+                    print("🗑️ Pruning missing font registration: \(path)")
+                    _ = registry.unregister(path: path)
+                    prunedCount += 1
+                }
+
+                fakeFontRegistry = registry
+                if let encoded = try? JSONEncoder().encode(registry) {
+                    try? encoded.write(to: fakeRegistryURL, options: .atomic)
+                }
+
+                print("Scan complete. Checked \(checkedCount) fonts, pruned \(prunedCount) registrations.")
+                return
+            }
+
+            guard let fontURLs = CTFontManagerCopyAvailableFontURLs() as? [URL] else {
+                print("❌ Error: Could not retrieve font list from system.")
+                throw ExitCode.failure
+            }
+
+            var prunedCount = 0
+            var checkedCount = 0
+
+            for url in fontURLs {
+                checkedCount += 1
+
+                if isSystemFontPath(url) {
+                    continue
+                }
+
+                guard url.isFileURL else {
+                    continue
+                }
+
+                if FileManager.default.fileExists(atPath: url.path) {
+                    continue
+                }
+
+                print("🗑️ Pruning missing font registration: \(url.path)")
+
+                if fakeRegistrationMode {
+                    prunedCount += 1
+                    continue
+                }
+
+                var userError: Unmanaged<CFError>?
+                let userSuccess = CTFontManagerUnregisterFontsForURL(url as CFURL, .user, &userError)
+
+                var sessionSuccess = false
+                var sessionError: Unmanaged<CFError>?
+                if admin {
+                    sessionSuccess = CTFontManagerUnregisterFontsForURL(url as CFURL, .session, &sessionError)
+                }
+
+                if !userSuccess, let error = userError?.takeRetainedValue() {
+                    let description = CFErrorCopyDescription(error) as String
+                    print("   ⚠️ Unable to unregister user scope: \(description)")
+                }
+
+                if admin, !sessionSuccess, let error = sessionError?.takeRetainedValue() {
+                    let description = CFErrorCopyDescription(error) as String
+                    print("   ⚠️ Unable to unregister system scope: \(description)")
+                }
+
+                if userSuccess || (admin && sessionSuccess) {
+                    prunedCount += 1
+                } else {
+                    print("   ⚠️ Font remains registered; manual intervention may be required.")
+                }
+            }
+
+            print("Scan complete. Checked \(checkedCount) fonts, pruned \(prunedCount) registrations.")
+        }
+
+        /// Clear Core Text font caches via atsutil and purge third-party caches.
+        private func clearFontCaches(admin: Bool) throws {
+            let scopeLabel = admin ? "system" : "user"
+            print("Clearing \(scopeLabel) font cache...")
+
+            if fakeRegistrationMode {
+                let message = admin ? "✅ [Simulated] System font cache cleared successfully." : "✅ [Simulated] User font cache cleared successfully."
+                print(message)
+            } else {
+                if admin && geteuid() != 0 {
+                    print("❌ Error: System-level cache clearing requires administrator privileges.")
+                    print("   Run with sudo: sudo fontlift cleanup --admin --cache-only")
+                    throw ExitCode.failure
+                }
+
+                let command = admin ? "atsutil databases -remove" : "atsutil databases -removeUser"
+                let (output, status) = shell(command)
+
+                if status != 0 {
+                    print("❌ Error: Failed to clear font cache (status \(status)).")
+                    if let output {
+                        print("   Details: \(output)")
+                    }
+                    throw ExitCode.failure
+                }
+
+                let successMessage = admin ? "✅ System font cache cleared successfully." : "✅ User font cache cleared successfully."
+                print(successMessage)
+
+                if admin {
+                    let (_, shutdownStatus) = shell("atsutil server -shutdown")
+                    if shutdownStatus != 0 {
+                        print("   ⚠️ Warning: Unable to restart ATS server automatically. A reboot will rebuild caches.")
+                    } else {
+                        _ = shell("atsutil server -ping")
+                    }
+                }
+            }
+
+            print("   A logout or reboot may be required for changes to apply.")
+            let summary = clearThirdPartyCaches(admin: admin)
+            reportThirdPartySummary(summary, admin: admin)
+        }
+
+        private func clearThirdPartyCaches(admin: Bool) -> ThirdPartyCacheSummary {
+            var warnings: [String] = []
+            let userRemoved = removeThirdPartyCaches(in: resolvedUserLibraryURL(), scopeDescription: "user", warnings: &warnings)
+
+            var systemRemoved = 0
+            if admin {
+                systemRemoved = removeThirdPartyCaches(in: resolvedSystemLibraryURL(), scopeDescription: "system", warnings: &warnings)
+            }
+
+            return ThirdPartyCacheSummary(userRemoved: userRemoved, systemRemoved: systemRemoved, warnings: warnings)
+        }
+
+        private func reportThirdPartySummary(_ summary: ThirdPartyCacheSummary, admin: Bool) {
+            let totalRemoved = summary.userRemoved + summary.systemRemoved
+
+            if totalRemoved == 0 {
+                print("   No third-party font cache files were found.")
+            } else if admin {
+                print("   Removed \(summary.userRemoved) user and \(summary.systemRemoved) system third-party cache file(s) (Adobe, Microsoft).")
+            } else {
+                print("   Removed \(summary.userRemoved) third-party cache file(s) (Adobe, Microsoft).")
+            }
+
+            for warning in summary.warnings {
+                print("   ⚠️ \(warning)")
+            }
+        }
+
+        private func removeThirdPartyCaches(in library: URL, scopeDescription: String, warnings: inout [String]) -> Int {
+            let fileManager = FileManager.default
+            var removed = 0
+            var localWarnings = warnings
+
+            let directDirectories = [
+                library.appendingPathComponent("Caches/com.adobe.fonts", isDirectory: true),
+                library.appendingPathComponent("Caches/com.apple.iwork.fonts", isDirectory: true)
+            ]
+
+            for directory in directDirectories {
+                if fileManager.fileExists(atPath: directory.path) {
+                    do {
+                        try fileManager.removeItem(at: directory)
+                        removed += 1
+                    } catch {
+                        localWarnings.append("Failed to remove \(scopeDescription) cache at \(directory.path): \(error.localizedDescription)")
+                    }
+                }
+            }
+
+            let searchDirectories = [
+                library.appendingPathComponent("Application Support/Adobe", isDirectory: true),
+                library.appendingPathComponent("Caches/Adobe", isDirectory: true),
+                library.appendingPathComponent("Preferences/Adobe", isDirectory: true),
+                library.appendingPathComponent("Preferences/Microsoft", isDirectory: true)
+            ]
+
+            for directory in searchDirectories {
+                guard fileManager.fileExists(atPath: directory.path) else {
+                    continue
+                }
+
+                let enumerator = fileManager.enumerator(
+                    at: directory,
+                    includingPropertiesForKeys: [.isDirectoryKey],
+                    options: [.skipsPackageDescendants, .skipsHiddenFiles],
+                    errorHandler: { url, error -> Bool in
+                        localWarnings.append("Failed to enumerate \(url.path) while clearing \(scopeDescription) caches: \(error.localizedDescription)")
+                        return true
+                    }
+                )
+
+                while let url = enumerator?.nextObject() as? URL {
+                    let resourceValues: URLResourceValues
+                    do {
+                        resourceValues = try url.resourceValues(forKeys: [.isDirectoryKey])
+                    } catch {
+                        localWarnings.append("Failed to read attributes for \(url.path): \(error.localizedDescription)")
+                        continue
+                    }
+
+                    if resourceValues.isDirectory == true {
+                        continue
+                    }
+
+                    let name = url.lastPathComponent
+                    let isAdobeCache = regexMatches(adobeCacheRegex, string: name)
+                    let isOfficeCache = regexMatches(officeCacheRegex, string: name)
+
+                    if isAdobeCache || isOfficeCache {
+                        do {
+                            try fileManager.removeItem(at: url)
+                            removed += 1
+                        } catch {
+                            localWarnings.append("Failed to remove \(scopeDescription) cache file \(url.path): \(error.localizedDescription)")
+                        }
+                    }
+                }
+            }
+
+            warnings = localWarnings
+            return removed
+        }
+    }
+}
+
 // MARK: - Install Command
 extension Fontlift {
     /// Install a font file to the system.
@@ -366,8 +874,80 @@ extension Fontlift {
             let scope: CTFontManagerScope = admin ? .session : .user
             let scopeDesc = admin ? "system-level (all users)" : "user-level"
 
+            guard let newPostScriptName = getFontName(from: url) else {
+                print("❌ Error: Could not read PostScript name from font file.")
+                print("   File: \(fontPath)")
+                print("   The file may be invalid or corrupted.")
+                throw ExitCode.failure
+            }
+
+            let familyName = getFontFamilyName(from: url)
+
             print("Installing font from: \(fontPath)")
             print("Scope: \(scopeDesc)")
+            if let familyName {
+                print("PostScript: \(newPostScriptName) • Family: \(familyName)")
+            } else {
+                print("PostScript: \(newPostScriptName) • Family: Unknown")
+            }
+
+            // Attempt to find and remove conflicting registrations first
+            if let existingFontURLs = CTFontManagerCopyAvailableFontURLs() as? [URL] {
+                print("Checking for existing versions...")
+                for existingURL in existingFontURLs {
+                    if existingURL.path == url.path {
+                        continue
+                    }
+
+                    guard let existingPostScript = getFontName(from: existingURL) else {
+                        continue
+                    }
+
+                    if existingPostScript == newPostScriptName {
+                        if isSystemFontPath(existingURL) {
+                            print("❌ Error: Cannot replace protected system font.")
+                            print("   Path: \(existingURL.path)")
+                            print("   Installation aborted to prevent system instability.")
+                            throw ExitCode.failure
+                        }
+
+                        print("Auto-uninstalling older version at: \(existingURL.path)")
+                        do {
+                            try unregisterFont(at: existingURL, admin: admin)
+                        } catch {
+                            print("⚠️ Warning: Unable to unregister older version at \(existingURL.path).")
+                            print("   Proceeding with installation may leave duplicate registrations.")
+                        }
+                    }
+                }
+            } else {
+                print("⚠️ Warning: Could not enumerate installed fonts. Skipping auto-uninstall check.")
+            }
+
+            if fakeRegistrationMode {
+                ensureFakeRegistryLoaded()
+                var existingPaths = fakeFontRegistry.paths(for: newPostScriptName).filter { $0 != url.path }
+                if existingPaths.isEmpty {
+                    existingPaths = fakeFontRegistry.allPaths().filter { candidatePath in
+                        guard candidatePath != url.path else { return false }
+                        let candidateURL = URL(fileURLWithPath: candidatePath)
+                        return (getFontName(from: candidateURL) ?? getFullFontName(from: candidateURL)) == newPostScriptName
+                    }
+                }
+
+                for path in existingPaths {
+                    print("Auto-uninstalling older version at: \(path)")
+                    do {
+                        try unregisterFont(at: URL(fileURLWithPath: path), admin: admin)
+                    } catch {
+                        // In simulated mode, failures are already reported.
+                    }
+                }
+                fakeFontRegistry.register(name: newPostScriptName, path: url.path)
+                persistFakeRegistry()
+                print("✅ [Simulated] Installed: \(newPostScriptName)")
+                return
+            }
 
             var error: Unmanaged<CFError>?
             // Register font at .user scope (doesn't require sudo, available to current user only)
@@ -533,7 +1113,9 @@ extension Fontlift {
 
                 let url = matchingURLs[0]
 
-                try unregisterFont(at: url)
+                let scopeDesc = admin ? "system-level (all users)" : "user-level"
+                print("Scope: \(scopeDesc)")
+                try unregisterFont(at: url, admin: admin)
 
             } else if let path = fontPath {
                 let url = URL(fileURLWithPath: path)
@@ -544,58 +1126,9 @@ extension Fontlift {
                 }
 
                 print("Uninstalling font from path: \(path)")
-                try unregisterFont(at: url)
-            }
-        }
-
-        private func unregisterFont(at url: URL) throws {
-            // Protect system fonts from accidental modification
-            if isSystemFontPath(url) {
-                print("❌ Error: Cannot uninstall system font")
-                print("   Path: \(url.path)")
-                print("")
-                print("   System fonts in /System/Library/Fonts/ and /Library/Fonts/")
-                print("   are critical for macOS stability and cannot be modified.")
-                print("")
-                print("   If you need to manage a font, copy it to ~/Library/Fonts/ first.")
-                throw ExitCode.failure
-            }
-
-            let scope: CTFontManagerScope = admin ? .session : .user
-            let scopeDesc = admin ? "system-level (all users)" : "user-level"
-            print("Scope: \(scopeDesc)")
-
-            var error: Unmanaged<CFError>?
-            let success = CTFontManagerUnregisterFontsForURL(url as CFURL, scope, &error)
-
-            if success {
-                if let fontName = getFontName(from: url) ?? getFullFontName(from: url) {
-                    print("✅ Successfully uninstalled: \(fontName)")
-                } else {
-                    print("✅ Successfully uninstalled font")
-                }
-            } else {
-                if let error = error?.takeRetainedValue() {
-                    let errorDesc = CFErrorCopyDescription(error) as String
-                    print("❌ Error uninstalling font: \(errorDesc)")
-                    print("   File: \(url.path)")
-                    print("")
-                    print("   Common causes:")
-                    print("   - Font not currently installed")
-
-                    if admin {
-                        print("   - Permission denied (ensure you're running with sudo)")
-                        print("   - System-level uninstallation requires administrator privileges")
-                    } else {
-                        print("   - Font may be installed at system level (try with --admin flag and sudo)")
-                        print("   - Permission issues")
-                    }
-                    throw ExitCode.failure
-                } else {
-                    print("❌ Error: Failed to uninstall font")
-                    print("   File: \(url.path)")
-                    throw ExitCode.failure
-                }
+                let scopeDesc = admin ? "system-level (all users)" : "user-level"
+                print("Scope: \(scopeDesc)")
+                try unregisterFont(at: url, admin: admin)
             }
         }
     }
@@ -743,22 +1276,16 @@ extension Fontlift {
                 throw ExitCode.failure
             }
 
-            let scope: CTFontManagerScope = admin ? .session : .user
             let scopeDesc = admin ? "system-level (all users)" : "user-level"
             print("Scope: \(scopeDesc)")
 
             // Get font name before deletion (file must exist to read metadata)
             let fontName = getFontName(from: url) ?? getFullFontName(from: url)
 
-            // First unregister the font
-            var error: Unmanaged<CFError>?
-            let unregistered = CTFontManagerUnregisterFontsForURL(url as CFURL, scope, &error)
-
-            if !unregistered {
-                if let error = error?.takeRetainedValue() {
-                    let errorDesc = CFErrorCopyDescription(error) as String
-                    print("⚠️  Warning: Error unregistering font: \(errorDesc)")
-                }
+            do {
+                try unregisterFont(at: url, admin: admin, silent: true)
+            } catch {
+                print("⚠️  Warning: Font unregistration failed. Proceeding with file deletion.")
             }
 
             // Verify file still exists before deletion (race condition protection)
@@ -815,4 +1342,3 @@ extension Fontlift {
         }
     }
 }
-

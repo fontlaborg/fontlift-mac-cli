@@ -29,6 +29,7 @@ if [ ! -f ".build/release/fontlift" ]; then
 fi
 
 BINARY=".build/release/fontlift"
+export FONTLIFT_FAKE_REGISTRATION=1
 
 # Helper function to run a test
 run_test() {
@@ -102,7 +103,113 @@ run_test "Install without args fails" "! $BINARY install 2>&1"
 run_test "Uninstall without args fails" "! $BINARY uninstall 2>&1"
 echo ""
 
-# Test 5: Version extraction and consistency
+# Test 5: Install auto-uninstall upgrades
+echo "Testing install auto-uninstall..."
+TESTDATA_DIR="$(pwd)/testdata"
+TEST_FONT_V1="$TESTDATA_DIR/TestFont-v1.ttf"
+TEST_FONT_V2="$TESTDATA_DIR/TestFont-v2.ttf"
+TEST_FONT_V1_NAME="$(basename "$TEST_FONT_V1")"
+TEST_FONT_V2_NAME="$(basename "$TEST_FONT_V2")"
+SYSTEM_FONT="/System/Library/Fonts/Helvetica.ttc"
+FAKE_REGISTRY_FILE=$(python3 - <<'PY'
+import tempfile, os
+print(os.path.join(tempfile.gettempdir(), "fontlift-fake-registry.json"))
+PY
+)
+
+if [ ! -f "$TEST_FONT_V1" ] || [ ! -f "$TEST_FONT_V2" ]; then
+    echo -e "${RED}❌ Test fonts not found in $TESTDATA_DIR${NC}"
+    echo "Ensure TestFont-v1.ttf and TestFont-v2.ttf exist."
+    exit 1
+fi
+
+if [ ! -f "$SYSTEM_FONT" ]; then
+    echo -e "${RED}❌ Required system font not found: $SYSTEM_FONT${NC}"
+    exit 1
+fi
+
+cleanup_auto_install() {
+    $BINARY uninstall "$TEST_FONT_V1" 2>/dev/null || true
+    $BINARY uninstall "$TEST_FONT_V2" 2>/dev/null || true
+    rm -f /tmp/fontlift-auto-log.txt "$FAKE_REGISTRY_FILE"
+}
+trap cleanup_auto_install EXIT
+cleanup_auto_install
+
+run_test "Install v1 font succeeds" "$BINARY install $TEST_FONT_V1 | grep -q 'Installed'"
+run_test "Install v2 font succeeds" "$BINARY install $TEST_FONT_V2 | grep -q 'Installed'"
+run_test "Installing v2 removes previous v1 registration" \
+    "! grep -q 'TestFont-v1.ttf' \"$FAKE_REGISTRY_FILE\""
+run_test "Reinstalling v1 succeeds" "$BINARY install $TEST_FONT_V1 | grep -q 'Installed'"
+run_test "Reinstalling v1 removes v2 registration" \
+    "! grep -q 'TestFont-v2.ttf' \"$FAKE_REGISTRY_FILE\""
+run_test "Reinstalling v2 succeeds" "$BINARY install $TEST_FONT_V2 | grep -q 'Installed'"
+run_test "Reinstalling v2 removes v1 registration again" \
+    "! grep -q 'TestFont-v1.ttf' \"$FAKE_REGISTRY_FILE\""
+run_test "Installing conflict with system font blocked" \
+    "! $BINARY install $SYSTEM_FONT 2>&1 | grep -q 'protected system font'"
+
+# Test 6: Cleanup command
+echo ""
+echo "Testing cleanup command..."
+cleanup_auto_install
+CLEANUP_DIR=$(mktemp -d /tmp/fontlift-clean-XXXX)
+PRUNE_FONT="$CLEANUP_DIR/font-to-prune.ttf"
+USER_LIBRARY="$CLEANUP_DIR/UserLibrary"
+SYSTEM_LIBRARY="$CLEANUP_DIR/SystemLibrary"
+export FONTLIFT_OVERRIDE_USER_LIBRARY="$USER_LIBRARY"
+export FONTLIFT_OVERRIDE_SYSTEM_LIBRARY="$SYSTEM_LIBRARY"
+
+setup_third_party_caches() {
+    rm -rf "$USER_LIBRARY" "$SYSTEM_LIBRARY"
+
+    mkdir -p "$USER_LIBRARY/Application Support/Adobe/TypeSupport"
+    mkdir -p "$USER_LIBRARY/Caches/Adobe/TypeSupport"
+    mkdir -p "$USER_LIBRARY/Preferences/Microsoft"
+
+    mkdir -p "$SYSTEM_LIBRARY/Application Support/Adobe/TypeSupport"
+    mkdir -p "$SYSTEM_LIBRARY/Preferences/Microsoft"
+
+    touch "$USER_LIBRARY/Application Support/Adobe/TypeSupport/AdobeFnt.lst"
+    touch "$USER_LIBRARY/Caches/Adobe/TypeSupport/AdobeFnt16.lst"
+    touch "$USER_LIBRARY/Preferences/Microsoft/Office Font Cache (16)"
+
+    touch "$SYSTEM_LIBRARY/Application Support/Adobe/TypeSupport/AdobeFntSystem.lst"
+    touch "$SYSTEM_LIBRARY/Preferences/Microsoft/Office Font Cache (16)"
+}
+
+setup_third_party_caches
+
+cp "$TEST_FONT_V1" "$PRUNE_FONT"
+
+run_test "Setup font for pruning installs successfully" "$BINARY install $PRUNE_FONT"
+rm "$PRUNE_FONT"
+run_test "Cleanup prune removes missing font registrations" \
+    "$BINARY cleanup --prune-only 2>&1 | grep -q 'Pruning missing font'"
+run_test "List output no longer includes pruned font" "! $BINARY list -p | grep -q \"$PRUNE_FONT\""
+run_test "Cache clearing reports success" "$BINARY cleanup --cache-only 2>&1 | grep -q 'font cache cleared'"
+run_test "User-level cleanup removes Adobe caches" \
+    "[ ! -f \"$USER_LIBRARY/Application Support/Adobe/TypeSupport/AdobeFnt.lst\" ]"
+run_test "User-level cleanup removes Microsoft caches" \
+    "[ ! -f \"$USER_LIBRARY/Preferences/Microsoft/Office Font Cache (16)\" ]"
+run_test "User-level cleanup leaves system caches intact" \
+    "[ -f \"$SYSTEM_LIBRARY/Application Support/Adobe/TypeSupport/AdobeFntSystem.lst\" ]"
+
+setup_third_party_caches
+
+run_test "Admin cleanup clears caches without error" \
+    "$BINARY cleanup --cache-only --admin 2>&1 | grep -q 'font cache cleared'"
+run_test "Admin cleanup removes system Adobe caches" \
+    "[ ! -f \"$SYSTEM_LIBRARY/Application Support/Adobe/TypeSupport/AdobeFntSystem.lst\" ]"
+run_test "Admin cleanup removes system Microsoft caches" \
+    "[ ! -f \"$SYSTEM_LIBRARY/Preferences/Microsoft/Office Font Cache (16)\" ]"
+run_test "Cleanup alias help available" "$BINARY c --help | grep -q 'Prune missing fonts'"
+echo ""
+rm -rf "$CLEANUP_DIR"
+unset FONTLIFT_OVERRIDE_USER_LIBRARY
+unset FONTLIFT_OVERRIDE_SYSTEM_LIBRARY
+
+# Test 7: Version extraction and consistency
 echo "Testing version extraction..."
 EXTRACTED_VERSION=$(./scripts/get-version.sh)
 BINARY_VERSION=$($BINARY --version)

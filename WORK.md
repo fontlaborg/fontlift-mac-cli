@@ -114,6 +114,12 @@
 
 ### Current Work
 
+**Cleanup Enhancements (Unreleased):**
+- ✅ Added `--admin` flag to `fontlift cleanup` for system-level pruning and cache clearing (requires sudo).
+- ✅ Default cleanup now removes Adobe and Microsoft font caches alongside Core Text caches for the current user.
+- ✅ Expanded `Tests/integration_test.sh` coverage for third-party caches and admin cleanup flows.
+- ✅ Verification: `./test.sh --ci` (96 tests, full suite) passing.
+
 **v2.0.0 RELEASED TO PRODUCTION! 🎉🚀**
 
 **Output Format Standardization (v2.0.0):**

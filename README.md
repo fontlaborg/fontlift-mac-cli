@@ -105,6 +105,26 @@ fontlift remove ~/Downloads/OldFont.ttf
 fontlift remove -n "OldFont-Bold"
 ```
 
+### Clean up font registrations and caches
+```bash
+# Prune missing font registrations and clear caches for the current user
+fontlift cleanup
+
+# Only prune registrations (skip caches)
+fontlift cleanup --prune-only
+
+# Only clear caches (prunes are skipped)
+fontlift cleanup --cache-only
+
+# Run a system-level cleanup (clears caches for all users; requires sudo)
+sudo fontlift cleanup --admin
+```
+
+The default cleanup command performs two safety tasks:
+
+- **Prunes missing fonts** – removes registrations for fonts whose files were deleted or moved (skips protected system directories)
+- **Clears caches** – purges Core Text caches and third-party caches for Adobe and Microsoft apps (user scope by default, system scope with `--admin`)
+
 ## Advanced Usage Examples
 
 ### Installing a Custom Font Family

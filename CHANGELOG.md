@@ -79,6 +79,11 @@ All notable changes to fontlift-mac-cli will be documented in this file.
   - `.github/PULL_REQUEST_TEMPLATE.md`: Comprehensive checklist (testing, docs, style)
   - Templates reference 96 tests and PRINCIPLES.md for consistency
 
+**Round 21: Cleanup Enhancements** (2025-11-05)
+- **System-Level Cleanup Support**: Added `--admin` flag to `cleanup` (and alias `c`) to prune missing fonts and clear caches for all users in the current session. Requires running `sudo fontlift cleanup --admin`.
+- **Third-Party Cache Removal**: Cleanup now purges Adobe and Microsoft font caches in addition to the Core Text cache. User scope is cleared by default; system scope is cleared when `--admin` is present.
+- **Test Coverage**: Updated `Tests/integration_test.sh` to verify user-level pruning, Adobe/Microsoft cache deletion, and system-level cleanup flows.
+
 ### Changed
 - **Documentation Accuracy**: Updated all test count references from 94 to 96
   - README.md: Updated to 96 total tests, 21 integration tests
