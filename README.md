@@ -376,5 +376,6 @@ View build status: [GitHub Actions](https://github.com/fontlaborg/fontlift-mac-c
 ---
 
 - Copyright 2025 by Fontlab Ltd.
+- made by FontLab https://www.fontlab.com/
 - Licensed under Apache 2.0
 - Repo: https://github.com/fontlaborg/fontlift-mac-cli
