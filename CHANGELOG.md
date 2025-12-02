@@ -84,16 +84,30 @@ All notable changes to fontlift-mac-cli will be documented in this file.
 - **Third-Party Cache Removal**: Cleanup now purges Adobe and Microsoft font caches in addition to the Core Text cache. User scope is cleared by default; system scope is cleared when `--admin` is present.
 - **Test Coverage**: Updated `Tests/integration_test.sh` to verify user-level pruning, Adobe/Microsoft cache deletion, and system-level cleanup flows.
 
+**Round 22: List Output Stability** (2025-12-02)
+- Default `list` output is now alphabetically sorted without requiring `-s`.
+- Path-only output is automatically deduplicated to avoid duplicate paths from font collections.
+- `-s` now focuses on deduplicating names and `path::name` output; help text and README clarify the behavior.
+- Added `buildListOutput` helper plus three unit tests and two integration tests for sorting/deduplication.
+- Test counts updated: 129 total (60 Swift + 23 Scripts + 46 Integration).
+
+**Round 23: Uninstall Scope Coverage** (2025-12-02)
+- Uninstall now attempts both user and system scopes automatically and succeeds if either deregisters the font (with permission hints when both fail).
+- Introduced injectable Core Text unregister hook to enable scope-level unit testing.
+- Added two unit tests (UnregisterFontTests) covering cross-scope success and dual-failure behavior.
+- Test counts updated: 131 total (62 Swift + 23 Scripts + 46 Integration).
+
 ### Changed
+- **Binary Name Update (2025-12-02)**: Renamed the CLI executable from `fontlift` to `fontlift-mac` to avoid name conflicts. Updated build/publish/release scripts, tests, and documentation; release artifacts are now named `fontlift-mac-vX.Y.Z-macos.tar.gz`.
 - **Documentation Accuracy**: Updated all test count references from 94 to 96
   - README.md: Updated to 96 total tests, 21 integration tests
   - .github/RELEASING.md: Updated to 96 tests in multiple locations
   - Preserved historical references in CHANGELOG.md correctly
 
-### Metrics (After 20 Rounds)
-- **Test Suite**: 96/96 tests passing (52 Swift + 23 Scripts + 21 Integration)
-- **Performance**: 215ms startup, 355ms list command
-- **Test Execution**: ~31s total
+### Metrics (After 23 Rounds)
+- **Test Suite**: 131/131 tests passing (62 Swift + 23 Scripts + 46 Integration)
+- **Performance**: 23ms startup, 41ms list command (latest integration run)
+- **Test Execution**: ~13s total in CI mode
 - **Code Quality**: 819 lines, 0 compiler warnings
 - **Documentation**: Complete with examples, guides, templates, and baselines
 

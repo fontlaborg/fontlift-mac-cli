@@ -16,13 +16,13 @@ final class CLIErrorTests: XCTestCase {
             .deletingLastPathComponent()  // Remove Tests -> now at project root
     }
 
-    /// Get path to debug binary
+    /// Get path to debug binary for the CLI executable
     func getBinaryPath() -> String {
         let projectRoot = getProjectRoot()
         return projectRoot
             .appendingPathComponent(".build")
             .appendingPathComponent("debug")
-            .appendingPathComponent("fontlift")
+            .appendingPathComponent("fontlift-mac")
             .path
     }
 
@@ -44,7 +44,7 @@ final class CLIErrorTests: XCTestCase {
         return String(contents[versionRange])
     }
 
-    /// Run fontlift binary and capture output
+    /// Run fontlift-mac binary and capture output
     func runFontlift(args: [String]) -> (exitCode: Int32, output: String, error: String) {
         let process = Process()
         process.executableURL = URL(fileURLWithPath: getBinaryPath())
@@ -84,6 +84,15 @@ final class CLIErrorTests: XCTestCase {
         )
     }
 
+    func testVersionShowsFontLabAttribution() throws {
+        let result = runFontlift(args: ["--version"])
+        XCTAssertEqual(result.exitCode, 0, "Version flag should succeed")
+        XCTAssertTrue(
+            result.output.contains("made by FontLab https://www.fontlab.com/"),
+            "Version output should include FontLab attribution"
+        )
+    }
+
     // MARK: - Help Tests
 
     func testHelpFlag() throws {
@@ -93,10 +102,28 @@ final class CLIErrorTests: XCTestCase {
         XCTAssertTrue(result.output.contains("SUBCOMMANDS"), "Help should show subcommands")
     }
 
+    func testHelpShowsFontLabAttribution() throws {
+        let result = runFontlift(args: ["--help"])
+        XCTAssertEqual(result.exitCode, 0, "Help flag should succeed")
+        XCTAssertTrue(
+            result.output.contains("made by FontLab https://www.fontlab.com/"),
+            "Help should include FontLab attribution"
+        )
+    }
+
     func testListHelp() throws {
         let result = runFontlift(args: ["list", "--help"])
         XCTAssertEqual(result.exitCode, 0, "List help should succeed")
         XCTAssertTrue(result.output.contains("List installed fonts"), "Should show list description")
+    }
+
+    func testListHelpShowsFontLabAttribution() throws {
+        let result = runFontlift(args: ["list", "--help"])
+        XCTAssertEqual(result.exitCode, 0, "List help should succeed")
+        XCTAssertTrue(
+            result.output.contains("made by FontLab https://www.fontlab.com/"),
+            "List help should include FontLab attribution"
+        )
     }
 
     func testInstallHelp() throws {

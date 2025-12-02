@@ -1,6 +1,6 @@
 #!/bin/bash
 # this_file: test.sh
-# Run all tests for fontlift
+# Run all tests for fontlift-mac
 #
 # Usage: ./test.sh [OPTIONS]
 #
@@ -11,13 +11,12 @@
 #   --integration   Run only integration tests
 #   --help          Show this help message
 #
-# Test Suite Breakdown (Total: 100 tests):
-#   • Swift Unit Tests: 52 tests (CLIErrorTests, HelperFunctionTests, ProjectValidationTests)
+# Test Suite Breakdown (Total: 131 tests):
+#   • Swift Unit Tests: 62 tests (CLIErrorTests, HelperFunctionTests, ProjectValidationTests, UnregisterFontTests)
 #   • Scripts Tests: 23 tests (build.sh, test.sh, publish.sh, validate-version.sh, get-version.sh, binary)
-#   • Integration Tests: 25 tests (binary metadata, list command, help texts, error handling, output format, version extraction)
+#   • Integration Tests: 46 tests (binary metadata, list command, help texts, error handling, output format, sorting/dedup validation, version extraction, cleanup flows)
 #
-# Note: Test counts in output are hardcoded and must be manually updated when tests are added/removed.
-#       Run `swift test` to get accurate Swift test count, then update lines 83, 146, 150.
+# Note: Test counts in output are hardcoded below and must be updated whenever tests are added or removed.
 
 set -euo pipefail  # Exit on error, undefined vars, pipe failures
 
@@ -26,13 +25,13 @@ show_help() {
     cat << EOF
 Usage: $0 [OPTIONS]
 
-Run all tests for fontlift.
+Run all tests for fontlift-mac.
 
 Options:
   --ci            CI mode (minimal output, strict error codes)
-  --swift         Run only Swift unit tests (52 tests)
+  --swift         Run only Swift unit tests (62 tests)
   --scripts       Run only scripts tests (23 tests)
-  --integration   Run only integration tests (19 tests)
+  --integration   Run only integration tests (46 tests)
   --help          Show this help message
 
 Examples:
@@ -125,7 +124,7 @@ if [ "$RUN_INTEGRATION" = true ]; then ((SUITES_RUNNING++)); fi
 SUITE_NUM=0
 
 if [ "$CI_MODE" = false ]; then
-    echo "🧪 Running fontlift test suite"
+    echo "🧪 Running fontlift-mac test suite"
     echo ""
 fi
 
@@ -139,9 +138,9 @@ if [ "$RUN_SWIFT" = true ]; then
     if [ "$CI_MODE" = false ]; then
         echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
         if [ "$SUITES_RUNNING" -gt 1 ]; then
-            echo "Suite $SUITE_NUM/$SUITES_RUNNING: Swift Unit Tests (52 tests)"
+            echo "Suite $SUITE_NUM/$SUITES_RUNNING: Swift Unit Tests (62 tests)"
         else
-            echo "Swift Unit Tests (52 tests)"
+            echo "Swift Unit Tests (62 tests)"
         fi
         echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
         echo ""
@@ -190,9 +189,9 @@ if [ "$RUN_INTEGRATION" = true ] && [ -f "Tests/integration_test.sh" ]; then
         echo ""
         echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
         if [ "$SUITES_RUNNING" -gt 1 ]; then
-            echo "Suite $SUITE_NUM/$SUITES_RUNNING: Integration Tests (19 tests)"
+            echo "Suite $SUITE_NUM/$SUITES_RUNNING: Integration Tests (46 tests)"
         else
-            echo "Integration Tests (19 tests)"
+            echo "Integration Tests (46 tests)"
         fi
         echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
         echo ""
@@ -209,13 +208,13 @@ TOTAL_DURATION=$((TOTAL_END - TOTAL_START))
 # Calculate total test count based on what ran
 TOTAL_TESTS=0
 if [ "$RUN_SWIFT" = true ]; then
-    TOTAL_TESTS=$((TOTAL_TESTS + 52))
+    TOTAL_TESTS=$((TOTAL_TESTS + 60))
 fi
 if [ "$RUN_SCRIPTS" = true ] && [ "$SKIP_SCRIPT_TESTS" != "true" ]; then
     TOTAL_TESTS=$((TOTAL_TESTS + 23))
 fi
 if [ "$RUN_INTEGRATION" = true ]; then
-    TOTAL_TESTS=$((TOTAL_TESTS + 25))  # 21 base + 2 performance + 2 version extraction
+    TOTAL_TESTS=$((TOTAL_TESTS + 46))  # 42 base + 2 performance + 2 version extraction
 fi
 
 if [ "$CI_MODE" = false ]; then
@@ -226,13 +225,13 @@ if [ "$CI_MODE" = false ]; then
     echo ""
     echo "Test Execution Times:"
     if [ "$RUN_SWIFT" = true ]; then
-        echo "  • Swift unit tests:       ${SWIFT_DURATION}s (52 tests)"
+echo "  • Swift unit tests:       ${SWIFT_DURATION}s (62 tests)"
     fi
     if [ "$RUN_SCRIPTS" = true ] && [ "$SKIP_SCRIPT_TESTS" != "true" ]; then
         echo "  • Scripts tests:          ${SCRIPTS_DURATION}s (23 tests)"
     fi
     if [ "$RUN_INTEGRATION" = true ]; then
-        echo "  • Integration tests:      ${INTEGRATION_DURATION}s (25 tests)"
+        echo "  • Integration tests:      ${INTEGRATION_DURATION}s (46 tests)"
     fi
     echo "  ────────────────────────────────────────────────────"
     echo "  • Total:                  ${TOTAL_DURATION}s"

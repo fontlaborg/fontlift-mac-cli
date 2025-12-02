@@ -1,10 +1,10 @@
 #!/bin/bash
 # this_file: scripts/prepare-release.sh
-# Package fontlift binary for GitHub Release
+# Package fontlift-mac binary for GitHub Release
 #
 # Usage: ./scripts/prepare-release.sh
 #
-# Creates: dist/fontlift-vX.Y.Z-macos.tar.gz and checksum file
+# Creates: dist/fontlift-mac-vX.Y.Z-macos.tar.gz and checksum file
 
 set -euo pipefail
 
@@ -16,11 +16,11 @@ Usage: $0
 Prepares release artifacts for GitHub Release distribution.
 
 Creates:
-  - dist/fontlift-vX.Y.Z-macos.tar.gz     Compressed binary tarball
-  - dist/fontlift-vX.Y.Z-macos.tar.gz.sha256   SHA256 checksum file
+  - dist/fontlift-mac-vX.Y.Z-macos.tar.gz     Compressed binary tarball
+  - dist/fontlift-mac-vX.Y.Z-macos.tar.gz.sha256   SHA256 checksum file
 
 Prerequisites:
-  - Release binary must exist at .build/release/fontlift
+  - Release binary must exist at .build/release/fontlift-mac
   - Run ./build.sh first to build the binary
 
 Examples:
@@ -40,7 +40,7 @@ fi
 # Change to project root (where this script's parent is located)
 cd "$(dirname "$0")/.."
 
-BINARY_PATH=".build/release/fontlift"
+BINARY_PATH=".build/release/fontlift-mac"
 DIST_DIR="dist"
 
 # Verify binary exists
@@ -70,7 +70,7 @@ echo "Version: $VERSION"
 mkdir -p "${DIST_DIR}"
 
 # Define artifact names
-TARBALL_NAME="fontlift-v${VERSION}-macos.tar.gz"
+TARBALL_NAME="fontlift-mac-v${VERSION}-macos.tar.gz"
 CHECKSUM_NAME="${TARBALL_NAME}.sha256"
 TARBALL_PATH="${DIST_DIR}/${TARBALL_NAME}"
 CHECKSUM_PATH="${DIST_DIR}/${CHECKSUM_NAME}"
@@ -81,10 +81,10 @@ echo "📦 Creating release tarball..."
 # Create tarball with just the binary
 # Use temp directory to avoid including .build path in tarball
 TEMP_DIR=$(mktemp -d)
-cp "${BINARY_PATH}" "${TEMP_DIR}/fontlift"
+cp "${BINARY_PATH}" "${TEMP_DIR}/fontlift-mac"
 
 # Create tarball from temp directory
-tar -czf "${TARBALL_PATH}" -C "${TEMP_DIR}" fontlift
+tar -czf "${TARBALL_PATH}" -C "${TEMP_DIR}" fontlift-mac
 
 # Clean up temp directory
 rm -rf "${TEMP_DIR}"
@@ -129,7 +129,7 @@ printf "%-20s %s\n" "Checksum:" "${CHECKSUM}"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo ""
 echo "To test extraction:"
-echo "  tar -xzf ${TARBALL_PATH} && ./fontlift --version"
+echo "  tar -xzf ${TARBALL_PATH} && ./fontlift-mac --version"
 echo ""
 echo "To verify checksum:"
 echo "  cd ${DIST_DIR} && shasum -a 256 -c ${CHECKSUM_NAME}"

@@ -1,6 +1,6 @@
 #!/bin/bash
 # this_file: publish.sh
-# Install fontlift to /usr/local/bin (local mode) or verify binary (CI mode)
+# Install fontlift-mac to /usr/local/bin (local mode) or verify binary (CI mode)
 #
 # Usage: ./publish.sh [OPTIONS]
 #
@@ -16,7 +16,7 @@ show_help() {
     cat << EOF
 Usage: $0 [OPTIONS]
 
-Install fontlift to /usr/local/bin (local mode) or verify binary (CI mode).
+Install fontlift-mac to /usr/local/bin (local mode) or verify binary (CI mode).
 
 Options:
   --ci        CI mode (skip installation, just verify binary)
@@ -67,7 +67,7 @@ done
 cd "$(dirname "$0")"
 
 INSTALL_DIR="/usr/local/bin"
-BINARY_NAME="fontlift"
+BINARY_NAME="fontlift-mac"
 SOURCE_BINARY=".build/release/${BINARY_NAME}"
 
 # CI mode: Just verify the binary
@@ -94,7 +94,7 @@ if [ "$CI_MODE" = true ]; then
 fi
 
 # Local mode: Install to /usr/local/bin
-echo "📦 Publishing fontlift to ${INSTALL_DIR}..."
+echo "📦 Publishing fontlift-mac to ${INSTALL_DIR}..."
 echo ""
 
 # Build if binary doesn't exist
@@ -132,14 +132,14 @@ else
 fi
 
 # Verify installation
-if command -v fontlift &> /dev/null; then
+if command -v fontlift-mac &> /dev/null; then
     echo ""
     echo "✅ Installation successful!"
-    echo "Version: $(fontlift --version 2>&1 | head -1)"
+    echo "Version: $(fontlift-mac --version 2>&1 | head -1)"
     echo ""
-    echo "Usage: fontlift --help"
+    echo "Usage: fontlift-mac --help"
 else
     echo ""
-    echo "⚠️  Installation complete but fontlift not in PATH"
+    echo "⚠️  Installation complete but fontlift-mac not in PATH"
     echo "You may need to add ${INSTALL_DIR} to your PATH"
 fi

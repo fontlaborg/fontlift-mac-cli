@@ -110,4 +110,68 @@ final class HelperFunctionTests: XCTestCase {
         let familyName = getFontFamilyName(from: tempURL)
         XCTAssertNil(familyName, "Invalid font file should return nil family name")
     }
+
+    // MARK: - List Output Formatting
+
+    func testListOutputIsSortedByDefaultForPaths() throws {
+        let fontURLs = [
+            URL(fileURLWithPath: "/Library/Fonts/Zeta.ttf"),
+            URL(fileURLWithPath: "/Library/Fonts/Alpha.ttf"),
+        ]
+
+        let lines = buildListOutput(
+            fontURLs: fontURLs,
+            showPath: true,
+            showName: false,
+            dedupeAll: false
+        )
+
+        XCTAssertEqual(
+            lines,
+            ["/Library/Fonts/Alpha.ttf", "/Library/Fonts/Zeta.ttf"],
+            "Path-only output should be alphabetically sorted by default"
+        )
+    }
+
+    func testListOutputDedupesPathsByDefault() throws {
+        let duplicatePath = "/Library/Fonts/Shared.ttf"
+        let fontURLs = [
+            URL(fileURLWithPath: duplicatePath),
+            URL(fileURLWithPath: duplicatePath),
+        ]
+
+        let lines = buildListOutput(
+            fontURLs: fontURLs,
+            showPath: true,
+            showName: false,
+            dedupeAll: false
+        )
+
+        XCTAssertEqual(
+            lines,
+            [duplicatePath],
+            "Path-only output should be deduplicated even without --sorted flag"
+        )
+    }
+
+    func testListOutputDedupesWhenSortedFlagProvided() throws {
+        let sharedPath = "/Library/Fonts/Shared.ttc"
+        let fontURLs = [
+            URL(fileURLWithPath: sharedPath),
+            URL(fileURLWithPath: sharedPath),
+        ]
+
+        let lines = buildListOutput(
+            fontURLs: fontURLs,
+            showPath: true,
+            showName: true,
+            dedupeAll: true
+        )
+
+        XCTAssertEqual(
+            lines,
+            ["/Library/Fonts/Shared.ttc::Unknown"],
+            "--sorted flag should deduplicate combined path::name output"
+        )
+    }
 }

@@ -1,6 +1,6 @@
 #!/bin/bash
 # this_file: Tests/integration_test.sh
-# Integration smoke tests for fontlift binary
+# Integration smoke tests for fontlift-mac binary
 # Tests end-to-end functionality with real operations
 
 set -euo pipefail
@@ -22,13 +22,13 @@ echo "🧪 Running integration smoke tests..."
 echo ""
 
 # Ensure binary exists
-if [ ! -f ".build/release/fontlift" ]; then
-    echo -e "${RED}❌ Binary not found at .build/release/fontlift${NC}"
+if [ ! -f ".build/release/fontlift-mac" ]; then
+    echo -e "${RED}❌ Binary not found at .build/release/fontlift-mac${NC}"
     echo "Run ./build.sh first"
     exit 1
 fi
 
-BINARY=".build/release/fontlift"
+BINARY=".build/release/fontlift-mac"
 export FONTLIFT_FAKE_REGISTRATION=1
 
 # Helper function to run a test
@@ -86,6 +86,8 @@ run_test "List -p -n uses :: separator" "($BINARY list -p -n 2>&1 || true) | hea
 run_test "List -n -p uses :: separator" "($BINARY list -n -p 2>&1 || true) | head -1 | grep -q '::'"
 run_test "List -p does NOT use :: separator" "! (($BINARY list -p 2>&1 || true) | head -1 | grep -q '::')"
 run_test "List -n does NOT use :: separator" "! (($BINARY list -n 2>&1 || true) | head -1 | grep -q '::')"
+run_test "List output is sorted" "$BINARY list | sort -c"
+run_test "List path output is deduplicated" "[ $($BINARY list | wc -l) -eq $($BINARY list | uniq | wc -l) ]"
 echo ""
 
 # Test 3: Help texts for all commands
@@ -212,7 +214,7 @@ unset FONTLIFT_OVERRIDE_SYSTEM_LIBRARY
 # Test 7: Version extraction and consistency
 echo "Testing version extraction..."
 EXTRACTED_VERSION=$(./scripts/get-version.sh)
-BINARY_VERSION=$($BINARY --version)
+BINARY_VERSION=$($BINARY --version | awk '{print $1}')
 
 # Test extracted version is valid semver (X.Y.Z format)
 run_test "get-version.sh outputs valid semver" "echo '$EXTRACTED_VERSION' | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+$'"

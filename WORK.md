@@ -6,13 +6,13 @@
 **Current Version**: v2.0.0 🎉 **RELEASED TO PRODUCTION**
 **Release Date**: 2025-11-03
 **Release URL**: https://github.com/fontlaborg/fontlift-mac-cli/releases/tag/v2.0.0
-**Last Updated**: 2025-11-03
-**Total Improvement Rounds**: 22 (16 pre-release + 6 post-release)
+**Last Updated**: 2025-12-02
+**Total Improvement Rounds**: 24 (16 pre-release + 8 post-release)
 
 ### Core Metrics
 
-- **Test Suite**: 100 tests passing (52 Swift + 23 Scripts + 25 Integration)
-- **Test Execution**: ~30s
+- **Test Suite**: 131 tests passing (62 Swift + 23 Scripts + 46 Integration)
+- **Test Execution**: ~13s (CI mode)
 - **Build Time**: ~7s (release mode)
 - **Binary Size**: 1.6M (native), 3.2M (universal)
 - **Compiler Warnings**: 0
@@ -113,6 +113,20 @@
 - Added build progress indicators for universal builds
 
 ### Current Work
+
+**Uninstall scope auto-detect (2025-12-02):**
+- Uninstall now attempts both user and system scopes automatically and succeeds if either deregisters the font; shows a sudo hint when both fail.
+- Injected a stub-friendly Core Text unregister hook and added 2 Swift unit tests (`UnregisterFontTests`) covering cross-scope success and dual-failure cases.
+- Tests: `./test.sh --ci` (pass)
+
+**Binary rename to avoid conflicts (2025-12-02):**
+- Renamed CLI executable to `fontlift-mac`; updated Package.swift product, build/publish/release scripts, tests, and README installation instructions (tarball now `fontlift-mac-vX.Y.Z-macos.tar.gz`).
+- Tests: `./test.sh --ci` (pass)
+
+**List output ordering and dedup (2025-12-02):**
+- `list` output is always sorted; path-only output is deduplicated by default.
+- `-s` now focuses on deduplicating name and `path::name` output; help text and README clarified.
+- Added `buildListOutput` helper plus 3 Swift tests and 2 integration checks for sorting/dedup.
 
 **Cleanup Enhancements (Unreleased):**
 - ✅ Added `--admin` flag to `fontlift cleanup` for system-level pruning and cache clearing (requires sudo).

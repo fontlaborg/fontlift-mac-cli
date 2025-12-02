@@ -1,5 +1,5 @@
 // this_file: Sources/fontlift/fontlift.swift
-// fontlift - macOS CLI tool for font installation and management
+// fontlift-mac - macOS CLI tool for font installation and management
 
 import ArgumentParser
 import CoreText
@@ -7,14 +7,17 @@ import Foundation
 import Darwin
 
 // MARK: - Version Management
-/// Current version of fontlift
+/// Current version of fontlift-mac
 /// When updating, also update:
 /// - CHANGELOG.md (add new version section)
 /// - Git tag (git tag vX.Y.Z)
+private let fontLabAttribution = "made by FontLab https://www.fontlab.com/"
 private let version = "2.0.0"
+private let binaryName = "fontlift-mac"
 private let fakeRegistrationMode = ProcessInfo.processInfo.environment["FONTLIFT_FAKE_REGISTRATION"] == "1"
 private let overrideUserLibraryPath = ProcessInfo.processInfo.environment["FONTLIFT_OVERRIDE_USER_LIBRARY"]
 private let overrideSystemLibraryPath = ProcessInfo.processInfo.environment["FONTLIFT_OVERRIDE_SYSTEM_LIBRARY"]
+var fontManagerUnregisterFontsForURL: (CFURL, CTFontManagerScope, UnsafeMutablePointer<Unmanaged<CFError>?>?) -> Bool = CTFontManagerUnregisterFontsForURL
 
 private struct ThirdPartyCacheSummary {
     let userRemoved: Int
@@ -112,7 +115,7 @@ private func ensureFakeRegistryLoaded(reload: Bool = false) {
 /// Escape a file path for safe use in shell commands
 ///
 /// Wraps paths containing special characters in single quotes and escapes any single quotes within.
-/// This ensures suggested shell commands (like "sudo fontlift remove '/path/to/file'") work correctly
+/// This ensures suggested shell commands (like "sudo fontlift-mac remove '/path/to/file'") work correctly
 /// even when paths contain spaces, quotes, or other shell metacharacters.
 ///
 /// - Parameter path: The file path to escape
@@ -351,27 +354,60 @@ func unregisterFont(at url: URL, admin: Bool, silent: Bool = false) throws {
 
     if fakeRegistrationMode {
         ensureFakeRegistryLoaded()
-        if !silent {
-            let scopeDescription = admin ? "system-level (simulated)" : "user-level (simulated)"
-            if let fontName = getFontName(from: url) ?? getFullFontName(from: url) {
+        let removed = fakeFontRegistry.unregister(path: url.path)
+        persistFakeRegistry()
+        guard !silent else { return }
+
+        let scopeDescription = "user-level and system-level (simulated)"
+        if let fontName = getFontName(from: url) ?? getFullFontName(from: url) {
+            if removed {
                 print("✅ [Simulated] Unregistered '\(fontName)' (\(scopeDescription))")
             } else {
+                print("ℹ️  [Simulated] No registration found for '\(fontName)' (\(scopeDescription))")
+            }
+        } else {
+            if removed {
                 print("✅ [Simulated] Unregistered font at \(url.path) (\(scopeDescription))")
+            } else {
+                print("ℹ️  [Simulated] No registration found at \(url.path) (\(scopeDescription))")
             }
         }
-        _ = fakeFontRegistry.unregister(path: url.path)
-        persistFakeRegistry()
         return
     }
 
-    let scope: CTFontManagerScope = admin ? .session : .user
-    let scopeDescription = admin ? "system-level (all users)" : "user-level"
+    func attemptUnregister(scope: CTFontManagerScope) -> (Bool, String?) {
+        var error: Unmanaged<CFError>?
+        let success = fontManagerUnregisterFontsForURL(url as CFURL, scope, &error)
 
-    var error: Unmanaged<CFError>?
-    let success = CTFontManagerUnregisterFontsForURL(url as CFURL, scope, &error)
+        if success {
+            return (true, nil)
+        }
 
-    if success {
+        if let error = error?.takeRetainedValue() {
+            return (false, CFErrorCopyDescription(error) as String)
+        }
+
+        return (false, "Failed to unregister font due to unknown Core Text error.")
+    }
+
+    let (userSuccess, userError) = attemptUnregister(scope: .user)
+    let (systemSuccess, systemError) = attemptUnregister(scope: .session)
+
+    if userSuccess || systemSuccess {
         guard !silent else { return }
+
+        let scopeDescription: String
+        switch (userSuccess, systemSuccess) {
+        case (true, true):
+            scopeDescription = "user-level and system-level"
+        case (true, false):
+            scopeDescription = "user-level"
+        case (false, true):
+            scopeDescription = "system-level"
+        case (false, false):
+            scopeDescription = "unknown scope"
+        }
+
         if let fontName = getFontName(from: url) ?? getFullFontName(from: url) {
             print("✅ Successfully unregistered '\(fontName)' (\(scopeDescription))")
         } else {
@@ -380,24 +416,62 @@ func unregisterFont(at url: URL, admin: Bool, silent: Bool = false) throws {
         return
     }
 
-    let description: String
-    if let error = error?.takeRetainedValue() {
-        description = CFErrorCopyDescription(error) as String
-    } else {
-        description = "Failed to unregister font due to unknown Core Text error."
+    print("❌ Error: Unable to unregister font in user or system scope.")
+    print("   File: \(url.path)")
+    if let userError {
+        print("   User scope: \(userError)")
+    }
+    if let systemError {
+        print("   System scope: \(systemError)")
+    }
+    if geteuid() != 0 && !admin {
+        print("   Tip: Try running with sudo and the --admin flag to remove system-level registrations.")
+    }
+    throw ExitCode.failure
+}
+
+/// Build formatted list output for the `list` command.
+///
+/// - Parameters:
+///   - fontURLs: Font file URLs returned by Core Text.
+///   - showPath: Include file paths in output.
+///   - showName: Include font names in output.
+///   - dedupeAll: When true, deduplicates all output lines. Paths are always deduplicated when shown alone.
+/// - Returns: Sorted array of formatted output lines.
+func buildListOutput(
+    fontURLs: [URL],
+    showPath: Bool,
+    showName: Bool,
+    dedupeAll: Bool
+) -> [String] {
+    var lines: [String] = []
+
+    for fontURL in fontURLs {
+        if showPath && showName {
+            let fontName = getFontName(from: fontURL) ?? getFullFontName(from: fontURL) ?? "Unknown"
+            lines.append("\(fontURL.path)::\(fontName)")
+        } else if showPath {
+            lines.append(fontURL.path)
+        } else if let fontName = getFontName(from: fontURL) ?? getFullFontName(from: fontURL) {
+            lines.append(fontName)
+        }
     }
 
-    print("❌ Error unregistering font: \(description)")
-    print("   File: \(url.path)")
-    throw ExitCode.failure
+    let shouldDedupe = dedupeAll || (showPath && !showName)
+    if shouldDedupe {
+        lines = Array(Set(lines))
+    }
+
+    return lines.sorted()
 }
 
 @main
 struct Fontlift: ParsableCommand {
     static let configuration = CommandConfiguration(
-        commandName: "fontlift",
+        commandName: binaryName,
         abstract: "Install, uninstall, list, and remove fonts on macOS",
-        version: version,
+        discussion: fontLabAttribution,
+        version: "\(version) - \(fontLabAttribution)",
         subcommands: [
             List.self,
             Install.self,
@@ -415,44 +489,34 @@ extension Fontlift {
     /// This command enumerates fonts using `CTFontManagerCopyAvailableFontURLs()`,
     /// which returns fonts from system, user, and library directories.
     ///
-    /// Output modes:
-    /// - Default (`-p`): Font file paths only
-    /// - Names (`-n`): Internal font names (PostScript or display names)
-    /// - Both (`-p -n`): Combined format as `path::name`
-    /// - Sorted (`-s`): Alphabetically sorted with duplicates removed
+    /// Behavior:
+    /// - Output is always alphabetically sorted.
+    /// - Path-only output is automatically deduplicated.
+    /// - `-s` / `--sorted` additionally deduplicates name and `path::name` output.
+    ///
+    /// Output modes (all sorted):
+    /// - Default (`-p`): Font file paths only (deduped)
+    /// - Names (`-n`): Internal font names (may repeat without `-s`)
+    /// - Both (`-p -n`): Combined format as `path::name` (deduped with `-s`)
     ///
     /// The output is pure data (no headers/footers) for pipe-friendly usage.
     ///
-    /// Example usage:
+    /// Examples:
     /// ```bash
-    /// fontlift list              # List all font paths
-    /// fontlift list -n           # List all font names
-    /// fontlift list -p -n        # List path::name pairs
-    /// fontlift list -n -s        # List unique font names, sorted
-    /// fontlift list | wc -l      # Count total fonts
+    /// fontlift-mac list              # Sorted, deduped font paths
+    /// fontlift-mac list -n           # Sorted font names (dedupe with -s if needed)
+    /// fontlift-mac list -p -n        # Sorted path::name pairs
+    /// fontlift-mac list -n -s        # Sorted, deduped font names
+    /// fontlift-mac list | wc -l      # Count total fonts
+    /// fontlift-mac l                 # Same as 'list' (alias)
     /// ```
     ///
-    /// **Output Modes:**
-    /// - Default (no flags): Lists font file paths only
-    /// - `-n` / `--name`: Lists internal font names only
-    /// - `-p -n`: Lists both in format "path::name"
-    /// - `-s` / `--sorted`: Sorts output and removes duplicates
-    ///
-    /// **Examples:**
-    /// ```bash
-    /// fontlift list                    # List all font paths
-    /// fontlift list -n                 # List all font names
-    /// fontlift list -p -n              # List path::name pairs
-    /// fontlift list -n -s              # List unique sorted names
-    /// fontlift l                       # Same as 'list' (alias)
-    /// ```
-    ///
-    /// **Note:** Output is pure data without headers/footers for pipe-friendly usage.
     /// Typical systems have 5000+ fonts installed.
     struct List: ParsableCommand {
         static let configuration = CommandConfiguration(
             commandName: "list",
             abstract: "List installed fonts",
+            discussion: fontLabAttribution,
             aliases: ["l"]
         )
 
@@ -462,7 +526,7 @@ extension Fontlift {
         @Flag(name: .shortAndLong, help: "Show internal font names")
         var name = false
 
-        @Flag(name: .shortAndLong, help: "Sort output and remove duplicates")
+        @Flag(name: .shortAndLong, help: "Deduplicate names or path::name output (paths are deduped automatically)")
         var sorted = false
 
         func run() throws {
@@ -484,35 +548,12 @@ extension Fontlift {
                 throw ExitCode.failure
             }
 
-            // Collect output lines for batch processing
-            // Building array first allows sorting if requested
-            var lines: [String] = []
-
-            // Process each font URL and format output based on flags
-            for fontURL in fontURLs {
-                if showPath && showName {
-                    // Combined mode: output both path and name separated by double colon
-                    // Format: /path/to/font.ttf::FontName
-                    let fontName = getFontName(from: fontURL) ?? getFullFontName(from: fontURL) ?? "Unknown"
-                    lines.append("\(fontURL.path)::\(fontName)")
-                } else if showPath {
-                    // Path-only mode: just the file system path
-                    lines.append(fontURL.path)
-                } else {
-                    // Name-only mode: extract and output PostScript or display name
-                    // Skip fonts where name can't be extracted
-                    if let fontName = getFontName(from: fontURL) ?? getFullFontName(from: fontURL) {
-                        lines.append(fontName)
-                    }
-                }
-            }
-
-            // Sort and deduplicate if requested
-            // Useful for reducing 5000+ font names to unique set (~1000-1500 names)
-            if sorted {
-                let uniqueLines = Set(lines)
-                lines = uniqueLines.sorted()
-            }
+            let lines = buildListOutput(
+                fontURLs: fontURLs,
+                showPath: showPath,
+                showName: showName,
+                dedupeAll: sorted
+            )
 
             // Output pure data only - no headers or footers
             for line in lines {
@@ -529,6 +570,7 @@ extension Fontlift {
         static let configuration = CommandConfiguration(
             commandName: "cleanup",
             abstract: "Prune missing fonts and clear font caches",
+            discussion: fontLabAttribution,
             aliases: ["c"]
         )
 
@@ -684,7 +726,7 @@ extension Fontlift {
             } else {
                 if admin && geteuid() != 0 {
                     print("❌ Error: System-level cache clearing requires administrator privileges.")
-                    print("   Run with sudo: sudo fontlift cleanup --admin --cache-only")
+                    print("   Run with sudo: sudo fontlift-mac cleanup --admin --cache-only")
                     throw ExitCode.failure
                 }
 
@@ -846,15 +888,16 @@ extension Fontlift {
     ///
     /// Example usage:
     /// ```bash
-    /// fontlift install ~/Downloads/CustomFont.ttf        # User-level
-    /// fontlift i /path/to/font.otf                       # User-level
-    /// sudo fontlift install --admin /path/to/font.ttf    # System-level (all users)
-    /// sudo fontlift i -a /path/to/font.ttf               # System-level (shorthand)
+    /// fontlift-mac install ~/Downloads/CustomFont.ttf        # User-level
+    /// fontlift-mac i /path/to/font.otf                       # User-level
+    /// sudo fontlift-mac install --admin /path/to/font.ttf    # System-level (all users)
+    /// sudo fontlift-mac i -a /path/to/font.ttf               # System-level (shorthand)
     /// ```
     struct Install: ParsableCommand {
         static let configuration = CommandConfiguration(
             commandName: "install",
             abstract: "Install fonts from file paths",
+            discussion: fontLabAttribution,
             aliases: ["i"]
         )
 
@@ -974,8 +1017,8 @@ extension Fontlift {
                             print("   File: \(fontPath)")
                         }
                         print("")
-                        print("   Use 'fontlift list' to see all installed fonts")
-                        print("   Use 'fontlift uninstall' to remove before reinstalling")
+                        print("   Use 'fontlift-mac list' to see all installed fonts")
+                        print("   Use 'fontlift-mac uninstall' to remove before reinstalling")
                         throw ExitCode.failure
                     }
 
@@ -1022,8 +1065,8 @@ extension Fontlift {
     /// - Font deregistered at `.session` scope
     ///
     /// You can specify the font either by:
-    /// - File path: `fontlift uninstall /path/to/font.ttf`
-    /// - Font name: `fontlift uninstall -n "Arial"`
+    /// - File path: `fontlift-mac uninstall /path/to/font.ttf`
+    /// - Font name: `fontlift-mac uninstall -n "Arial"`
     ///
     /// When using `-n`, the command searches all installed fonts to find a matching name.
     /// If the font file no longer exists but is still registered, uninstall will attempt
@@ -1033,15 +1076,16 @@ extension Fontlift {
     ///
     /// Example usage:
     /// ```bash
-    /// fontlift uninstall ~/Downloads/CustomFont.ttf        # User-level
-    /// fontlift u -n "Helvetica Neue"                       # User-level
-    /// sudo fontlift uninstall --admin /path/to/font.ttf    # System-level (all users)
-    /// sudo fontlift u -a -n "Arial"                        # System-level (shorthand)
+    /// fontlift-mac uninstall ~/Downloads/CustomFont.ttf        # User-level
+    /// fontlift-mac u -n "Helvetica Neue"                       # User-level
+    /// sudo fontlift-mac uninstall --admin /path/to/font.ttf    # System-level (all users)
+    /// sudo fontlift-mac u -a -n "Arial"                        # System-level (shorthand)
     /// ```
     struct Uninstall: ParsableCommand {
         static let configuration = CommandConfiguration(
             commandName: "uninstall",
             abstract: "Uninstall fonts (keeping files)",
+            discussion: fontLabAttribution,
             aliases: ["u"]
         )
 
@@ -1092,7 +1136,7 @@ extension Fontlift {
                     print("   Font name: \(fontName)")
                     print("")
                     print("   Suggestions:")
-                    print("   - Use 'fontlift list -n' to see all installed font names")
+                    print("   - Use 'fontlift-mac list -n' to see all installed font names")
                     print("   - Check spelling and case (font names are case-sensitive)")
                     print("   - Font may have already been uninstalled")
                     throw ExitCode.failure
@@ -1104,7 +1148,7 @@ extension Fontlift {
                     print("   Matching fonts:")
                     for (index, url) in matchingURLs.enumerated() {
                         print("   \(index + 1). \(url.path)")
-                        print("        fontlift uninstall \(shellEscape(url.path))")
+                        print("        fontlift-mac uninstall \(shellEscape(url.path))")
                     }
                     print("")
                     print("   Copy and run one of the commands above to uninstall the specific font.")
@@ -1157,8 +1201,8 @@ extension Fontlift {
     /// - Font deregistered at `.session` scope
     ///
     /// You can specify the font either by:
-    /// - File path: `fontlift remove /path/to/font.ttf`
-    /// - Font name: `fontlift remove -n "Arial"`
+    /// - File path: `fontlift-mac remove /path/to/font.ttf`
+    /// - Font name: `fontlift-mac remove -n "Arial"`
     ///
     /// When using `-n`, the command searches all installed fonts to find the file location,
     /// then unregisters and deletes it.
@@ -1168,15 +1212,16 @@ extension Fontlift {
     ///
     /// Example usage:
     /// ```bash
-    /// fontlift remove ~/Downloads/CustomFont.ttf        # User-level
-    /// fontlift rm -n "Helvetica Neue"                   # User-level
-    /// sudo fontlift remove --admin /path/to/font.ttf    # System-level (all users)
-    /// sudo fontlift rm -a -n "Arial"                    # System-level (shorthand)
+    /// fontlift-mac remove ~/Downloads/CustomFont.ttf        # User-level
+    /// fontlift-mac rm -n "Helvetica Neue"                   # User-level
+    /// sudo fontlift-mac remove --admin /path/to/font.ttf    # System-level (all users)
+    /// sudo fontlift-mac rm -a -n "Arial"                    # System-level (shorthand)
     /// ```
     struct Remove: ParsableCommand {
         static let configuration = CommandConfiguration(
             commandName: "remove",
             abstract: "Remove fonts (uninstall and delete files)",
+            discussion: fontLabAttribution,
             aliases: ["rm"]
         )
 
@@ -1227,7 +1272,7 @@ extension Fontlift {
                     print("   Font name: \(fontName)")
                     print("")
                     print("   Suggestions:")
-                    print("   - Use 'fontlift list -n' to see all installed font names")
+                    print("   - Use 'fontlift-mac list -n' to see all installed font names")
                     print("   - Check spelling and case (font names are case-sensitive)")
                     print("   - Font may have already been removed")
                     throw ExitCode.failure
@@ -1239,7 +1284,7 @@ extension Fontlift {
                     print("   Matching fonts:")
                     for (index, url) in matchingURLs.enumerated() {
                         print("   \(index + 1). \(url.path)")
-                        print("        fontlift remove \(shellEscape(url.path))")
+                        print("        fontlift-mac remove \(shellEscape(url.path))")
                     }
                     print("")
                     print("   Copy and run one of the commands above to remove the specific font.")
@@ -1319,7 +1364,7 @@ extension Fontlift {
                         return  // Success - file is already deleted
                     case NSFileWriteNoPermissionError:
                         print("   Permission denied - you don't have write access to this file")
-                        print("   Try running: sudo fontlift remove \(shellEscape(url.path))")
+                        print("   Try running: sudo fontlift-mac remove \(shellEscape(url.path))")
                     case NSFileReadNoSuchFileError:
                         print("   Parent directory no longer exists")
                     default:

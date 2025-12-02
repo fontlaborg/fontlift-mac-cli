@@ -20,7 +20,7 @@ Brief description of what this PR does.
 
 ## Testing
 Describe how you tested these changes:
-- [ ] Ran full test suite (96 tests)
+- [ ] Ran full test suite (131 tests)
 - [ ] Tested manually with real fonts
 - [ ] Tested on both Intel and Apple Silicon (if applicable)
 

@@ -12,23 +12,23 @@ Download and install the latest pre-built universal binary (supports both Intel 
 
 ```bash
 # Set version (or use 'latest')
-VERSION="1.1.27"  # Or check https://github.com/fontlaborg/fontlift-mac-cli/releases
+VERSION="2.0.0"  # Or check https://github.com/fontlaborg/fontlift-mac-cli/releases
 
 # Download release tarball and checksum
-curl -L "https://github.com/fontlaborg/fontlift-mac-cli/releases/download/v${VERSION}/fontlift-v${VERSION}-macos.tar.gz" -o fontlift.tar.gz
-curl -L "https://github.com/fontlaborg/fontlift-mac-cli/releases/download/v${VERSION}/fontlift-v${VERSION}-macos.tar.gz.sha256" -o fontlift.tar.gz.sha256
+curl -L "https://github.com/fontlaborg/fontlift-mac-cli/releases/download/v${VERSION}/fontlift-mac-v${VERSION}-macos.tar.gz" -o fontlift-mac.tar.gz
+curl -L "https://github.com/fontlaborg/fontlift-mac-cli/releases/download/v${VERSION}/fontlift-mac-v${VERSION}-macos.tar.gz.sha256" -o fontlift-mac.tar.gz.sha256
 
 # Verify checksum (recommended)
-shasum -a 256 -c fontlift.tar.gz.sha256
+shasum -a 256 -c fontlift-mac.tar.gz.sha256
 
 # Extract binary
-tar -xzf fontlift.tar.gz
+tar -xzf fontlift-mac.tar.gz
 
 # Install to /usr/local/bin (may require sudo)
-sudo mv fontlift /usr/local/bin/
+sudo mv fontlift-mac /usr/local/bin/
 
 # Verify installation
-fontlift --version
+fontlift-mac --version
 ```
 
 **Troubleshooting:** If you encounter issues, see [TROUBLESHOOTING.md](./TROUBLESHOOTING.md)
@@ -40,7 +40,7 @@ Homebrew formula submission is planned for a future release:
 ```bash
 # Future installation method (not yet available)
 brew tap fontlaborg/fontlift
-brew install fontlift
+brew install fontlift-mac
 ```
 
 **Requirements:**
@@ -65,59 +65,60 @@ Here are the most common workflows:
 ### Discover available fonts
 ```bash
 # List all installed fonts (sorted by family)
-fontlift list -n -s
+fontlift-mac list -n -s
 
 # Find fonts matching a name
-fontlift list -n | grep -i "helvetica"
+fontlift-mac list -n | grep -i "helvetica"
 
 # See where a font is installed (shows path::name format)
-fontlift list -p -n | grep "Helvetica"
+fontlift-mac list -p -n | grep "Helvetica"
 # Example output:
 # /System/Library/Fonts/Helvetica.ttc::Helvetica
 # /System/Library/Fonts/Helvetica.ttc::Helvetica-Bold
+# Output is always sorted. Path-only listings are deduped automatically; add -s to dedupe names or path::name pairs.
 ```
 
 ### Install a new font
 ```bash
 # Install a single font file
-fontlift install ~/Downloads/MyFont.ttf
+fontlift-mac install ~/Downloads/MyFont.ttf
 
 # Install works with .ttf, .otf, .ttc, .otc files
-fontlift install /path/to/font.otf
+fontlift-mac install /path/to/font.otf
 ```
 
 ### Uninstall a font (keep file)
 ```bash
 # Uninstall by file path
-fontlift uninstall ~/Library/Fonts/MyFont.ttf
+fontlift-mac uninstall ~/Library/Fonts/MyFont.ttf
 
 # Uninstall by font name
-fontlift list -n | grep "MyFont"  # Find exact name first
-fontlift uninstall -n "MyFont-Regular"
+fontlift-mac list -n | grep "MyFont"  # Find exact name first
+fontlift-mac uninstall -n "MyFont-Regular"
 ```
 
 ### Remove a font (delete file)
 ```bash
 # Remove by file path (deletes file)
-fontlift remove ~/Downloads/OldFont.ttf
+fontlift-mac remove ~/Downloads/OldFont.ttf
 
 # Remove by font name (deletes file)
-fontlift remove -n "OldFont-Bold"
+fontlift-mac remove -n "OldFont-Bold"
 ```
 
 ### Clean up font registrations and caches
 ```bash
 # Prune missing font registrations and clear caches for the current user
-fontlift cleanup
+fontlift-mac cleanup
 
 # Only prune registrations (skip caches)
-fontlift cleanup --prune-only
+fontlift-mac cleanup --prune-only
 
 # Only clear caches (prunes are skipped)
-fontlift cleanup --cache-only
+fontlift-mac cleanup --cache-only
 
 # Run a system-level cleanup (clears caches for all users; requires sudo)
-sudo fontlift cleanup --admin
+sudo fontlift-mac cleanup --admin
 ```
 
 The default cleanup command performs two safety tasks:
@@ -138,11 +139,11 @@ unzip Inter.zip -d Inter/
 
 # Install all font files in the directory
 for font in Inter/*.ttf; do
-    fontlift install "$font"
+    fontlift-mac install "$font"
 done
 
 # Verify installation
-fontlift list -n | grep "Inter"
+fontlift-mac list -n | grep "Inter"
 ```
 
 ### Batch Font Management
@@ -155,12 +156,12 @@ ls ~/Library/Fonts/*.ttf
 
 # Remove all fonts from a specific directory
 for font in ~/Library/Fonts/CustomFonts/*.ttf; do
-    fontlift remove "$font"
+    fontlift-mac remove "$font"
 done
 
 # Reinstall fonts after system upgrade
 find ~/FontBackup -name "*.ttf" -o -name "*.otf" | while read font; do
-    fontlift install "$font"
+    fontlift-mac install "$font"
 done
 ```
 
@@ -174,10 +175,10 @@ ls -la /path/to/font.ttf
 file /path/to/font.ttf
 
 # 2. Try installing with full path
-fontlift install "$(pwd)/MyFont.ttf"
+fontlift-mac install "$(pwd)/MyFont.ttf"
 
 # 3. Check if font is already installed
-fontlift list -n | grep -i "myfont"
+fontlift-mac list -n | grep -i "myfont"
 
 # 4. If installation fails, check system font cache
 # (macOS will rebuild it automatically)
@@ -190,34 +191,34 @@ Comprehensive font verification:
 
 ```bash
 # List all installed fonts (sorted alphabetically)
-fontlift list -n -s > installed-fonts.txt
+fontlift-mac list -n -s > installed-fonts.txt
 
 # Count total installed fonts
-fontlift list -n | wc -l
+fontlift-mac list -n | wc -l
 
 # Find duplicate font names
-fontlift list -n | sort | uniq -d
+fontlift-mac list -n | sort | uniq -d
 
 # Find fonts by family
-fontlift list -n | grep -i "helvetica"
+fontlift-mac list -n | grep -i "helvetica"
 
 # Get both path and name for specific font
-fontlift list -n -p | grep "Helvetica"
+fontlift-mac list -n -p | grep "Helvetica"
 ```
 
 ## Usage
 
 ### Listing installed fonts
 
-- `fontlift list` or `fontlift list -p` lists the paths of all installed fonts, one path per line
-- `fontlift list -n` lists the internal font names of all installed fonts, one name per line
-- `fontlift list -n -p` or `fontlift list -p -n` lists the paths and internal font names of all installed fonts; each line consists of the path followed by double colon (`::`) followed by the internal font name
+- `fontlift-mac list` or `fontlift-mac list -p` lists the paths of all installed fonts, one path per line
+- `fontlift-mac list -n` lists the internal font names of all installed fonts, one name per line
+- `fontlift-mac list -n -p` or `fontlift-mac list -p -n` lists the paths and internal font names of all installed fonts; each line consists of the path followed by double colon (`::`) followed by the internal font name
 - `l` should be a synonym for `list`
 
 ### Installing fonts
 
-- `fontlift install FILEPATH` or `fontlift install -p FILEPATH` installs on the system the font (or all fonts in case of a .ttc or .otc) from the FILEPATH for the current user
-- `sudo fontlift install --admin FILEPATH` or `sudo fontlift install -a FILEPATH` installs the font at system level (all users in current login session)
+- `fontlift-mac install FILEPATH` or `fontlift-mac install -p FILEPATH` installs on the system the font (or all fonts in case of a .ttc or .otc) from the FILEPATH for the current user
+- `sudo fontlift-mac install --admin FILEPATH` or `sudo fontlift-mac install -a FILEPATH` installs the font at system level (all users in current login session)
 - `i` should be a synonym for `install`
 
 **User-level vs System-level:**
@@ -226,21 +227,21 @@ fontlift list -n -p | grep "Helvetica"
 
 ### Uninstalling fonts while keeping the font files
 
-- `fontlift uninstall FILEPATH` or `fontlift uninstall -p FILEPATH` uninstalls from the system the font (or all fonts in case of a .ttc or .otc) with the FILEPATH (keeps the file, user-level)
-- `fontlift uninstall -n FONTNAME` uninstalls the font with the given internal font name from the system (keeps the file, user-level)
-- `sudo fontlift uninstall --admin FILEPATH` or `sudo fontlift uninstall -a -n FONTNAME` uninstalls at system level (all users, requires sudo)
+- `fontlift-mac uninstall FILEPATH` or `fontlift-mac uninstall -p FILEPATH` uninstalls from the system the font (or all fonts in case of a .ttc or .otc) with the FILEPATH (keeps the file, user-level)
+- `fontlift-mac uninstall -n FONTNAME` uninstalls the font with the given internal font name from the system (keeps the file, user-level)
+- `sudo fontlift-mac uninstall --admin FILEPATH` or `sudo fontlift-mac uninstall -a -n FONTNAME` uninstalls at system level (all users, requires sudo)
 - `u` should be the synonym for `uninstall`
 
 ### Uninstalling fonts and removing the font files
 
-- `fontlift remove FILEPATH` or `fontlift remove -p FILEPATH` uninstalls from the system the font (or all fonts in case of a .ttc or .otc) with the FILEPATH (and removes the file, user-level)
-- `fontlift remove -n FONTNAME` uninstalls the font with the given internal font name from the system (and removes the file, user-level)
-- `sudo fontlift remove --admin FILEPATH` or `sudo fontlift remove -a -n FONTNAME` removes at system level (all users, requires sudo)
+- `fontlift-mac remove FILEPATH` or `fontlift-mac remove -p FILEPATH` uninstalls from the system the font (or all fonts in case of a .ttc or .otc) with the FILEPATH (and removes the file, user-level)
+- `fontlift-mac remove -n FONTNAME` uninstalls the font with the given internal font name from the system (and removes the file, user-level)
+- `sudo fontlift-mac remove --admin FILEPATH` or `sudo fontlift-mac remove -a -n FONTNAME` removes at system level (all users, requires sudo)
 - `rm` should be the synonym for `remove`
 
 ### Exit Codes
 
-`fontlift` follows standard Unix exit code conventions:
+`fontlift-mac` follows standard Unix exit code conventions:
 
 - `0` - Success: Command completed successfully
 - `1` - Failure: Command failed (file not found, permission denied, invalid input, etc.)
@@ -249,14 +250,14 @@ fontlift list -n -p | grep "Helvetica"
 
 ```bash
 # Check if font installed successfully
-if fontlift install /path/to/font.ttf; then
+if fontlift-mac install /path/to/font.ttf; then
     echo "Font installed successfully"
 else
     echo "Failed to install font"
 fi
 
 # Capture exit code
-fontlift list > fonts.txt
+fontlift-mac list > fonts.txt
 EXIT_CODE=$?
 if [ $EXIT_CODE -eq 0 ]; then
     echo "Successfully listed fonts"
@@ -323,11 +324,11 @@ To bypass the hook when needed: `git commit --no-verify`
 **test.sh** - Run all tests
 
 ```bash
-./test.sh                    # Run all 100 tests (52 Swift + 23 Scripts + 25 Integration)
+./test.sh                    # Run all 124 tests (57 Swift + 23 Scripts + 44 Integration)
 ./test.sh --ci               # CI mode (quiet output, no colors)
-./test.sh --swift            # Run only Swift unit tests (52 tests)
+./test.sh --swift            # Run only Swift unit tests (57 tests)
 ./test.sh --scripts          # Run only scripts tests (23 tests)
-./test.sh --integration      # Run only integration tests (25 tests)
+./test.sh --integration      # Run only integration tests (44 tests)
 ./test.sh --swift --ci       # Combine flags: Swift tests in CI mode
 ./test.sh --help             # Show all available options
 ```
@@ -335,15 +336,15 @@ To bypass the hook when needed: `git commit --no-verify`
 **When to use selective test suite execution:**
 - `--swift`: During core logic development, fast iteration (~6s)
 - `--scripts`: When modifying build/test scripts (~20s)
-- `--integration`: After binary changes, end-to-end validation (~7s)
+- `--integration`: After binary changes, end-to-end validation (~10s)
 - Combined: `--swift --integration` for focused testing without scripts
-- Full suite: Default behavior, recommended before commits (~33s)
+- Full suite: Default behavior, recommended before commits (~35s)
 
 **scripts/prepare-release.sh** - Prepare release artifacts
 
 ```bash
 ./scripts/prepare-release.sh
-# Creates dist/fontlift-vX.Y.Z-macos.tar.gz and SHA256 checksum
+# Creates dist/fontlift-mac-vX.Y.Z-macos.tar.gz and SHA256 checksum
 # Requires universal binary (x86_64 + arm64)
 ```
 

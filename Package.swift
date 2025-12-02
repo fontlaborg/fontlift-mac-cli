@@ -8,6 +8,10 @@ let package = Package(
     platforms: [
         .macOS(.v12)  // macOS Monterey or later
     ],
+    products: [
+        // Executable product name defines the installed binary name.
+        .executable(name: "fontlift-mac", targets: ["fontlift"])
+    ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-argument-parser.git", from: "1.5.0")
     ],

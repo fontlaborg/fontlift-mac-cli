@@ -44,8 +44,8 @@ echo "Testing build.sh..."
 run_test "build.sh --help shows help" "./build.sh --help | grep -q 'Usage:'"
 run_test "build.sh --ci builds successfully" "./build.sh --ci"
 run_test "build.sh rejects invalid option" "! ./build.sh --invalid-option 2>&1 | grep -q 'Error:'"
-run_test "build.sh produces binary" "[ -f .build/release/fontlift ]"
-run_test "build.sh binary is executable" "[ -x .build/release/fontlift ]"
+run_test "build.sh produces binary" "[ -f .build/release/fontlift-mac ]"
+run_test "build.sh binary is executable" "[ -x .build/release/fontlift-mac ]"
 echo ""
 
 # Test test.sh
@@ -78,14 +78,14 @@ CODE_VERSION=$(grep "private let version = " Sources/fontlift/fontlift.swift | s
 run_test "get-version.sh matches code" "[ \"$(./scripts/get-version.sh)\" = \"${CODE_VERSION}\" ]"
 echo ""
 
-# Test fontlift binary
-echo "Testing fontlift binary..."
-run_test "fontlift --version works" ".build/release/fontlift --version | grep -q '^[0-9]'"
-run_test "fontlift --help works" ".build/release/fontlift --help | grep -q 'USAGE:'"
-run_test "fontlift list --help works" ".build/release/fontlift list --help | grep -q 'List installed fonts'"
-run_test "fontlift install --help works" ".build/release/fontlift install --help | grep -q 'Install fonts'"
-run_test "fontlift uninstall --help works" ".build/release/fontlift uninstall --help | grep -q 'Uninstall fonts'"
-run_test "fontlift remove --help works" ".build/release/fontlift remove --help | grep -q 'Remove fonts'"
+# Test fontlift-mac binary
+echo "Testing fontlift-mac binary..."
+run_test "fontlift-mac --version works" ".build/release/fontlift-mac --version | grep -q '^[0-9]'"
+run_test "fontlift-mac --help works" ".build/release/fontlift-mac --help | grep -q 'USAGE:'"
+run_test "fontlift-mac list --help works" ".build/release/fontlift-mac list --help | grep -q 'List installed fonts'"
+run_test "fontlift-mac install --help works" ".build/release/fontlift-mac install --help | grep -q 'Install fonts'"
+run_test "fontlift-mac uninstall --help works" ".build/release/fontlift-mac uninstall --help | grep -q 'Uninstall fonts'"
+run_test "fontlift-mac remove --help works" ".build/release/fontlift-mac remove --help | grep -q 'Remove fonts'"
 echo ""
 
 # Print summary

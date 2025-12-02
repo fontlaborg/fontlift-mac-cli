@@ -1,6 +1,6 @@
 #!/bin/bash
 # this_file: build.sh
-# Build fontlift in release mode
+# Build fontlift-mac in release mode
 #
 # Usage: ./build.sh [OPTIONS]
 #
@@ -17,7 +17,7 @@ show_help() {
     cat << EOF
 Usage: $0 [OPTIONS]
 
-Build fontlift in release mode.
+Build fontlift-mac in release mode.
 
 Options:
   --ci          CI mode (minimal output)
@@ -148,9 +148,9 @@ if [ "$UNIVERSAL_BUILD" = true ]; then
         echo "🔗 Phase 3/3: Creating universal binary..."
     fi
 
-    BINARY_X86=".build/x86_64-apple-macosx/release/fontlift"
-    BINARY_ARM=".build/arm64-apple-macosx/release/fontlift"
-    BINARY_UNIVERSAL=".build/release/fontlift"
+    BINARY_X86=".build/x86_64-apple-macosx/release/fontlift-mac"
+    BINARY_ARM=".build/arm64-apple-macosx/release/fontlift-mac"
+    BINARY_UNIVERSAL=".build/release/fontlift-mac"
 
     # Ensure output directory exists
     mkdir -p .build/release
@@ -174,12 +174,12 @@ if [ "$UNIVERSAL_BUILD" = true ]; then
 else
     # Standard build for current architecture
     if [ "$CI_MODE" = false ]; then
-        echo "🔨 Building fontlift (release mode)..."
+        echo "🔨 Building fontlift-mac (release mode)..."
         echo ""
     fi
 
     swift build -c release
-    BINARY_PATH=".build/release/fontlift"
+    BINARY_PATH=".build/release/fontlift-mac"
 fi
 
 if [ "$CI_MODE" = false ]; then
@@ -190,7 +190,7 @@ if [ "$CI_MODE" = false ]; then
         echo "🏗️  Universal binary (supports Intel + Apple Silicon)"
     fi
     echo ""
-    echo "Run with: .build/release/fontlift --help"
+    echo "Run with: .build/release/fontlift-mac --help"
     echo "Install with: ./publish.sh"
 else
     if [ "$UNIVERSAL_BUILD" = true ]; then
