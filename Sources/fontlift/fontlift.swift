@@ -1,5 +1,7 @@
 // this_file: Sources/fontlift/fontlift.swift
 // fontlift-mac - macOS CLI tool for font installation and management
+// UI terminology note: user-facing copy intentionally says "font" for clarity;
+// internal data flows use Fontlift* types per the naming policy.
 
 import ArgumentParser
 import CoreText
