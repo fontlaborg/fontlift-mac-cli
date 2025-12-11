@@ -6,7 +6,7 @@
 #
 # Options:
 #   --ci          CI mode (minimal output)
-#   --universal   Build universal binary (Intel + Apple Silicon)
+#   --release   Build release binary (Intel + Apple Silicon)
 #   --help        Show this help message
 
 set -euo pipefail  # Exit on error, undefined vars, pipe failures
@@ -21,18 +21,18 @@ Build fontlift-mac in release mode.
 
 Options:
   --ci          CI mode (minimal output)
-  --universal   Build universal binary (Intel + Apple Silicon)
+  --release   Build release binary (Intel + Apple Silicon)
   --help        Show this help message
 
 Examples:
   $0                # Build for current architecture
-  $0 --universal    # Build universal binary (both architectures)
+  $0 --release    # Build release binary (both architectures)
   $0 --ci           # Build in CI mode
   CI=true $0        # Build in CI mode (environment variable)
 
 Environment:
   CI                  Set to "true" to enable CI mode
-  UNIVERSAL_BUILD     Set to "true" to build universal binary
+  UNIVERSAL_BUILD     Set to "true" to build release binary
 EOF
 }
 
@@ -53,7 +53,7 @@ for arg in "$@"; do
         --ci)
             CI_MODE=true
             ;;
-        --universal)
+        --release)
             UNIVERSAL_BUILD=true
             ;;
         --help|-h)
@@ -107,9 +107,9 @@ if [ "$CURRENT_MAJOR" -lt "$REQUIRED_MAJOR" ] || \
 fi
 
 if [ "$UNIVERSAL_BUILD" = true ]; then
-    # Build universal binary (Intel + Apple Silicon)
+    # Build release binary (Intel + Apple Silicon)
     if [ "$CI_MODE" = false ]; then
-        echo "🔨 Building universal binary (x86_64 + arm64)..."
+        echo "🔨 Building release binary (x86_64 + arm64)..."
         echo ""
     fi
 
@@ -143,9 +143,9 @@ if [ "$UNIVERSAL_BUILD" = true ]; then
         echo ""
     fi
 
-    # Create universal binary using lipo
+    # Create release binary using lipo
     if [ "$CI_MODE" = false ]; then
-        echo "🔗 Phase 3/3: Creating universal binary..."
+        echo "🔗 Phase 3/3: Creating release binary..."
     fi
 
     BINARY_X86=".build/x86_64-apple-macosx/release/fontlift-mac"
@@ -157,19 +157,19 @@ if [ "$UNIVERSAL_BUILD" = true ]; then
 
     # Combine binaries
     if ! lipo -create "${BINARY_X86}" "${BINARY_ARM}" -output "${BINARY_UNIVERSAL}"; then
-        echo "❌ Error: Failed to create universal binary with lipo"
+        echo "❌ Error: Failed to create release binary with lipo"
         exit 1
     fi
 
     BINARY_PATH="${BINARY_UNIVERSAL}"
 
     if [ "$CI_MODE" = false ]; then
-        echo "   ✅ Universal binary created"
+        echo "   ✅ release binary created"
         echo ""
         echo "Architectures in binary:"
         lipo -info "${BINARY_PATH}"
     else
-        echo "Universal binary created: x86_64 + arm64"
+        echo "release binary created: x86_64 + arm64"
     fi
 else
     # Standard build for current architecture
@@ -187,14 +187,14 @@ if [ "$CI_MODE" = false ]; then
     echo "✅ Build complete!"
     echo "📦 Binary location: ${BINARY_PATH}"
     if [ "$UNIVERSAL_BUILD" = true ]; then
-        echo "🏗️  Universal binary (supports Intel + Apple Silicon)"
+        echo "🏗️  release binary (supports Intel + Apple Silicon)"
     fi
     echo ""
     echo "Run with: .build/release/fontlift-mac --help"
     echo "Install with: ./publish.sh"
 else
     if [ "$UNIVERSAL_BUILD" = true ]; then
-        echo "✅ Build complete (universal): ${BINARY_PATH}"
+        echo "✅ Build complete (release): ${BINARY_PATH}"
     else
         echo "✅ Build complete: ${BINARY_PATH}"
     fi
