@@ -10,12 +10,6 @@ Project Structure:
 │   ├── 📄 PULL_REQUEST_TEMPLATE.md
 │   └── 📄 RELEASING.md
 ├── 📁 issues
-│   ├── 📄 101.md
-│   ├── 📄 102.md
-│   ├── 📄 103.md
-│   ├── 📄 104.md
-│   ├── 📄 201.md
-│   └── 📄 999.md
 ├── 📁 scripts
 │   ├── 📄 get-version.sh
 │   ├── 📄 prepare-release.sh
@@ -47,10 +41,8 @@ Project Structure:
 └── 📄 TODO.md
 
 
-<documents>
-<document index="1">
-<source>.github/ISSUE_TEMPLATE/bug_report.md</source>
-<document_content>
+## .github/ISSUE_TEMPLATE/bug_report.md
+````markdown
 ---
 name: Bug Report
 about: Report a bug or unexpected behavior
@@ -85,12 +77,10 @@ What actually happened.
 
 ## Additional Context
 Any other information about the problem.
-</document_content>
-</document>
+````
 
-<document index="2">
-<source>.github/ISSUE_TEMPLATE/feature_request.md</source>
-<document_content>
+## .github/ISSUE_TEMPLATE/feature_request.md
+```markdown
 ---
 name: Feature Request
 about: Suggest a new feature or enhancement
@@ -118,12 +108,10 @@ Any other information about the feature request.
 Please confirm this aligns with fontlift's core scope:
 - [ ] This feature relates to installing, uninstalling, listing, or removing fonts
 - [ ] This is not a major new feature outside core functionality
-</document_content>
-</document>
+```
 
-<document index="3">
-<source>.github/PULL_REQUEST_TEMPLATE.md</source>
-<document_content>
+## .github/PULL_REQUEST_TEMPLATE.md
+```markdown
 ## Description
 Brief description of what this PR does.
 
@@ -155,12 +143,10 @@ Closes #(issue number)
 
 ## Additional Notes
 Any other information reviewers should know.
-</document_content>
-</document>
+```
 
-<document index="4">
-<source>.github/RELEASING.md</source>
-<document_content>
+## .github/RELEASING.md
+````markdown
 # Release Process
 
 <!-- this_file: .github/RELEASING.md -->
@@ -416,12 +402,10 @@ If you encounter issues not covered here:
 ---
 
 Last updated: 2025-11-03 (v2.0.0 release process)
-</document_content>
-</document>
+````
 
-<document index="5">
-<source>.github/workflows/ci.yml</source>
-<document_content>
+## .github/workflows/ci.yml
+```yaml
 # this_file: .github/workflows/ci.yml
 # Continuous Integration workflow for fontlift
 # Runs on every push to main and on all pull requests
@@ -482,12 +466,10 @@ jobs:
         run: |
           .build/release/fontlift --version
           .build/release/fontlift --help
-</document_content>
-</document>
+```
 
-<document index="6">
-<source>.github/workflows/release.yml</source>
-<document_content>
+## .github/workflows/release.yml
+```yaml
 # this_file: .github/workflows/release.yml
 # Continuous Deployment workflow for fontlift
 # Runs when version tags (vX.Y.Z) are pushed
@@ -592,12 +574,10 @@ jobs:
           prerelease: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-</document_content>
-</document>
+```
 
-<document index="7">
-<source>.gitignore</source>
-<document_content>
+## .gitignore
+```
 # Xcode
 #
 # gitignore contributors: remember to update Global/Xcode.gitignore, Objective-C.gitignore & Swift.gitignore
@@ -722,12 +702,10 @@ DerivedData/
 !default.mode2v3
 *.perspectivev3
 !default.perspectivev3
-</document_content>
-</document>
+```
 
-<document index="8">
-<source>CLAUDE.md</source>
-<document_content>
+## CLAUDE.md
+````markdown
 # Development Guidelines
 
 ## Quick-Start Checklist
@@ -1180,12 +1158,10 @@ When writing documentation or commentary:
 ## Gemini Added Memories
 - I must always ask for confirmation before running any command that deletes files. The user must explicitly approve the deletion. I should explain what the command does and which files will be deleted.
 All files, usage notes, GUIs, CLI helps, documentation etc. should carry a mention `made by FontLab https://www.fontlab.com/` where it makes sense.
-</document_content>
-</document>
+````
 
-<document index="9">
-<source>DEPENDENCIES.md</source>
-<document_content>
+## DEPENDENCIES.md
+````markdown
 # DEPENDENCIES.md
 <!-- this_file: DEPENDENCIES.md -->
 
@@ -1253,12 +1229,10 @@ swift package update
 ```
 
 Review release notes before updating major versions.
-</document_content>
-</document>
+````
 
-<document index="10">
-<source>LICENSE</source>
-<document_content>
+## LICENSE
+```
                                  Apache License
                            Version 2.0, January 2004
                         http://www.apache.org/licenses/
@@ -1460,12 +1434,10 @@ Review release notes before updating major versions.
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-</document_content>
-</document>
+```
 
-<document index="11">
-<source>PLAN.md</source>
-<document_content>
+## PLAN.md
+```markdown
 # PLAN.md
 <!-- this_file: PLAN.md -->
 
@@ -1474,12 +1446,10 @@ Review release notes before updating major versions.
 **fontlift-mac-cli** - Simple macOS CLI tool for font management
 
 **One-sentence scope**: Install, uninstall, list, and remove fonts on macOS via CLI.
-</document_content>
-</document>
+```
 
-<document index="12">
-<source>PRINCIPLES.md</source>
-<document_content>
+## PRINCIPLES.md
+```markdown
 # PRINCIPLES.md
 
 ## Core Principles for fontlift-mac-cli
@@ -1523,12 +1493,10 @@ Review release notes before updating major versions.
 - Respect user vs system font scope.
 - Follow macOS conventions for CLI tools.
 - Handle permissions gracefully.
-</document_content>
-</document>
+```
 
-<document index="13">
-<source>Package.resolved</source>
-<document_content>
+## Package.resolved
+```
 {
   "originHash" : "adbc4b168c1b1f7891530ddb1504296e6706970bfa32755e19a90e2f2660f22a",
   "pins" : [
@@ -1544,12 +1512,10 @@ Review release notes before updating major versions.
   ],
   "version" : 3
 }
-</document_content>
-</document>
+```
 
-<document index="14">
-<source>Package.swift</source>
-<document_content>
+## Package.swift
+```swift
 // swift-tools-version: 5.9
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
@@ -1580,12 +1546,10 @@ let package = Package(
         )
     ]
 )
-</document_content>
-</document>
+```
 
-<document index="15">
-<source>README.md</source>
-<document_content>
+## README.md
+````markdown
 # fontlift-mac-cli
 
 [![CI](https://github.com/fontlaborg/fontlift-mac-cli/workflows/CI/badge.svg)](https://github.com/fontlaborg/fontlift-mac-cli/actions)
@@ -1968,12 +1932,10 @@ View build status: [GitHub Actions](https://github.com/fontlaborg/fontlift-mac-c
 - made by FontLab https://www.fontlab.com/
 - Licensed under Apache 2.0
 - Repo: https://github.com/fontlaborg/fontlift-mac-cli
-</document_content>
-</document>
+````
 
-<document index="16">
-<source>Sources/fontlift/fontlift.swift</source>
-<document_content>
+## Sources/fontlift/fontlift.swift
+````swift
 // this_file: Sources/fontlift/fontlift.swift
 // fontlift-mac - macOS CLI tool for font installation and management
 // UI terminology note: user-facing copy intentionally says "font" for clarity;
@@ -3365,20 +3327,16 @@ extension Fontlift {
         }
     }
 }
-</document_content>
-</document>
+````
 
-<document index="17">
-<source>TODO.md</source>
-<document_content>
+## TODO.md
+```markdown
 # TODO.md
 <!-- this_file: TODO.md -->
-</document_content>
-</document>
+```
 
-<document index="18">
-<source>Tests/fontliftTests/CLIErrorTests.swift</source>
-<document_content>
+## Tests/fontliftTests/CLIErrorTests.swift
+```swift
 // this_file: Tests/fontliftTests/CLIErrorTests.swift
 // CLI error handling and command validation tests
 
@@ -3727,12 +3685,10 @@ final class CLIErrorTests: XCTestCase {
                      "Should accept --admin flag")
     }
 }
-</document_content>
-</document>
+```
 
-<document index="19">
-<source>Tests/fontliftTests/HelperFunctionTests.swift</source>
-<document_content>
+## Tests/fontliftTests/HelperFunctionTests.swift
+```swift
 // this_file: Tests/fontliftTests/HelperFunctionTests.swift
 // Unit tests for helper functions
 
@@ -3910,12 +3866,10 @@ final class HelperFunctionTests: XCTestCase {
         )
     }
 }
-</document_content>
-</document>
+```
 
-<document index="20">
-<source>Tests/fontliftTests/ProjectValidationTests.swift</source>
-<document_content>
+## Tests/fontliftTests/ProjectValidationTests.swift
+```swift
 // this_file: Tests/fontliftTests/ProjectValidationTests.swift
 // Basic project validation tests
 
@@ -3996,12 +3950,10 @@ final class ProjectValidationTests: XCTestCase {
         )
     }
 }
-</document_content>
-</document>
+```
 
-<document index="21">
-<source>Tests/fontliftTests/UnregisterFontTests.swift</source>
-<document_content>
+## Tests/fontliftTests/UnregisterFontTests.swift
+```swift
 // this_file: Tests/fontliftTests/UnregisterFontTests.swift
 // Tests for unregisterFont scope handling
 
@@ -4042,12 +3994,10 @@ final class UnregisterFontTests: XCTestCase {
         }
     }
 }
-</document_content>
-</document>
+```
 
-<document index="22">
-<source>Tests/integration_test.sh</source>
-<document_content>
+## Tests/integration_test.sh
+```bash
 #!/bin/bash
 # this_file: Tests/integration_test.sh
 # Integration smoke tests for fontlift-mac binary
@@ -4291,12 +4241,10 @@ else
     echo -e "${GREEN}✅ All integration tests passed!${NC}"
     exit 0
 fi
-</document_content>
-</document>
+```
 
-<document index="23">
-<source>Tests/scripts_test.sh</source>
-<document_content>
+## Tests/scripts_test.sh
+```bash
 #!/bin/bash
 # this_file: Tests/scripts_test.sh
 # Test suite for all bash scripts in the project
@@ -4401,12 +4349,10 @@ else
     echo -e "${GREEN}✅ All scripts tests passed!${NC}"
     exit 0
 fi
-</document_content>
-</document>
+```
 
-<document index="24">
-<source>build.sh</source>
-<document_content>
+## build.sh
+```bash
 #!/bin/bash
 # this_file: build.sh
 # Build fontlift-mac in release mode
@@ -4415,7 +4361,7 @@ fi
 #
 # Options:
 #   --ci          CI mode (minimal output)
-#   --universal   Build universal binary (Intel + Apple Silicon)
+#   --release   Build release binary (Intel + Apple Silicon)
 #   --help        Show this help message
 
 set -euo pipefail  # Exit on error, undefined vars, pipe failures
@@ -4430,18 +4376,18 @@ Build fontlift-mac in release mode.
 
 Options:
   --ci          CI mode (minimal output)
-  --universal   Build universal binary (Intel + Apple Silicon)
+  --release   Build release binary (Intel + Apple Silicon)
   --help        Show this help message
 
 Examples:
   $0                # Build for current architecture
-  $0 --universal    # Build universal binary (both architectures)
+  $0 --release    # Build release binary (both architectures)
   $0 --ci           # Build in CI mode
   CI=true $0        # Build in CI mode (environment variable)
 
 Environment:
   CI                  Set to "true" to enable CI mode
-  UNIVERSAL_BUILD     Set to "true" to build universal binary
+  UNIVERSAL_BUILD     Set to "true" to build release binary
 EOF
 }
 
@@ -4462,7 +4408,7 @@ for arg in "$@"; do
         --ci)
             CI_MODE=true
             ;;
-        --universal)
+        --release)
             UNIVERSAL_BUILD=true
             ;;
         --help|-h)
@@ -4516,9 +4462,9 @@ if [ "$CURRENT_MAJOR" -lt "$REQUIRED_MAJOR" ] || \
 fi
 
 if [ "$UNIVERSAL_BUILD" = true ]; then
-    # Build universal binary (Intel + Apple Silicon)
+    # Build release binary (Intel + Apple Silicon)
     if [ "$CI_MODE" = false ]; then
-        echo "🔨 Building universal binary (x86_64 + arm64)..."
+        echo "🔨 Building release binary (x86_64 + arm64)..."
         echo ""
     fi
 
@@ -4552,9 +4498,9 @@ if [ "$UNIVERSAL_BUILD" = true ]; then
         echo ""
     fi
 
-    # Create universal binary using lipo
+    # Create release binary using lipo
     if [ "$CI_MODE" = false ]; then
-        echo "🔗 Phase 3/3: Creating universal binary..."
+        echo "🔗 Phase 3/3: Creating release binary..."
     fi
 
     BINARY_X86=".build/x86_64-apple-macosx/release/fontlift-mac"
@@ -4566,19 +4512,19 @@ if [ "$UNIVERSAL_BUILD" = true ]; then
 
     # Combine binaries
     if ! lipo -create "${BINARY_X86}" "${BINARY_ARM}" -output "${BINARY_UNIVERSAL}"; then
-        echo "❌ Error: Failed to create universal binary with lipo"
+        echo "❌ Error: Failed to create release binary with lipo"
         exit 1
     fi
 
     BINARY_PATH="${BINARY_UNIVERSAL}"
 
     if [ "$CI_MODE" = false ]; then
-        echo "   ✅ Universal binary created"
+        echo "   ✅ release binary created"
         echo ""
         echo "Architectures in binary:"
         lipo -info "${BINARY_PATH}"
     else
-        echo "Universal binary created: x86_64 + arm64"
+        echo "release binary created: x86_64 + arm64"
     fi
 else
     # Standard build for current architecture
@@ -4596,997 +4542,22 @@ if [ "$CI_MODE" = false ]; then
     echo "✅ Build complete!"
     echo "📦 Binary location: ${BINARY_PATH}"
     if [ "$UNIVERSAL_BUILD" = true ]; then
-        echo "🏗️  Universal binary (supports Intel + Apple Silicon)"
+        echo "🏗️  release binary (supports Intel + Apple Silicon)"
     fi
     echo ""
     echo "Run with: .build/release/fontlift-mac --help"
     echo "Install with: ./publish.sh"
 else
     if [ "$UNIVERSAL_BUILD" = true ]; then
-        echo "✅ Build complete (universal): ${BINARY_PATH}"
+        echo "✅ Build complete (release): ${BINARY_PATH}"
     else
         echo "✅ Build complete: ${BINARY_PATH}"
     fi
 fi
-</document_content>
-</document>
-
-<document index="25">
-<source>issues/101.md</source>
-<document_content>
-Analyze the entire codebase. Then /plan the tasks: (1) implement semantic versioning of the code based on git tags (`vX.Y.Z`), (2) ensure that we have Github Actions which utilize appropriately adapted `./build.sh` and `./publish.sh`. Those build and publish scripts must work in both local environment and on Github Actions, and must support the semver (3) ensure that we have Github Actions which, upon giving a new semver tag (`vX.Y.Z`) produces proper binary distributables and cuts a Github Release with the appropriate artefacts. Once you have planned these tasks in detail and specificity into @PLAN.md , also adjust @TODO.md and then /work on implementing everything. /test regularly and iterate until the implementation is solid and perfect. Make sure to test the Github Actions deployments as well! 
-</document_content>
-</document>
-
-<document index="26">
-<source>issues/102.md</source>
-<document_content>
-```
-~/Developer/vcs/github.fontlaborg/fontlift-mac-cli
-[00:06:31] $ ./build.sh
-🔨 Building fontlift (release mode)...
-
-[1/1] Planning build
-Building for production...
-[7/7] Compiling fontlift fontlift.swift
-Build complete! (20.69s)
-
-✅ Build complete!
-📦 Binary location: .build/release/fontlift
-
-Run with: .build/release/fontlift --help
-Install with: ./publish.sh
-~/Developer/vcs/github.fontlaborg/fontlift-mac-cli
-[00:06:56] $ ./publish.sh
-📦 Publishing fontlift to /usr/local/bin...
-
-Installing fontlift to /usr/local/bin...
-✅ Installed without sudo
-
-✅ Installation successful!
-Version: 0.1.0
-
-Usage: fontlift --help
-~/Developer/vcs/github.fontlaborg/fontlift-mac-cli
-[00:07:03] $ fontlift l
-Listing font paths...
-(Font listing not yet implemented)
 ```
 
-TASK: ACTUALLY IMPLEMENT ALL CORE "font management" FUNCTIONALITY (list, install, uninstall, remove), and verify it is correctly implemented and integrated. 
-</document_content>
-</document>
-
-<document index="27">
-<source>issues/103.md</source>
-<document_content>
-TASK: ACTUALLY IMPLEMENT ALL CORE "font management" FUNCTIONALITY (list, install, uninstall, remove), and verify it is correctly implemented and integrated. Be very careful and ultrathink and verify and test and iterate until the implementation is perfect. Gittag the next release, push to remote, verify how Github Actions worked, verify the published release, and iterate improvements.  
-</document_content>
-</document>
-
-<document index="28">
-<source>issues/104.md</source>
-<document_content>
-test the build & publish GH actions via `gh run`, analyze the logs, fix, iterate, keep updating @WORK.md @TODO.md @PLAN.md @CHANGELOG.md 
-</document_content>
-</document>
-
-<document index="29">
-<source>issues/201.md</source>
-<document_content>
-# PLAN.md
-
-## Project Plan: Feature Implementation (Auto-Uninstall & Cleanup)
-
-**Current Version** : 2.0.0 [doc18] **Target Version** : 2.1.0
-
-This document details the technical specification, API research, and
-implementation plan for two new features requested by the user:
-
-  1. **`install` Command Enhancement**: Automatically uninstall conflicting fonts upon installation.
-
-  2. **`cleanup` Command**: A new subcommand to prune missing font registrations and clear system font caches.
-
-All development will strictly adhere to the project's `PRINCIPLES.md` , with a
-non-negotiable emphasis on "Safety by default," "Testing rigor," and "macOS
-native approach."  
-
-* * *
-
-## Part 1: `install` Command Enhancement (Auto-Uninstall)
-
-### 1.1 Critical Design Decision: Matching Logic (Family Name vs. PostScript
-Name)
-
-The user query specifies auto-uninstalling an "older font with the same family
-name." This directive, if implemented literally, presents a significant risk
-of data loss and violates the "Safety by default" principle [doc14].
-
-  * **Analysis of Font Identifiers:**
-
-    * **Family Name:** (e.g., "Inter") This name is shared by _multiple_ font files (e.g., `Inter-Regular.ttf`, `Inter-Bold.ttf`, `Inter-Italic.ttf`).
-
-    * **PostScript Name:** (e.g., "Inter-Bold") This name is the unique, internal identifier for a _single_ font style and is the correct name to use when requesting a font programmatically. The existing `getFontName(from: URL)` helper in `fontlift.swift` already retrieves this [doc18].  
-
-  * **Failure Scenario (Literal Interpretation):**
-
-    1. A user has `Inter-Regular.ttf` and `Inter-Italic.ttf` installed (both in the "Inter" family).
-
-    2. The user runs `fontlift install /path/to/Inter-Bold.ttf` (also in the "Inter" family).
-
-    3. A literal "family name match" would find and auto-uninstall `Inter-Regular.ttf` and `Inter-Italic.ttf`.
-
-    4. **Result:** The user's font family is destroyed, leaving them with only the Bold weight. This is an unacceptable outcome.
-
-  * **Interpreting Probable Intent (Safe Implementation):** The user's probable intent is to _upgrade_ a specific font style (e.g., replace `Inter-Bold-v1.ttf` with `Inter-Bold-v2.ttf`). Both of these files share the same **PostScript Name** ("Inter-Bold").
-
-**Decision:** The implementation will **not** use the Family Name for
-matching. It will use the **PostScript Name** as the key for auto-uninstall.
-This achieves the desired upgrade workflow without data loss, fully adhering
-to project principles.  
-
-### 1.2 Prerequisite: `getFontFamilyName` Helper
-
-While the Family Name will not be used for matching, it is valuable for
-logging (e.g., "Installing 'Inter-Bold' (Family: 'Inter')"). The
-`fontlift.swift` source [doc18] currently lacks a function to retrieve this.
-
-**Action:** A new helper function, `getFontFamilyName(from url: URL) ->
-String?`, will be added to `fontlift.swift` [doc18].
-
-**Implementation:** This implementation is based on research indicating
-`kCTFontFamilyNameAttribute` is the correct key to use with
-`CTFontDescriptorCopyAttribute`.  
-
-Swift
-
-    
-    
-    // Add to "Font Management Helpers" section in fontlift.swift [doc18]
-    
-    /// Get the font family name (e.g., "Helvetica Neue") from a URL
-    ///
-    /// Extracts the human-readable family name using Core Text APIs.
-    /// This is distinct from the PostScript name (e.g., "HelveticaNeue-Bold").
-    ///
-    /// - Parameter url: File URL pointing to a font file.
-    /// - Returns: Family name string if successful; `nil` otherwise.
-    func getFontFamilyName(from url: URL) -> String? {
-        guard let descriptors = CTFontManagerCreateFontDescriptorsFromURL(url as CFURL) as?,
-              let descriptor = descriptors.first else {
-            return nil // Failed to get descriptors
-        }
-    
-        // Use CTFontDescriptorCopyAttribute with kCTFontFamilyNameAttribute
-        // as per research 
-        return CTFontDescriptorCopyAttribute(descriptor, kCTFontFamilyNameAttribute) as? String
-    }
-    
-
-**Testing:** New unit tests will be added to
-`Tests/fontliftTests/HelperFunctionTests.swift` [doc21].
-
-Swift
-
-    
-    
-    // Add to HelperFunctionTests.swift [doc21]
-    func testGetFontFamilyName() throws {
-        // Use a known system font for a stable test
-        let helveticaURL = URL(fileURLWithPath: "/System/Library/Fonts/Helvetica.ttc")
-        let familyName = getFontFamilyName(from: helveticaURL)
-        XCTAssertEqual(familyName, "Helvetica", "Should extract correct family name")
-    }
-    
-
-### 1.3 Code Refactoring: Reusable `unregisterFont` Function
-
-Currently, the unregistration logic is duplicated and embedded within
-`Uninstall.run()` and `Remove.run()` [doc18]. To allow `Install.run()` to call
-this logic, it must be refactored into a reusable internal helper function.
-
-**Action:** Create a new `private func unregisterFont(at url: URL, admin:
-Bool) throws` function in `fontlift.swift` [doc18]. This function will
-consolidate all unregistration logic and safety checks.
-
-**Implementation:**
-
-Swift
-
-    
-    
-    // Add near the Uninstall/Remove structs in fontlift.swift [doc18]
-    
-    /// Unregisters a font from the system at the specified scope.
-    /// Includes all safety checks from `isSystemFontPath`.
-    /// - Parameter url: The file URL of the font to unregister.
-    /// - Parameter admin: `true` for.session scope (system), `false` for.user scope.
-    /// - Throws: `ExitCode.failure` if unregistration fails or is blocked.
-    private func unregisterFont(at url: URL, admin: Bool, silent: Bool = false) throws {
-        // Safety Check: Adhere to PRINCIPLES.md 
-        // Use existing helper `isSystemFontPath` [doc18]
-        if isSystemFontPath(url) {
-            if!silent {
-                print("❌ Error: Cannot unregister protected system font.")
-                print("   Path: \(url.path)")
-                print("   Operations on /System/Library/Fonts/ and /Library/Fonts/ are blocked for safety.")
-            }
-            throw ExitCode.failure
-        }
-    
-        let scope: CTFontManagerScope = admin?.session :.user
-        let scopeDesc = admin? "system-level" : "user-level"
-        
-        var error: Unmanaged<CFError>?
-        let success = CTFontManagerUnregisterFontsForURL(url as CFURL, scope, &error)
-    
-        if success {
-            if!silent {
-                if let fontName = getFontName(from: url)?? getFullFontName(from: url) {
-                    print("✅ Successfully unregistered '\(fontName)' (Scope: \(scopeDesc))")
-                } else {
-                    print("✅ Successfully unregistered font at \(url.path) (Scope: \(scopeDesc))")
-                }
-            }
-        } else {
-            if!silent {
-                if let error = error?.takeRetainedValue() {
-                    let errorDesc = CFErrorCopyDescription(error) as String
-                    print("❌ Error unregistering font: \(errorDesc)")
-                } else {
-                    print("❌ Error: Failed to unregister font.")
-                }
-                print("   File: \(url.path)")
-            }
-            throw ExitCode.failure
-        }
-    }
-    
-    //...
-    // Refactor Uninstall.run() [doc18] to use this new function:
-    struct Uninstall: ParsableCommand {
-        //... (Arguments)...
-        func run() throws {
-            //... (Logic to find fontURL from name or path)...
-            let urlToUninstall =... // The URL derived from name/path logic
-            
-            // Call the new helper
-            try unregisterFont(at: urlToUninstall, admin: admin)
-        }
-    }
-    
-    // Refactor Remove.run() [doc18] to use it:
-    struct Remove: ParsableCommand {
-        //... (Arguments)...
-        private func removeFont(at url: URL) throws {
-            //... (Safety checks, scope logic)...
-            
-            let fontName = getFontName(from: url)?? getFullFontName(from: url)
-    
-            // First, attempt to unregister (silently, as Remove will report final status)
-            do {
-                try unregisterFont(at: url, admin: admin, silent: true)
-            } catch {
-                print("⚠️ Warning: Font unregistration failed, but proceeding with file deletion.")
-                // We still try to delete the file, so we catch and continue
-            }
-    
-            //... (Rest of file deletion logic from doc18)...
-        }
-    }
-    
-
-### 1.4 `Install.run()` Logic Modification
-
-The `Install.run()` function [doc18] will be modified to include the detection
-and unregistration loop _before_ the final registration call.
-
-**Implementation:**
-
-Swift
-
-    
-    
-    // Modify Install.run() in fontlift.swift [doc18]
-    
-    struct Install: ParsableCommand {
-        //... (Arguments)...
-        func run() throws {
-            // 1. Validation (existing)
-            guard validateFilePath(fontPath) else {
-                throw ExitCode.failure
-            }
-    
-            let newFontURL = URL(fileURLWithPath: fontPath)
-            let scope: CTFontManagerScope = admin?.session :.user
-            let scopeDesc = admin? "system-level (all users)" : "user-level"
-    
-            // 2. Get new font's identifiers for matching and logging
-            guard let newPostScriptName = getFontName(from: newFontURL) else {
-                print("❌ Error: Could not read PostScript name from font: \(fontPath)")
-                print("   The file may be invalid or corrupted.")
-                throw ExitCode.failure
-            }
-            // Use new helper 
-            let newFamilyName = getFontFamilyName(from: newFontURL) 
-    
-            print("Installing font: '\(newPostScriptName)' (Family: \(newFamilyName?? "Unknown"))")
-            print("Scope: \(scopeDesc)")
-    
-            // 3. Auto-Uninstall Loop (NEW LOGIC)
-            print("Checking for existing versions...")
-            let allFontURLs = CTFontManagerCopyAvailableFontURLs() as???
-            for oldFontURL in allFontURLs {
-                // Skip self
-                if oldFontURL.path == newFontURL.path {
-                    continue
-                }
-                
-                if let oldPostScriptName = getFontName(from: oldFontURL), oldPostScriptName == newPostScriptName {
-                    print("Found existing font with same PostScript name: \(oldFontURL.path)")
-                    
-                    // CRITICAL SAFETY CHECK: Use isSystemFontPath [doc18]
-                    if isSystemFontPath(oldFontURL) {
-                        print("❌ Error: A font with this name is a protected system font.")
-                        print("   Path: \(oldFontURL.path)")
-                        print("   Installation aborted to prevent system instability.")
-                        print("   This tool cannot replace protected system fonts.")
-                        throw ExitCode.failure // Adheres to 
-                    }
-    
-                    print("Auto-uninstalling older version...")
-                    do {
-                        // Use the new refactored helper, passing admin flag
-                        try unregisterFont(at: oldFontURL, admin: admin)
-                    } catch {
-                        print("⚠️ Warning: Failed to auto-uninstall older version. Installation will proceed, but duplicates may exist.")
-                        // Do not throw; proceed to install the new font.
-                    }
-                }
-            }
-    
-            // 4. Register New Font (existing logic)
-            print("Registering new version...")
-            var error: Unmanaged<CFError>?
-            let success = CTFontManagerRegisterFontsForURL(newFontURL as CFURL, scope, &error)
-    
-            if success {
-                print("✅ Successfully installed: \(newPostScriptName)")
-            } else {
-                //... (Existing error handling from doc18)...
-                if let error = error?.takeRetainedValue() {
-                    //...
-                    print("❌ Error installing font...")
-                    throw ExitCode.failure
-                }
-            }
-        }
-    }
-    
-
-### 1.5 Testing Strategy (Feature 1)
-
-This feature's testing is critical. A new test suite will be added to
-`Tests/integration_test.sh` [doc23]. This requires adding a `testdata/`
-directory to the project, containing two font files with different filenames
-but _identical PostScript names_.
-
-**Assumed Test Files:**
-
-  * `testdata/TestFont-v1.ttf` (PostScript Name: "TestFont-Regular")
-
-  * `testdata/TestFont-v2.ttf` (PostScript Name: "TestFont-Regular")
-
-  * `testdata/FakeHelvetica.ttf` (PostScript Name: "Helvetica")
-
-**Implementation:**
-
-Bash
-
-    
-    
-    # Add to Tests/integration_test.sh [doc23]
-    
-    echo ""
-    echo "Testing auto-uninstall (install) command..."
-    
-    # Setup: Ensure testdata exists
-    if [! -d "testdata" ]; then
-        echo -e "${RED}❌ Test data directory not found. Skipping auto-uninstall tests.${NC}"
-        exit 1
-    fi
-    
-    cp testdata/TestFont-v1.ttf /tmp/fontlift-test-v1.ttf
-    cp testdata/TestFont-v2.ttf /tmp/fontlift-test-v2.ttf
-    
-    # Cleanup function
-    cleanup_test_fonts() {
-        $BINARY uninstall /tmp/fontlift-test-v1.ttf 2>/dev/null |
-    
-    | true
-        $BINARY uninstall /tmp/fontlift-test-v2.ttf 2>/dev/null |
-    
-    | true
-        rm -f /tmp/fontlift-test-v1.ttf
-        rm -f /tmp/fontlift-test-v2.ttf
-        rm -f /tmp/fake-helvetica.ttf
-    }
-    trap cleanup_test_fonts EXIT
-    
-    # Test 1: Auto-uninstall workflow
-    run_test "Install v1 font" "$BINARY install /tmp/fontlift-test-v1.ttf"
-    run_test "Verify v1 is installed" "$BINARY list -p | grep -q '/tmp/fontlift-test-v1.ttf'"
-    
-    # Now, install v2. This should trigger auto-uninstall of v1.
-    run_test "Install v2 (should auto-uninstall v1)" "$BINARY install /tmp/fontlift-test-v2.ttf 2>&1 | grep -q 'Auto-uninstalling older version'"
-    
-    # Verify v2 is installed AND v1 is gone
-    run_test "Verify v2 is installed" "$BINARY list -p | grep -q '/tmp/fontlift-test-v2.ttf'"
-    run_test "Verify v1 is auto-uninstalled" "! $BINARY list -p | grep -q '/tmp/fontlift-test-v1.ttf'"
-    
-    # Test 2: System font safety block
-    cp testdata/FakeHelvetica.ttf /tmp/fake-helvetica.ttf
-    run_test "Install fails on system font collision" "! $BINARY install /tmp/fake-helvetica.ttf 2>&1 | grep -q 'protected system font'"
-    
-    echo ""
-    
-
-* * *
-
-## Part 2: New `cleanup` Command ("c")
-
-This new command will provide two functions: pruning missing font
-registrations and clearing user font caches.
-
-### 2.1 Argument Parser Definition (`fontlift.swift`)
-
-**Action:** Add `Cleanup.self` to the `subcommands` array in the `@main
-Fontlift` struct [doc18] and define the new command struct.
-
-**Implementation:**
-
-Swift
-
-    
-    
-    // Add to subcommands array in Fontlift struct [doc18]
-    static let configuration = CommandConfiguration(
-        //...
-        subcommands:
-    )
-    
-    //...
-    
-    // Add this new struct at the end of the file
-    extension Fontlift {
-        /// Prune missing font registrations and clear font caches
-        struct Cleanup: ParsableCommand {
-            static let configuration = CommandConfiguration(
-                commandName: "cleanup",
-                abstract: "Prune missing fonts and clear font caches",
-                aliases: ["c"]
-            )
-    
-            @Flag(help: "Only prune missing font file registrations.")
-            var pruneOnly = false
-    
-            @Flag(help: "Only clear user font caches.")
-            var cacheOnly = false
-    
-            func run() throws {
-                // By default, run both. If one flag is specified, run only that.
-                // If both are specified, run both.
-                let runBoth = (pruneOnly == false && cacheOnly == false) |
-    
-    | (pruneOnly == true && cacheOnly == true)
-                let doPrune = runBoth |
-    
-    | pruneOnly
-                let doCache = runBoth |
-    
-    | cacheOnly
-                
-                var hadErrors = false
-    
-                if doPrune {
-                    print("--- Pruning Missing Fonts ---")
-                    do {
-                        try pruneMissingFonts()
-                    } catch {
-                        hadErrors = true
-                        print("❌ Pruning failed.")
-                    }
-                    print("")
-                }
-    
-                if doCache {
-                    print("--- Clearing Font Caches ---")
-                    do {
-                        try clearFontCaches()
-                    } catch {
-                        hadErrors = true
-                        print("❌ Cache clearing failed.")
-                    }
-                    print("")
-                }
-                
-                print("✅ Cleanup complete.")
-                if hadErrors {
-                    throw ExitCode.failure
-                }
-            }
-        }
-    }
-    
-
-### 2.2 Prerequisite: Shell Execution Helper
-
-The cache clearing feature requires running `atsutil`. A simple, reusable
-shell utility will be added to `fontlift.swift` [doc18].
-
-**Action:** Add `shell(_:)` helper function to `fontlift.swift` [doc18].
-
-**Implementation:**
-
-Swift
-
-    
-    
-    // Add to "Font Management Helpers" section in fontlift.swift [doc18]
-    
-    /// Runs a shell command and returns its output and status.
-    /// - Parameter command: The shell command to execute.
-    /// - Returns: A tuple containing (combined stdout/stderr string, exit status int32).
-    func shell(_ command: String) -> (String?, Int32) {
-        let task = Process()
-        let outPipe = Pipe()
-        let errPipe = Pipe()
-    
-        task.standardOutput = outPipe
-        task.standardError = errPipe
-        task.arguments = ["-c", command]
-        task.launchPath = "/bin/zsh" // Use zsh, the modern default
-        
-        do {
-            try task.run()
-        } catch {
-            return ("Failed to launch command: \(error.localizedDescription)", -1)
-        }
-        
-        let outData = outPipe.fileHandleForReading.readDataToEndOfFile()
-        let errData = errPipe.fileHandleForReading.readDataToEndOfFile()
-        task.waitUntilExit()
-        
-        let output = (String(data: outData, encoding:.utf8)?.trimmingCharacters(in:.whitespacesAndNewlines))?? ""
-        let error = (String(data: errData, encoding:.utf8)?.trimmingCharacters(in:.whitespacesAndNewlines))?? ""
-    
-        // Combine stdout and stderr for a single output string
-        let combinedOutput = [output, error].filter {!$0.isEmpty }.joined(separator: "\n")
-        
-        return (combinedOutput.isEmpty? nil : combinedOutput, task.terminationStatus)
-    }
-    
-
-### 2.3 `cleanup` Command Logic Implementation
-
-**Action:** Add the `pruneMissingFonts()` and `clearFontCaches()` functions to
-`fontlift.swift` [doc18] to be called by `Cleanup.run()`.
-
-**Implementation (`pruneMissingFonts`):** This logic iterates the full font
-list and checks if the file for each registration still exists.
-
-Swift
-
-    
-    
-    // Add inside 'extension Fontlift' in fontlift.swift [doc18]
-    
-    /// Scans all registered fonts and unregisters any that are missing
-    /// from the filesystem.
-    private func pruneMissingFonts() throws {
-        print("Scanning for missing font file registrations...")
-        
-        guard let allFontURLs = CTFontManagerCopyAvailableFontURLs() as? else {
-            print("❌ Error: Could not retrieve font list from system.")
-            throw ExitCode.failure
-        }
-    
-        var prunedCount = 0
-        var checkedCount = 0
-    
-        for url in allFontURLs {
-            checkedCount += 1
-            
-            // CRITICAL SAFETY CHECK: 
-            // Never prune a system font, even if it looks missing.
-            if isSystemFontPath(url) {
-                continue
-            }
-    
-            // Check if file is reachable
-            var isReachable = false
-            if url.isFileURL {
-                // Use FileHandle for a lightweight existence check
-                isReachable = FileManager.default.fileExists(atPath: url.path)
-            }
-            
-            if!isReachable {
-                print("🗑️ Pruning missing font registration: \(url.path)")
-                // Attempt to unregister from both scopes. We don't know
-                // which scope it was registered in, and the operation is
-                // idempotent (fails silently if not registered in that scope).
-                CTFontManagerUnregisterFontsForURL(url as CFURL,.user, nil)
-                CTFontManagerUnregisterFontsForURL(url as CFURL,.session, nil)
-                prunedCount += 1
-            }
-        }
-    
-        print("Scan complete. Checked \(checkedCount) fonts, pruned \(prunedCount) registrations.")
-    }
-    
-
-**Implementation (`clearFontCaches`):** This implementation is based on deep
-research  that identified `atsutil databases -removeUser` as the _only_
-correct and safe command for modern macOS.  
-
-Swift
-
-    
-    
-    // Add inside 'extension Fontlift' in fontlift.swift [doc18]
-    
-    /// Clears all known user-level font caches using 'atsutil'.
-    private func clearFontCaches() throws {
-        print("Clearing user font cache...")
-    
-        // Research [6, 8] confirms this is the modern, correct command
-        // for macOS Monterey (12.0+) [doc16] and later.
-        // We explicitly AVOID 'sudo atsutil databases -remove' which is
-        // obsolete, fails on modern systems [9], and targets the
-        // read-only system cache.
-        let command = "atsutil databases -removeUser"
-        let (output, status) = shell(command)
-    
-        if status == 0 {
-            print("✅ User font cache cleared successfully.")
-            print("   Note: A system restart may be required for changes to take full effect.")
-        } else {
-            print("❌ Error: Failed to clear font cache. 'atsutil' command failed.")
-            print("   Status: \(status)")
-            if let output = output,!output.isEmpty {
-                print("   Details: \(output)")
-            }
-            throw ExitCode.failure
-        }
-        
-        // Per "Scope adherence" [doc14], we will not attempt to clear
-        // third-party caches (e.g., Adobe [10]) as this is bloat.
-        print("Skipping third-party caches (Adobe, Microsoft, etc.) as they are out of scope.")
-    }
-    
-
-### 2.4 Testing Strategy (Feature 2)
-
-**Action:** Modify `Tests/integration_test.sh` [doc23] to add tests for the
-`cleanup` command.
-
-**Implementation:**
-
-Bash
-
-    
-    
-    # Add to Tests/integration_test.sh [doc23]
-    
-    echo ""
-    echo "Testing cleanup command..."
-    
-    # Setup: Install a font, then delete its file to create a "ghost"
-    cp testdata/TestFont-v1.ttf /tmp/font-to-prune.ttf
-    run_test "Setup: Install font to be pruned" "$BINARY install /tmp/font-to-prune.ttf"
-    run_test "Setup: Verify font is registered" "$BINARY list -p | grep -q 'font-to-prune.ttf'"
-    
-    # Now, delete the file, creating a "ghost" registration
-    rm /tmp/font-to-prune.ttf
-    run_test "Setup: Delete font file" "[! -f /tmp/font-to-prune.ttf ]"
-    
-    # Test 1: Pruning
-    run_test "Pruning finds and removes ghost font" "$BINARY cleanup --prune-only 2>&1 | grep -q 'Pruning missing font'"
-    run_test "Verify pruned font is gone from list" "! $BINARY list -p | grep -q 'font-to-prune.ttf'"
-    
-    # Test 2: Cache Clearing
-    run_test "Cache clearing command runs successfully" "$BINARY cleanup --cache-only 2>&1 | grep -q 'User font cache cleared'"
-    
-    # Test 3: Alias
-    run_test "Alias 'c' --help works" "$BINARY c --help | grep -q 'Prune missing fonts'"
-    
-    echo ""
-    
-
-* * *
-
-## Part 3: Documentation & Release
-
-### 3.1 `README.md` Updates [doc17]
-
-The "Usage" section must be updated to include the new `cleanup` command. The
-`install` command's description must be updated to mention the new auto-
-uninstall behavior.
-
-**Update to`install` section:**
-
-> `fontlift install FILEPATH`... installs... the FILEPATH for the current user
-> **Note:** If a font with the same PostScript name is already installed
-> (e.g., an older version), it will be automatically uninstalled before the
-> new version is installed. This behavior is blocked for protected system
-> fonts.
-
-**New section for`cleanup`:**
-
-> ### Cleaning up fonts
->
->   * `fontlift cleanup` or `fontlift c` performs two operations:
->
->     1. **Prunes:** Scans all registered fonts (non-system) and unregisters
-> any where the font file is missing.
->
->     2. **Clears Caches:** Runs `atsutil databases -removeUser` to clear the
-> current user's font cache.
->
->   * `fontlift cleanup --prune-only` only performs the pruning operation.
->
->   * `fontlift cleanup --cache-only` only performs the cache clearing
-> operation.
->
->
-
-### 3.2 `CHANGELOG.md` Updates [doc9]
-
-A new `[Unreleased]` section will be created, intended for release as
-`[2.1.0]`.
-
-## [Unreleased]
-
-### Added
-
-  * **`cleanup` Command**: New command (alias `c`) to maintain font health.
-
-    * **Prune Missing Fonts** : Scans and unregisters fonts where the file is missing (ignores system fonts).
-
-    * **Clear Font Caches** : Clears the user's font cache via `atsutil databases -removeUser`, the correct method for modern macOS.  
-
-  * **Auto-Uninstall on Install** : The `install` command now detects if a font with the same **PostScript name** is already registered.
-
-    * If a conflict is found, the old font is automatically unregistered before the new one is installed, simplifying font upgrades.
-
-    * This feature includes a critical safety check that **blocks** any operation that would attempt to uninstall a protected system font.  
-
-  * **Font Family Name Helper** : Added new internal helper `getFontFamilyName()` to extract font family names using `kCTFontFamilyNameAttribute`.  
-
-### Changed
-
-  * Refactored unregistration logic from `Uninstall` and `Remove` commands into a single, reusable `unregisterFont()` helper function to support the new auto-uninstall feature.
-
-### 3.3 `TODO.md` Updates [doc19]
-
-The `TODO.md` file will be updated with the flat-task representation of this
-plan.
-
-# TODO.md
-
-  * [ ] Implement `getFontFamilyName(from: URL)` helper in `fontlift.swift`.  
-
-  * [ ] Add unit tests for `getFontFamilyName` in `HelperFunctionTests.swift` [doc21].
-
-  * [ ] Refactor unregistration logic from `Uninstall.run` [doc18] into a new private helper `unregisterFont(at:admin:silent:)`.
-
-  * [ ] Update `Uninstall.run` and `Remove.run` [doc18] to use the new `unregisterFont` helper.
-
-  * [ ] Modify `Install.run` [doc18] to add the auto-uninstall loop based on PostScript name matching.
-
-  * [ ] Implement the critical safety check in `Install.run` to block uninstallation of system fonts.  
-
-  * [ ] Add `Cleanup.self` to the `subcommands` array in `fontlift.swift` [doc18].
-
-  * [ ] Define the `Cleanup` command struct with `--prune-only` and `--cache-only` flags.
-
-  * [ ] Implement the `shell(_:)` helper function in `fontlift.swift`.
-
-  * [ ] Implement the `pruneMissingFonts()` logic in `fontlift.swift`, including the `isSystemFontPath` safety check [doc18].
-
-  * [ ] Implement the `clearFontCaches()` logic in `fontlift.swift` using `atsutil databases -removeUser`.  
-
-  * [ ] Create `testdata/` directory with `TestFont-v1.ttf`, `TestFont-v2.ttf`, and `FakeHelvetica.ttf`.
-
-  * [ ] Add integration tests for `install` auto-uninstall (success and system-font-safety) to `integration_test.sh` [doc23].
-
-  * [ ] Add integration tests for `cleanup` (pruning and cache clearing) to `integration_test.sh` [doc23].
-
-  * [ ] Update `README.md` [doc17] with documentation for the new `cleanup` command and `install` behavior.
-
-  * [ ] Update `CHANGELOG.md` [doc9] with entries for version 2.1.0.
-
-Sources used in the report
-
-![](https://drive-thirdparty.googleusercontent.com/32/type/text/plain)
-
-llms.txt
-
-[![](https://t0.gstatic.com/faviconV2?url=https://developer.apple.com/&client=BARD&type=FAVICON&size=256&fallback_opts=TYPE,SIZE,URL)developer.apple.comApplying custom fonts to text | Apple Developer Documentation Opens in a new window ](https://developer.apple.com/documentation/swiftui/applying-custom-fonts-to-text)[![](https://t0.gstatic.com/faviconV2?url=https://sarunw.com/&client=BARD&type=FAVICON&size=256&fallback_opts=TYPE,SIZE,URL)sarunw.comHow to find a font name of a custom font in iOS - Sarunw Opens in a new window ](https://sarunw.com/posts/how-to-find-font-name-in-ios/)[![](https://t0.gstatic.com/faviconV2?url=https://gitlab.liu.se/&client=BARD&type=FAVICON&size=256&fallback_opts=TYPE,SIZE,URL)gitlab.liu.seReact-Native/node_modules/expo-font/ios/FontUtils.swift Opens in a new window ](https://gitlab.liu.se/ambga112/lab-1/-/blob/6891e6a92ae381de4d52ff61151f888b9c71c5b7/React-Native/node_modules/expo-font/ios/FontUtils.swift)[![](https://t0.gstatic.com/faviconV2?url=https://stackoverflow.com/&client=BARD&type=FAVICON&size=256&fallback_opts=TYPE,SIZE,URL)stackoverflow.comSwift: How to I get the list of downloaded system fonts which support the localised language? - Stack Overflow Opens in a new window ](https://stackoverflow.com/questions/71484858/swift-how-to-i-get-the-list-of-downloaded-system-fonts-which-support-the-locali)[![](https://t2.gstatic.com/faviconV2?url=https://discussions.apple.com/&client=BARD&type=FAVICON&size=256&fallback_opts=TYPE,SIZE,URL)discussions.apple.comClear Font Cache/Ventura - Apple Communities Opens in a new window ](https://discussions.apple.com/thread/254703140)[![](https://t2.gstatic.com/faviconV2?url=https://discussions.apple.com/&client=BARD&type=FAVICON&size=256&fallback_opts=TYPE,SIZE,URL)discussions.apple.comClear fontbook cache - Mac - Apple Communities Opens in a new window ](https://discussions.apple.com/thread/253684673)[![](https://t1.gstatic.com/faviconV2?url=https://forum.glyphsapp.com/&client=BARD&type=FAVICON&size=256&fallback_opts=TYPE,SIZE,URL)forum.glyphsapp.comClean Font Cache (Ventura) - Scripting - Glyphs Forum Opens in a new window ](https://forum.glyphsapp.com/t/clean-font-cache-ventura/24244)[![](https://t1.gstatic.com/faviconV2?url=https://forum.glyphsapp.com/&client=BARD&type=FAVICON&size=256&fallback_opts=TYPE,SIZE,URL)forum.glyphsapp.comVariable font naming for italic face (conflict with regular) - Glyphs Forum Opens in a new window ](https://forum.glyphsapp.com/t/variable-font-naming-for-italic-face-conflict-with-regular/24190)[![](https://t0.gstatic.com/faviconV2?url=https://gist.github.com/&client=BARD&type=FAVICON&size=256&fallback_opts=TYPE,SIZE,URL)gist.github.comClear Mac OS X Font Caches - GitHub Gist Opens in a new window ](https://gist.github.com/jaredhowland/2da83f0cc0fbb1ac523f)
-
-Sources read but not used in the report
-
-[![](https://t0.gstatic.com/faviconV2?url=https://superuser.com/&client=BARD&type=FAVICON&size=256&fallback_opts=TYPE,SIZE,URL)superuser.comhow to clear font cache in mac - Super User Opens in a new window ](https://superuser.com/questions/218269/how-to-clear-font-cache-in-mac)[![](https://t2.gstatic.com/faviconV2?url=https://discussions.apple.com/&client=BARD&type=FAVICON&size=256&fallback_opts=TYPE,SIZE,URL)discussions.apple.comHow to run "atsutil databases -remove"? - Apple Support Communities Opens in a new window ](https://discussions.apple.com/thread/2264905)[![](https://t3.gstatic.com/faviconV2?url=https://glyphsapp.com/&client=BARD&type=FAVICON&size=256&fallback_opts=TYPE,SIZE,URL)glyphsapp.comGlyphs 3 Handbook Opens in a new window ](https://glyphsapp.com/media/pages/learn/3ec528a11c-1634835554/glyphs-3-handbook.pdf)[![](https://t1.gstatic.com/faviconV2?url=https://github.com/&client=BARD&type=FAVICON&size=256&fallback_opts=TYPE,SIZE,URL)github.comnetmute/macos_cli_tools: All built-in macOS command-line tools, with descriptions and usage examples. - GitHub Opens in a new window ](https://github.com/netmute/macos_cli_tools)[![](https://t0.gstatic.com/faviconV2?url=https://stackoverflow.com/&client=BARD&type=FAVICON&size=256&fallback_opts=TYPE,SIZE,URL)stackoverflow.comHow to find all available fonts on OSX using the default shell - Stack Overflow Opens in a new window ](https://stackoverflow.com/questions/57473124/how-to-find-all-available-fonts-on-osx-using-the-default-shell)[![](https://t0.gstatic.com/faviconV2?url=https://apple.stackexchange.com/&client=BARD&type=FAVICON&size=256&fallback_opts=TYPE,SIZE,URL)apple.stackexchange.comReload all fonts without restarting an app - Ask Different - Apple StackExchange Opens in a new window ](https://apple.stackexchange.com/questions/302830/reload-all-fonts-without-restarting-an-app)[![](https://t2.gstatic.com/faviconV2?url=https://eclecticlight.co/&client=BARD&type=FAVICON&size=256&fallback_opts=TYPE,SIZE,URL)eclecticlight.coSafe mode, caches and CacheDelete - The Eclectic Light Company Opens in a new window ](https://eclecticlight.co/2023/05/03/safe-mode-caches-and-cachedelete/)[![](https://t0.gstatic.com/faviconV2?url=https://stackoverflow.com/&client=BARD&type=FAVICON&size=256&fallback_opts=TYPE,SIZE,URL)stackoverflow.comHow to clear Cache in iOS? - swift - Stack Overflow Opens in a new window ](https://stackoverflow.com/questions/56093276/how-to-clear-cache-in-ios)[![](https://t2.gstatic.com/faviconV2?url=https://discussions.apple.com/&client=BARD&type=FAVICON&size=256&fallback_opts=TYPE,SIZE,URL)discussions.apple.comIs there a script to clear font cache at shutdown or boot? - Apple Support Community Opens in a new window ](https://discussions.apple.com/thread/250460906)[![](https://t0.gstatic.com/faviconV2?url=https://stackoverflow.com/&client=BARD&type=FAVICON&size=256&fallback_opts=TYPE,SIZE,URL)stackoverflow.comCustom Delete Cache implementation in iOS Settings app - Stack Overflow Opens in a new window ](https://stackoverflow.com/questions/76623389/custom-delete-cache-implementation-in-ios-settings-app)[![](https://t0.gstatic.com/faviconV2?url=https://developer.apple.com/&client=BARD&type=FAVICON&size=256&fallback_opts=TYPE,SIZE,URL)developer.apple.comCore Text Functions | Apple Developer Documentation Opens in a new window ](https://developer.apple.com/documentation/coretext/core-text-functions)[![](https://t0.gstatic.com/faviconV2?url=https://developer.apple.com/&client=BARD&type=FAVICON&size=256&fallback_opts=TYPE,SIZE,URL)developer.apple.comCTFontManagerRegisterFontURLs | Apple Developer Documentation Opens in a new window ](https://developer.apple.com/documentation/coretext/ctfontmanagerregisterfonturls\(_:_:_:_:\)?language=objc)[![](https://t0.gstatic.com/faviconV2?url=https://stackoverflow.com/&client=BARD&type=FAVICON&size=256&fallback_opts=TYPE,SIZE,URL)stackoverflow.comHow do I get the font name from an otf or ttf file? - Stack Overflow Opens in a new window ](https://stackoverflow.com/questions/16788330/how-do-i-get-the-font-name-from-an-otf-or-ttf-file)[![](https://t0.gstatic.com/faviconV2?url=https://stackoverflow.com/&client=BARD&type=FAVICON&size=256&fallback_opts=TYPE,SIZE,URL)stackoverflow.comHow to get an array of all installed fonts on iOS - Stack Overflow Opens in a new window ](https://stackoverflow.com/questions/76686735/how-to-get-an-array-of-all-installed-fonts-on-ios)[![](https://t0.gstatic.com/faviconV2?url=https://developer.apple.com/&client=BARD&type=FAVICON&size=256&fallback_opts=TYPE,SIZE,URL)developer.apple.comFont Attributes | Apple Developer Documentation Opens in a new window ](https://developer.apple.com/documentation/coretext/font-attributes)[![](https://t0.gstatic.com/faviconV2?url=https://apple.stackexchange.com/&client=BARD&type=FAVICON&size=256&fallback_opts=TYPE,SIZE,URL)apple.stackexchange.comHow can I get the PostScript name of a TTF font installed in OS X? - Apple StackExchange Opens in a new window ](https://apple.stackexchange.com/questions/79875/how-can-i-get-the-postscript-name-of-a-ttf-font-installed-in-os-x)[![](https://t0.gstatic.com/faviconV2?url=https://stackoverflow.com/&client=BARD&type=FAVICON&size=256&fallback_opts=TYPE,SIZE,URL)stackoverflow.comAdding custom fonts to iOS app finding their real names - Stack Overflow Opens in a new window ](https://stackoverflow.com/questions/15984937/adding-custom-fonts-to-ios-app-finding-their-real-names)
-
-Thoughts
-
-Deconstructing the Request
-
-I'm starting by breaking down the two new features you've requested for the
-`fontlift-mac-cli` tool. The first is enhancing the 'install' command to
-automatically uninstall existing fonts with the same family name. The second
-is creating a new 'cleanup' command to remove registrations for missing font
-files and to clear all font caches. My goal is to produce a comprehensive
-technical plan for implementation.
-
-Analyzing Project Context
-
-I'm thoroughly reviewing all the project files you provided, including the
-existing Swift code for `fontlift.swift`, the `PRINCIPLES.md`, and other
-documentation. This will help me understand the current architecture, its
-safety constraints (like protecting system fonts), and how `CTFontManager` is
-currently used for font registration and unregistration.
-
-Formulating the Research Plan
-
-To build the plan, I'll first gather several key pieces of information. I'll
-be looking for the specific Core Text APIs in Swift needed to extract a 'font
-family name' from a file. I will also investigate the recommended macOS
-command-line utilities for clearing both user and system font caches,
-confirming the correct commands and arguments.
-
-Synthesizing the Implementation Strategy
-
-Once I have this data, I'll synthesize it to outline the new logic. For the
-'install' feature, this involves detailing how to find and safely unregister
-conflicting fonts. For the 'cleanup' command, I'll plan the logic for
-iterating through installed fonts, checking if their files exist, and safely
-running the cache-clearing commands while respecting the different user
-scopes.
-
-Preparing the Action Plan
-
-Based on this analysis, my next step is to execute a series of targeted
-research actions. I'll be looking up the specific Swift APIs for font family
-names, the correct `atsutil` commands for cache clearing, and simultaneously
-analyzing the provided source code to map out exactly where the new logic will
-be integrated and what existing test and documentation files will need to be
-updated.
-
-![](https://www.gstatic.com/lamda/images/immersives/google_logo_icon_2380fba942c84387f09cf.svg)
-
-Researching websites
-
-[![](https://t0.gstatic.com/faviconV2?url=https://gist.github.com/&client=BARD&type=FAVICON&size=256&fallback_opts=TYPE,SIZE,URL)gist.github.comClear Mac OS X Font Caches - GitHub Gist](https://gist.github.com/jaredhowland/2da83f0cc0fbb1ac523f)[![](https://t0.gstatic.com/faviconV2?url=https://superuser.com/&client=BARD&type=FAVICON&size=256&fallback_opts=TYPE,SIZE,URL)superuser.comhow to clear font cache in mac - Super User](https://superuser.com/questions/218269/how-to-clear-font-cache-in-mac)[![](https://t2.gstatic.com/faviconV2?url=https://discussions.apple.com/&client=BARD&type=FAVICON&size=256&fallback_opts=TYPE,SIZE,URL)discussions.apple.comHow to run "atsutil databases -remove"? - Apple Support Communities](https://discussions.apple.com/thread/2264905)[![](https://t1.gstatic.com/faviconV2?url=https://forum.glyphsapp.com/&client=BARD&type=FAVICON&size=256&fallback_opts=TYPE,SIZE,URL)forum.glyphsapp.comClean Font Cache (Ventura) - Scripting - Glyphs Forum](https://forum.glyphsapp.com/t/clean-font-cache-ventura/24244)[![](https://t3.gstatic.com/faviconV2?url=https://glyphsapp.com/&client=BARD&type=FAVICON&size=256&fallback_opts=TYPE,SIZE,URL)glyphsapp.comGlyphs 3 Handbook](https://glyphsapp.com/media/pages/learn/3ec528a11c-1634835554/glyphs-3-handbook.pdf)[![](https://t1.gstatic.com/faviconV2?url=https://github.com/&client=BARD&type=FAVICON&size=256&fallback_opts=TYPE,SIZE,URL)github.comnetmute/macos_cli_tools: All built-in macOS command-line tools, with descriptions and usage examples. - GitHub](https://github.com/netmute/macos_cli_tools)[![](https://t0.gstatic.com/faviconV2?url=https://stackoverflow.com/&client=BARD&type=FAVICON&size=256&fallback_opts=TYPE,SIZE,URL)stackoverflow.comHow to find all available fonts on OSX using the default shell - Stack Overflow](https://stackoverflow.com/questions/57473124/how-to-find-all-available-fonts-on-osx-using-the-default-shell)[![](https://t0.gstatic.com/faviconV2?url=https://apple.stackexchange.com/&client=BARD&type=FAVICON&size=256&fallback_opts=TYPE,SIZE,URL)apple.stackexchange.comReload all fonts without restarting an app - Ask Different - Apple StackExchange](https://apple.stackexchange.com/questions/302830/reload-all-fonts-without-restarting-an-app)[![](https://t1.gstatic.com/faviconV2?url=https://forum.glyphsapp.com/&client=BARD&type=FAVICON&size=256&fallback_opts=TYPE,SIZE,URL)forum.glyphsapp.comVariable font naming for italic face (conflict with regular) - Glyphs Forum](https://forum.glyphsapp.com/t/variable-font-naming-for-italic-face-conflict-with-regular/24190)[![](https://t2.gstatic.com/faviconV2?url=https://eclecticlight.co/&client=BARD&type=FAVICON&size=256&fallback_opts=TYPE,SIZE,URL)eclecticlight.coSafe mode, caches and CacheDelete - The Eclectic Light Company](https://eclecticlight.co/2023/05/03/safe-mode-caches-and-cachedelete/)[![](https://t2.gstatic.com/faviconV2?url=https://discussions.apple.com/&client=BARD&type=FAVICON&size=256&fallback_opts=TYPE,SIZE,URL)discussions.apple.comClear fontbook cache - Mac - Apple Communities](https://discussions.apple.com/thread/253684673)[![](https://t0.gstatic.com/faviconV2?url=https://stackoverflow.com/&client=BARD&type=FAVICON&size=256&fallback_opts=TYPE,SIZE,URL)stackoverflow.comHow to clear Cache in iOS? - swift - Stack Overflow](https://stackoverflow.com/questions/56093276/how-to-clear-cache-in-ios)[![](https://t2.gstatic.com/faviconV2?url=https://discussions.apple.com/&client=BARD&type=FAVICON&size=256&fallback_opts=TYPE,SIZE,URL)discussions.apple.comIs there a script to clear font cache at shutdown or boot? - Apple Support Community](https://discussions.apple.com/thread/250460906)[![](https://t2.gstatic.com/faviconV2?url=https://discussions.apple.com/&client=BARD&type=FAVICON&size=256&fallback_opts=TYPE,SIZE,URL)discussions.apple.comClear Font Cache/Ventura - Apple Communities](https://discussions.apple.com/thread/254703140)[![](https://t0.gstatic.com/faviconV2?url=https://stackoverflow.com/&client=BARD&type=FAVICON&size=256&fallback_opts=TYPE,SIZE,URL)stackoverflow.comCustom Delete Cache implementation in iOS Settings app - Stack Overflow](https://stackoverflow.com/questions/76623389/custom-delete-cache-implementation-in-ios-settings-app)[![](https://t0.gstatic.com/faviconV2?url=https://developer.apple.com/&client=BARD&type=FAVICON&size=256&fallback_opts=TYPE,SIZE,URL)developer.apple.comCore Text Functions | Apple Developer Documentation](https://developer.apple.com/documentation/coretext/core-text-functions)[![](https://t0.gstatic.com/faviconV2?url=https://developer.apple.com/&client=BARD&type=FAVICON&size=256&fallback_opts=TYPE,SIZE,URL)developer.apple.comCTFontManagerRegisterFontURLs | Apple Developer Documentation](https://developer.apple.com/documentation/coretext/ctfontmanagerregisterfonturls\(_:_:_:_:\)?language=objc)[![](https://t0.gstatic.com/faviconV2?url=https://stackoverflow.com/&client=BARD&type=FAVICON&size=256&fallback_opts=TYPE,SIZE,URL)stackoverflow.comHow do I get the font name from an otf or ttf file? - Stack Overflow](https://stackoverflow.com/questions/16788330/how-do-i-get-the-font-name-from-an-otf-or-ttf-file)[![](https://t0.gstatic.com/faviconV2?url=https://stackoverflow.com/&client=BARD&type=FAVICON&size=256&fallback_opts=TYPE,SIZE,URL)stackoverflow.comHow to get an array of all installed fonts on iOS - Stack Overflow](https://stackoverflow.com/questions/76686735/how-to-get-an-array-of-all-installed-fonts-on-ios)[![](https://t0.gstatic.com/faviconV2?url=https://developer.apple.com/&client=BARD&type=FAVICON&size=256&fallback_opts=TYPE,SIZE,URL)developer.apple.comFont Attributes | Apple Developer Documentation](https://developer.apple.com/documentation/coretext/font-attributes)[![](https://t0.gstatic.com/faviconV2?url=https://gitlab.liu.se/&client=BARD&type=FAVICON&size=256&fallback_opts=TYPE,SIZE,URL)gitlab.liu.seReact-Native/node_modules/expo-font/ios/FontUtils.swift](https://gitlab.liu.se/ambga112/lab-1/-/blob/6891e6a92ae381de4d52ff61151f888b9c71c5b7/React-Native/node_modules/expo-font/ios/FontUtils.swift)[![](https://t0.gstatic.com/faviconV2?url=https://stackoverflow.com/&client=BARD&type=FAVICON&size=256&fallback_opts=TYPE,SIZE,URL)stackoverflow.comSwift: How to I get the list of downloaded system fonts which support the localised language? - Stack Overflow](https://stackoverflow.com/questions/71484858/swift-how-to-i-get-the-list-of-downloaded-system-fonts-which-support-the-locali)[![](https://t0.gstatic.com/faviconV2?url=https://apple.stackexchange.com/&client=BARD&type=FAVICON&size=256&fallback_opts=TYPE,SIZE,URL)apple.stackexchange.comHow can I get the PostScript name of a TTF font installed in OS X? - Apple StackExchange](https://apple.stackexchange.com/questions/79875/how-can-i-get-the-postscript-name-of-a-ttf-font-installed-in-os-x)[![](https://t0.gstatic.com/faviconV2?url=https://developer.apple.com/&client=BARD&type=FAVICON&size=256&fallback_opts=TYPE,SIZE,URL)developer.apple.comApplying custom fonts to text | Apple Developer Documentation](https://developer.apple.com/documentation/swiftui/applying-custom-fonts-to-text)[![](https://t0.gstatic.com/faviconV2?url=https://stackoverflow.com/&client=BARD&type=FAVICON&size=256&fallback_opts=TYPE,SIZE,URL)stackoverflow.comAdding custom fonts to iOS app finding their real names - Stack Overflow](https://stackoverflow.com/questions/15984937/adding-custom-fonts-to-ios-app-finding-their-real-names)[![](https://t0.gstatic.com/faviconV2?url=https://sarunw.com/&client=BARD&type=FAVICON&size=256&fallback_opts=TYPE,SIZE,URL)sarunw.comHow to find a font name of a custom font in iOS - Sarunw](https://sarunw.com/posts/how-to-find-font-name-in-ios/)
-
-Researching uploaded files
-
-![](https://drive-thirdparty.googleusercontent.com/32/type/text/plain)
-
-llms.txt
-
-Gathering Technical APIs
-
-I've successfully identified the key technical pieces for both features. For
-the 'install' command update, I've found that the correct way to get a font's
-family name from a file is to first get a `CTFontDescriptor` from the file's
-URL, and then use `CTFontDescriptorCopyAttribute` with the
-`kCTFontFamilyNameAttribute`. This gives me the exact tool I need to find
-conflicting fonts.
-
-Refining the Cache 'Cleanup' Strategy
-
-My research into font cache clearing has revealed a crucial detail for modern
-macOS. The command `sudo atsutil databases -remove` is deprecated, as the
-system-level font cache is now on a read-only volume and managed by the OS.
-The only command I should use for the 'cleanup' feature is `atsutil databases
--removeUser`, which targets just the user's cache. This aligns perfectly with
-the project's 'Safety by default' principle.
-
-Analyzing Project Structure
-
-I've also successfully mapped out the project's structure, noting the existing
-principles like 'System font protection' and 'Testing rigor'. I've located the
-specific files where new tests will go, such as `HelperFunctionTests.swift`
-for the new family-name logic, and the documentation like `CHANGELOG.md` that
-will need to be updated.
-
-Addressing an Information Gap
-
-While I've gathered the external APIs and project structure, my initial look
-at the provided files didn't capture the *content* of the main
-`fontlift.swift` file. To create the detailed plan you've requested—which
-involves modifying existing functions like `Install.run()`—I need to see that
-code.
-
-Next Step: Analyzing Source Code
-
-My immediate next step is to perform a focused analysis of the provided
-project files to extract the full source code of `fontlift.swift`. Once I have
-this final piece, I'll have everything I need to synthesize the complete
-implementation plan without further research.
-
-Researching uploaded files
-
-![](https://drive-thirdparty.googleusercontent.com/32/type/text/plain)
-
-llms.txt
-
-Resolving a Core Hurdle
-
-I've been working to get a complete picture of the project, but I was missing
-the most critical piece: the main `fontlift.swift` source code. My previous
-attempts to analyze it from the provided project files were incomplete. I'm
-now conducting a much more specific and targeted read of the project data to
-extract this file's full content.
-
-Pivoting to Final Synthesis
-
-This file is the key to moving forward. It contains the `Install.run()` and
-`isSystemFontPath()` functions that are central to your request. Once I have
-this code, I'll have all the necessary components: the new API logic I've
-already researched, the project's safety principles, and the existing code I
-need to modify.
-
-Preparing the Implementation Plan
-
-With this final piece of information, my next and final step will be to
-synthesize everything into the comprehensive implementation plan you asked
-for. This plan will detail the precise code changes, outline the new 'cleanup'
-command, and map out the required updates to your test and documentation
-files.
-
-Researching uploaded files
-
-![](https://drive-thirdparty.googleusercontent.com/32/type/text/plain)
-
-llms.txt
-
-Finalizing Data Collection
-
-I've now successfully analyzed all the necessary components for building the
-implementation plan. After a few attempts to be certain, I've processed the
-full `fontlift.swift` source code, specifically locating the `Install.run()`
-and `isSystemFontPath()` functions. This was the final piece of internal
-project data I needed.
-
-Synthesizing All Findings
-
-I now have a complete picture. I've combined my earlier findings on the
-correct Swift APIs (like `CTFontDescriptorCopyAttribute`) and the appropriate
-`atsutil databases -removeUser` command with the project's existing code and
-its core principles, such as 'Safety by default' and 'System font protection'.
-
-Ready for Implementation Plan
-
-My research phase is now complete. I have all the information required to move
-on to the final synthesis. I can now proceed to write the detailed `PLAN.md`
-document, which will outline the precise code modifications for the 'install'
-command, the full implementation of the new 'cleanup' command, and all
-necessary updates to your project's tests and documentation.
-</document_content>
-</document>
-
-<document index="30">
-<source>issues/999.md</source>
-<document_content>
-Now /report then /cleanup then /work on next tasks from @TODO.md and from @PLAN.md
-</document_content>
-</document>
-
-<document index="31">
-<source>publish.sh</source>
-<document_content>
+## publish.sh
+```bash
 #!/bin/bash
 # this_file: publish.sh
 # Install fontlift-mac to /usr/local/bin (local mode) or verify binary (CI mode)
@@ -5732,12 +4703,10 @@ else
     echo "⚠️  Installation complete but fontlift-mac not in PATH"
     echo "You may need to add ${INSTALL_DIR} to your PATH"
 fi
-</document_content>
-</document>
+```
 
-<document index="32">
-<source>scripts/get-version.sh</source>
-<document_content>
+## scripts/get-version.sh
+```bash
 #!/bin/bash
 # this_file: scripts/get-version.sh
 # Extract version from Swift code as fallback when git tags are unreliable
@@ -5759,12 +4728,10 @@ if [ -z "$CODE_VERSION" ]; then
 fi
 
 echo "$CODE_VERSION"
-</document_content>
-</document>
+```
 
-<document index="33">
-<source>scripts/prepare-release.sh</source>
-<document_content>
+## scripts/prepare-release.sh
+```bash
 #!/bin/bash
 # this_file: scripts/prepare-release.sh
 # Package fontlift-mac binary for GitHub Release
@@ -5900,12 +4867,10 @@ echo "  tar -xzf ${TARBALL_PATH} && ./fontlift-mac --version"
 echo ""
 echo "To verify checksum:"
 echo "  cd ${DIST_DIR} && shasum -a 256 -c ${CHECKSUM_NAME}"
-</document_content>
-</document>
+```
 
-<document index="34">
-<source>scripts/validate-version.sh</source>
-<document_content>
+## scripts/validate-version.sh
+```bash
 #!/bin/bash
 # this_file: scripts/validate-version.sh
 # Validate that the version in code matches the git tag
@@ -6013,12 +4978,10 @@ else
     echo "⚠️  Continuing anyway (validation relaxed)"
     exit 0
 fi
-</document_content>
-</document>
+```
 
-<document index="35">
-<source>test.sh</source>
-<document_content>
+## test.sh
+```bash
 #!/bin/bash
 # this_file: test.sh
 # Run all tests for fontlift-mac
@@ -6260,7 +5223,4 @@ echo "  • Swift unit tests:       ${SWIFT_DURATION}s (62 tests)"
 else
     echo "✅ All tests passed"
 fi
-</document_content>
-</document>
-
-</documents>
+```
