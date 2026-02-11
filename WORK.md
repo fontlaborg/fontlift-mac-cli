@@ -51,7 +51,7 @@
   - All test counts now consistent across all locations
 
 - **Round 8: Documentation Accuracy**
-  - Fixed outdated test counts in PLAN.md (23→43 Swift, 65→81 total)
+  - Fixed outdated test counts in TASKS.md (23→43 Swift, 65→81 total)
   - Enhanced test.sh with comprehensive suite breakdown comments
   - Verified function length compliance (1 justified exception)
   - All documentation now reflects current state
@@ -65,7 +65,7 @@
 
 - **Round 6: Documentation & Correctness**
   - Fixed incorrect command suggestion (removed sudo from atsutil)
-  - Updated PLAN.md to v1.1.29 and 65 tests
+  - Updated TASKS.md to v1.1.29 and 65 tests
 
 - **Round 5: Consistency & Polish**
   - Standardized error messages for font list retrieval
@@ -149,7 +149,7 @@
 - ✅ Fixed SIGPIPE issue in test framework (`set -euo pipefail` + `head -1`)
 
 **Quality & Robustness Round 12:**
-- ✅ Updated PLAN.md test counts (90 → 94)
+- ✅ Updated TASKS.md test counts (90 → 94)
 - ✅ Documentation consistency review complete
 - ✅ All references to old test counts updated
 
@@ -232,8 +232,8 @@
 - ✅ Test execution: 30s (6s + 17s + 7s)
 
 **Continuous Improvement Round 19:**
-- ✅ Updated PLAN.md with Rounds 17-18 improvements in "Recent Changes"
-- ✅ Fixed outdated test counts in PLAN.md (43→52 Swift, 15→19 Integration)
+- ✅ Updated TASKS.md with Rounds 17-18 improvements in "Recent Changes"
+- ✅ Fixed outdated test counts in TASKS.md (43→52 Swift, 15→19 Integration)
 - ✅ Added performance timing baselines to integration tests
   - Binary startup timing (<1000ms validation)
   - List command timing (<1000ms validation)
@@ -280,9 +280,9 @@
 **Documentation Synchronization Round 22:**
 - ✅ Updated README.md test counts (96→100 tests, 21→25 integration)
 - ✅ Updated .github/RELEASING.md test counts (2 locations)
-- ✅ Updated PLAN.md with Round 21 in Recent Changes
-- ✅ Updated PLAN.md test counts in Project Structure and Success Metrics
-- ✅ Added Swift version validation metric to PLAN.md
+- ✅ Updated TASKS.md with Round 21 in Recent Changes
+- ✅ Updated TASKS.md test counts in Project Structure and Success Metrics
+- ✅ Added Swift version validation metric to TASKS.md
 - ✅ All documentation synchronized after Round 21
 - ✅ All 100 tests passing
 

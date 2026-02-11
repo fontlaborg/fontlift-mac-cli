@@ -1,4 +1,4 @@
-Project Structure:
+<documents><toc>
 📁 fontlift-mac-cli
 ├── 📁 .github
 │   ├── 📁 ISSUE_TEMPLATE
@@ -33,16 +33,18 @@ Project Structure:
 ├── 📄 LICENSE
 ├── 📄 Package.resolved
 ├── 📄 Package.swift
-├── 📄 PLAN.md
 ├── 📄 PRINCIPLES.md
 ├── 📄 publish.sh
 ├── 📄 README.md
+├── 📄 TASKS.md
 ├── 📄 test.sh
 └── 📄 TODO.md
 
 
-## .github/ISSUE_TEMPLATE/bug_report.md
-````markdown
+</toc>
+<document index="1">
+<source>.github/ISSUE_TEMPLATE/bug_report.md</source>
+<document_content>
 ---
 name: Bug Report
 about: Report a bug or unexpected behavior
@@ -77,10 +79,12 @@ What actually happened.
 
 ## Additional Context
 Any other information about the problem.
-````
+</document_content>
+</document>
 
-## .github/ISSUE_TEMPLATE/feature_request.md
-```markdown
+<document index="2">
+<source>.github/ISSUE_TEMPLATE/feature_request.md</source>
+<document_content>
 ---
 name: Feature Request
 about: Suggest a new feature or enhancement
@@ -108,10 +112,12 @@ Any other information about the feature request.
 Please confirm this aligns with fontlift's core scope:
 - [ ] This feature relates to installing, uninstalling, listing, or removing fonts
 - [ ] This is not a major new feature outside core functionality
-```
+</document_content>
+</document>
 
-## .github/PULL_REQUEST_TEMPLATE.md
-```markdown
+<document index="3">
+<source>.github/PULL_REQUEST_TEMPLATE.md</source>
+<document_content>
 ## Description
 Brief description of what this PR does.
 
@@ -143,10 +149,12 @@ Closes #(issue number)
 
 ## Additional Notes
 Any other information reviewers should know.
-```
+</document_content>
+</document>
 
-## .github/RELEASING.md
-````markdown
+<document index="4">
+<source>.github/RELEASING.md</source>
+<document_content>
 # Release Process
 
 <!-- this_file: .github/RELEASING.md -->
@@ -402,10 +410,12 @@ If you encounter issues not covered here:
 ---
 
 Last updated: 2025-11-03 (v2.0.0 release process)
-````
+</document_content>
+</document>
 
-## .github/workflows/ci.yml
-```yaml
+<document index="5">
+<source>.github/workflows/ci.yml</source>
+<document_content>
 # this_file: .github/workflows/ci.yml
 # Continuous Integration workflow for fontlift
 # Runs on every push to main and on all pull requests
@@ -466,10 +476,12 @@ jobs:
         run: |
           .build/release/fontlift --version
           .build/release/fontlift --help
-```
+</document_content>
+</document>
 
-## .github/workflows/release.yml
-```yaml
+<document index="6">
+<source>.github/workflows/release.yml</source>
+<document_content>
 # this_file: .github/workflows/release.yml
 # Continuous Deployment workflow for fontlift
 # Runs when version tags (vX.Y.Z) are pushed
@@ -574,10 +586,12 @@ jobs:
           prerelease: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-```
+</document_content>
+</document>
 
-## .gitignore
-```
+<document index="7">
+<source>.gitignore</source>
+<document_content>
 # Xcode
 #
 # gitignore contributors: remember to update Global/Xcode.gitignore, Objective-C.gitignore & Swift.gitignore
@@ -702,17 +716,19 @@ DerivedData/
 !default.mode2v3
 *.perspectivev3
 !default.perspectivev3
-```
+</document_content>
+</document>
 
-## CLAUDE.md
-````markdown
+<document index="8">
+<source>CLAUDE.md</source>
+<document_content>
 # Development Guidelines
 
 ## Quick-Start Checklist
 
 **For every task, follow this baseline:**
 
-1. [ ] Read `README.md`, `PLAN.md`, `TODO.md`, `WORK.md` to understand context
+1. [ ] Read `README.md`, `TASKS.md`, `TODO.md`, `WORK.md` to understand context
 2. [ ] Apply Chain-of-Thought: "Let me think step by step..."
 3. [ ] Search when <90% confident (codebase, references, web)
 4. [ ] Check if this problem has been solved before (packages > custom code)
@@ -824,7 +840,7 @@ After drafting any solution:
 
 ### 3.1 Before Starting (MUST)
 
-1. Read `README.md`, `WORK.md`, `CHANGELOG.md`, `PLAN.md`, `TODO.md`
+1. Read `README.md`, `WORK.md`, `CHANGELOG.md`, `TASKS.md`, `TODO.md`
 2. Run existing tests to understand current state
 3. Apply Enhanced CoT (Analyze → Abstract → Execute)
 4. Search for existing solutions before writing code
@@ -1000,8 +1016,8 @@ uvx ruff check --fix . && uvx ruff format . && pytest
 
 - **README.md** – Purpose and quick start (<200 lines)
 - **CHANGELOG.md** – Cumulative release notes
-- **PLAN.md** – Detailed future goals and architecture
-- **TODO.md** – Flat task list from PLAN.md with status:
+- **TASKS.md** – Detailed future goals and architecture
+- **TODO.md** – Flat task list from TASKS.md with status:
   - `[ ]` Not started
   - `[x]` Completed  
   - `[~]` In progress
@@ -1022,7 +1038,7 @@ When invoked, MUST:
 2. **Deconstruct** into core requirements and constraints
 3. **Analyze** feasibility and identify packages to use
 4. **Structure** into phases with dependencies
-5. **Document** in PLAN.md with TODO.md checklist
+5. **Document** in TASKS.md with TODO.md checklist
 
 ### `/test` (Comprehensive Testing)
 
@@ -1040,7 +1056,7 @@ cargo fmt --check && cargo clippy -- -D warnings && cargo test
 
 ### `/work` (Execution Loop)
 
-1. Read TODO.md and PLAN.md
+1. Read TODO.md and TASKS.md
 2. Write iteration goals to WORK.md
 3. **Write tests first**
 4. Implement incrementally
@@ -1158,10 +1174,12 @@ When writing documentation or commentary:
 ## Gemini Added Memories
 - I must always ask for confirmation before running any command that deletes files. The user must explicitly approve the deletion. I should explain what the command does and which files will be deleted.
 All files, usage notes, GUIs, CLI helps, documentation etc. should carry a mention `made by FontLab https://www.fontlab.com/` where it makes sense.
-````
+</document_content>
+</document>
 
-## DEPENDENCIES.md
-````markdown
+<document index="9">
+<source>DEPENDENCIES.md</source>
+<document_content>
 # DEPENDENCIES.md
 <!-- this_file: DEPENDENCIES.md -->
 
@@ -1229,10 +1247,12 @@ swift package update
 ```
 
 Review release notes before updating major versions.
-````
+</document_content>
+</document>
 
-## LICENSE
-```
+<document index="10">
+<source>LICENSE</source>
+<document_content>
                                  Apache License
                            Version 2.0, January 2004
                         http://www.apache.org/licenses/
@@ -1434,22 +1454,12 @@ Review release notes before updating major versions.
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-```
+</document_content>
+</document>
 
-## PLAN.md
-```markdown
-# PLAN.md
-<!-- this_file: PLAN.md -->
-
-## Project Overview
-
-**fontlift-mac-cli** - Simple macOS CLI tool for font management
-
-**One-sentence scope**: Install, uninstall, list, and remove fonts on macOS via CLI.
-```
-
-## PRINCIPLES.md
-```markdown
+<document index="11">
+<source>PRINCIPLES.md</source>
+<document_content>
 # PRINCIPLES.md
 
 ## Core Principles for fontlift-mac-cli
@@ -1493,10 +1503,12 @@ Review release notes before updating major versions.
 - Respect user vs system font scope.
 - Follow macOS conventions for CLI tools.
 - Handle permissions gracefully.
-```
+</document_content>
+</document>
 
-## Package.resolved
-```
+<document index="12">
+<source>Package.resolved</source>
+<document_content>
 {
   "originHash" : "adbc4b168c1b1f7891530ddb1504296e6706970bfa32755e19a90e2f2660f22a",
   "pins" : [
@@ -1512,10 +1524,12 @@ Review release notes before updating major versions.
   ],
   "version" : 3
 }
-```
+</document_content>
+</document>
 
-## Package.swift
-```swift
+<document index="13">
+<source>Package.swift</source>
+<document_content>
 // swift-tools-version: 5.9
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
@@ -1546,10 +1560,12 @@ let package = Package(
         )
     ]
 )
-```
+</document_content>
+</document>
 
-## README.md
-````markdown
+<document index="14">
+<source>README.md</source>
+<document_content>
 # fontlift-mac-cli
 
 [![CI](https://github.com/fontlaborg/fontlift-mac-cli/workflows/CI/badge.svg)](https://github.com/fontlaborg/fontlift-mac-cli/actions)
@@ -1823,7 +1839,7 @@ fi
 For development instructions, build automation, and release process:
 - See [CLAUDE.md](./CLAUDE.md) for detailed development guidelines
 - See [CHANGELOG.md](./CHANGELOG.md) for version history
-- See [PLAN.md](./PLAN.md) for implementation plans
+- See [TASKS.md](./TASKS.md) for implementation plans
 
 ### Quick Start
 
@@ -1932,10 +1948,12 @@ View build status: [GitHub Actions](https://github.com/fontlaborg/fontlift-mac-c
 - made by FontLab https://www.fontlab.com/
 - Licensed under Apache 2.0
 - Repo: https://github.com/fontlaborg/fontlift-mac-cli
-````
+</document_content>
+</document>
 
-## Sources/fontlift/fontlift.swift
-````swift
+<document index="15">
+<source>Sources/fontlift/fontlift.swift</source>
+<document_content>
 // this_file: Sources/fontlift/fontlift.swift
 // fontlift-mac - macOS CLI tool for font installation and management
 // UI terminology note: user-facing copy intentionally says "font" for clarity;
@@ -3327,16 +3345,34 @@ extension Fontlift {
         }
     }
 }
-````
+</document_content>
+</document>
 
-## TODO.md
-```markdown
+<document index="16">
+<source>TASKS.md</source>
+<document_content>
+# TASKS.md
+<!-- this_file: TASKS.md -->
+
+## Project Overview
+
+**fontlift-mac-cli** - Simple macOS CLI tool for font management
+
+**One-sentence scope**: Install, uninstall, list, and remove fonts on macOS via CLI.
+</document_content>
+</document>
+
+<document index="17">
+<source>TODO.md</source>
+<document_content>
 # TODO.md
 <!-- this_file: TODO.md -->
-```
+</document_content>
+</document>
 
-## Tests/fontliftTests/CLIErrorTests.swift
-```swift
+<document index="18">
+<source>Tests/fontliftTests/CLIErrorTests.swift</source>
+<document_content>
 // this_file: Tests/fontliftTests/CLIErrorTests.swift
 // CLI error handling and command validation tests
 
@@ -3685,10 +3721,12 @@ final class CLIErrorTests: XCTestCase {
                      "Should accept --admin flag")
     }
 }
-```
+</document_content>
+</document>
 
-## Tests/fontliftTests/HelperFunctionTests.swift
-```swift
+<document index="19">
+<source>Tests/fontliftTests/HelperFunctionTests.swift</source>
+<document_content>
 // this_file: Tests/fontliftTests/HelperFunctionTests.swift
 // Unit tests for helper functions
 
@@ -3866,10 +3904,12 @@ final class HelperFunctionTests: XCTestCase {
         )
     }
 }
-```
+</document_content>
+</document>
 
-## Tests/fontliftTests/ProjectValidationTests.swift
-```swift
+<document index="20">
+<source>Tests/fontliftTests/ProjectValidationTests.swift</source>
+<document_content>
 // this_file: Tests/fontliftTests/ProjectValidationTests.swift
 // Basic project validation tests
 
@@ -3950,10 +3990,12 @@ final class ProjectValidationTests: XCTestCase {
         )
     }
 }
-```
+</document_content>
+</document>
 
-## Tests/fontliftTests/UnregisterFontTests.swift
-```swift
+<document index="21">
+<source>Tests/fontliftTests/UnregisterFontTests.swift</source>
+<document_content>
 // this_file: Tests/fontliftTests/UnregisterFontTests.swift
 // Tests for unregisterFont scope handling
 
@@ -3994,10 +4036,12 @@ final class UnregisterFontTests: XCTestCase {
         }
     }
 }
-```
+</document_content>
+</document>
 
-## Tests/integration_test.sh
-```bash
+<document index="22">
+<source>Tests/integration_test.sh</source>
+<document_content>
 #!/bin/bash
 # this_file: Tests/integration_test.sh
 # Integration smoke tests for fontlift-mac binary
@@ -4241,10 +4285,12 @@ else
     echo -e "${GREEN}✅ All integration tests passed!${NC}"
     exit 0
 fi
-```
+</document_content>
+</document>
 
-## Tests/scripts_test.sh
-```bash
+<document index="23">
+<source>Tests/scripts_test.sh</source>
+<document_content>
 #!/bin/bash
 # this_file: Tests/scripts_test.sh
 # Test suite for all bash scripts in the project
@@ -4349,10 +4395,12 @@ else
     echo -e "${GREEN}✅ All scripts tests passed!${NC}"
     exit 0
 fi
-```
+</document_content>
+</document>
 
-## build.sh
-```bash
+<document index="24">
+<source>build.sh</source>
+<document_content>
 #!/bin/bash
 # this_file: build.sh
 # Build fontlift-mac in release mode
@@ -4554,10 +4602,12 @@ else
         echo "✅ Build complete: ${BINARY_PATH}"
     fi
 fi
-```
+</document_content>
+</document>
 
-## publish.sh
-```bash
+<document index="25">
+<source>publish.sh</source>
+<document_content>
 #!/bin/bash
 # this_file: publish.sh
 # Install fontlift-mac to /usr/local/bin (local mode) or verify binary (CI mode)
@@ -4703,10 +4753,12 @@ else
     echo "⚠️  Installation complete but fontlift-mac not in PATH"
     echo "You may need to add ${INSTALL_DIR} to your PATH"
 fi
-```
+</document_content>
+</document>
 
-## scripts/get-version.sh
-```bash
+<document index="26">
+<source>scripts/get-version.sh</source>
+<document_content>
 #!/bin/bash
 # this_file: scripts/get-version.sh
 # Extract version from Swift code as fallback when git tags are unreliable
@@ -4728,10 +4780,12 @@ if [ -z "$CODE_VERSION" ]; then
 fi
 
 echo "$CODE_VERSION"
-```
+</document_content>
+</document>
 
-## scripts/prepare-release.sh
-```bash
+<document index="27">
+<source>scripts/prepare-release.sh</source>
+<document_content>
 #!/bin/bash
 # this_file: scripts/prepare-release.sh
 # Package fontlift-mac binary for GitHub Release
@@ -4867,10 +4921,12 @@ echo "  tar -xzf ${TARBALL_PATH} && ./fontlift-mac --version"
 echo ""
 echo "To verify checksum:"
 echo "  cd ${DIST_DIR} && shasum -a 256 -c ${CHECKSUM_NAME}"
-```
+</document_content>
+</document>
 
-## scripts/validate-version.sh
-```bash
+<document index="28">
+<source>scripts/validate-version.sh</source>
+<document_content>
 #!/bin/bash
 # this_file: scripts/validate-version.sh
 # Validate that the version in code matches the git tag
@@ -4978,10 +5034,12 @@ else
     echo "⚠️  Continuing anyway (validation relaxed)"
     exit 0
 fi
-```
+</document_content>
+</document>
 
-## test.sh
-```bash
+<document index="29">
+<source>test.sh</source>
+<document_content>
 #!/bin/bash
 # this_file: test.sh
 # Run all tests for fontlift-mac
@@ -5223,4 +5281,7 @@ echo "  • Swift unit tests:       ${SWIFT_DURATION}s (62 tests)"
 else
     echo "✅ All tests passed"
 fi
-```
+</document_content>
+</document>
+
+</documents>

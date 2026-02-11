@@ -67,7 +67,7 @@ All notable changes to fontlift-mac-cli will be documented in this file.
   - Combined flags work correctly (e.g., `--swift --integration` = 73 total)
   - No more hardcoded "94 total" regardless of suite selection
 
-- **PLAN.md Updates**: Synchronized documentation with current state
+- **TASKS.md Updates**: Synchronized documentation with current state
   - Updated test counts: 43→52 Swift, 15→21 Integration
   - Added Rounds 17-18 improvements to "Recent Changes" section
   - Documentation now accurately reflects current project metrics
@@ -189,7 +189,7 @@ All notable changes to fontlift-mac-cli will be documented in this file.
 
 ### Added
 - **Enhanced Documentation Accuracy**: Fixed outdated metrics and improved maintainability
-  - Updated PLAN.md with correct test counts (43 Swift tests, 81 total)
+  - Updated TASKS.md with correct test counts (43 Swift tests, 81 total)
   - Enhanced test.sh with comprehensive test suite breakdown comments
   - Documents all 3 test suites: Swift (43), Scripts (23), Integration (15)
   - Added maintenance notes for updating hardcoded counts

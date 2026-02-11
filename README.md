@@ -271,7 +271,7 @@ fi
 For development instructions, build automation, and release process:
 - See [CLAUDE.md](./CLAUDE.md) for detailed development guidelines
 - See [CHANGELOG.md](./CHANGELOG.md) for version history
-- See [PLAN.md](./PLAN.md) for implementation plans
+- See [TASKS.md](./TASKS.md) for implementation plans
 
 ### Quick Start
 
