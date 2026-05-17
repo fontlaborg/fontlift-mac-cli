@@ -1,15 +1,22 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # this_file: publish.sh
-# Install fontlift-mac to /usr/local/bin (local mode) or verify binary (CI mode)
+# Build and publish fontlift-mac (release binary + local install).
+#
+# fontlift manages cross-platform font install/uninstall/list/cleanup.
+# This script bumps the version tag, builds a universal release binary,
+# and installs it locally.
 #
 # Usage: ./publish.sh [OPTIONS]
 #
 # Options:
 #   --ci        CI mode (skip installation, just verify binary)
 #   --help      Show this help message
+#
+# made by FontLab https://www.fontlab.com/
 
 set -euo pipefail  # Exit on error, undefined vars, pipe failures
-cd "$(dirname "$0")"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+cd "$SCRIPT_DIR"
 
 # Function to display help
 show_help() {
@@ -93,16 +100,17 @@ if [ "$CI_MODE" = true ]; then
     exit 0
 fi
 
-# Local mode: Install to /usr/local/bin
+# Local mode: bump version tag, build, install
+echo "Bumping version tag via gitnextver..."
+uvx gitnextver@latest
+
 echo "📦 Publishing fontlift-mac to ${INSTALL_DIR}..."
 echo ""
 
-# Build if binary doesn't exist
-if [ ! -f "${SOURCE_BINARY}" ]; then
-    echo "Binary not found. Building first..."
-    ./build.sh
-    echo ""
-fi
+# Build universal release binary
+echo "Building release binary..."
+bash "$SCRIPT_DIR/build.sh" --release
+echo ""
 
 # Check if install directory exists
 if [ ! -d "${INSTALL_DIR}" ]; then
