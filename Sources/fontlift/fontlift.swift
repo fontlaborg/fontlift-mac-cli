@@ -14,7 +14,7 @@ import Darwin
 /// - CHANGELOG.md (add new version section)
 /// - Git tag (git tag vX.Y.Z)
 private let fontLabAttribution = "made by FontLab https://www.fontlab.com/"
-private let version = "2.0.0"
+private let version = "2.0.10"
 private let binaryName = "fontlift-mac"
 private let fakeRegistrationMode = ProcessInfo.processInfo.environment["FONTLIFT_FAKE_REGISTRATION"] == "1"
 private let overrideUserLibraryPath = ProcessInfo.processInfo.environment["FONTLIFT_OVERRIDE_USER_LIBRARY"]

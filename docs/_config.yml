@@ -1,0 +1,18 @@
+# this_file: docs/_config.yml
+title: fontlift-mac-cli
+description: macOS CLI for font install, uninstall, list, and cache cleanup
+remote_theme: just-the-docs/just-the-docs
+url: https://fontlaborg.github.io
+baseurl: /fontlift-mac-cli
+
+color_scheme: light
+search_enabled: true
+
+aux_links:
+  "GitHub":
+    - "https://github.com/fontlaborg/fontlift-mac-cli"
+
+plugins:
+  - jekyll-remote-theme
+
+footer_content: "Made by FontLab https://www.fontlab.com/ — Licensed under Apache 2.0"

@@ -3,6 +3,24 @@
 
 All notable changes to fontlift-mac-cli will be documented in this file.
 
+## [2.0.10] - 2026-07-05
+
+### Fixed
+- **`--version` reported the wrong number.** The `version` constant in
+  `Sources/fontlift/fontlift.swift` was stuck at `2.0.0` while releases had reached
+  `v2.0.9`, so every recent binary printed `2.0.0`. Bumped it to `2.0.10` to match the
+  release tag. Also updated the hardcoded install version in `README.md`.
+
+### Added
+- **Jekyll documentation site** under `docs/` (JustTheDocs remote theme): a single page
+  covering install, all commands, and troubleshooting, ready for GitHub Pages.
+- **"Comparison with fontlift (Rust)"** section in `README.md` explaining when to reach
+  for the Swift binary versus the cross-platform Rust tool.
+- **Project icon** at `docs/assets/icon.png`.
+
+### Changed
+- `.gitignore` now excludes `.omc/` orchestration state.
+
 ## [Unreleased]
 
 ### Added (Post-Release Rounds 17-20)

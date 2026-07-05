@@ -31,12 +31,32 @@ Protection (SIP). fontlift-mac never touches that directory.
 
 ---
 
+## Comparison with fontlift (Rust)
+
+This Swift binary shares its command surface — `install`, `uninstall`, `remove`,
+`list`, `cleanup` — with the cross-platform [fontlift](https://github.com/fontlaborg/fontlift)
+tool written in Rust. Same verbs, same flags, two different engines.
+
+Reach for **fontlift-mac** (this tool) when you want a single self-contained macOS
+binary with zero Rust or Python runtime behind it. It talks to Core Text directly,
+so it is a good fit for CI runners, minimal images, and any place where you would
+rather ship one file than a toolchain.
+
+Reach for **fontlift** (Rust) when you need the same commands on Linux and Windows
+too, or when you are already pulling in the `fontlift` Python package or Rust crates
+as part of a larger font pipeline.
+
+Both register fonts the macOS way and notify running apps immediately. If you only
+target macOS and want the smallest possible footprint, this is the one to use.
+
+---
+
 ## Installation
 
 ### From GitHub Releases (recommended)
 
 ```bash
-VERSION="2.0.0"
+VERSION="2.0.10"
 
 curl -L "https://github.com/fontlaborg/fontlift-mac-cli/releases/download/v${VERSION}/fontlift-mac-v${VERSION}-macos.tar.gz" -o fontlift-mac.tar.gz
 curl -L "https://github.com/fontlaborg/fontlift-mac-cli/releases/download/v${VERSION}/fontlift-mac-v${VERSION}-macos.tar.gz.sha256" -o fontlift-mac.tar.gz.sha256

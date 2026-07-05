@@ -104,6 +104,9 @@ dist/
 .vscode/
 .idea/
 
+# OMC orchestration state
+.omc/
+
 # Temporary files
 *.tmp
 *.log
